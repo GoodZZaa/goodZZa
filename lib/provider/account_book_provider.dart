@@ -76,7 +76,6 @@ class AccountProvider extends ChangeNotifier {
     for (int i = 1; i <= lastDayOfMonth; i++) {
       _days.add(DateTime(date.year, date.month, i));
     }
-    notifyListeners();
   }
 
   void getData() async {
@@ -84,16 +83,17 @@ class AccountProvider extends ChangeNotifier {
     //_state = ~
     _account = Account(all: 2000, max: 10000);
     _state = AccountState.success;
-    notifyListeners();
   }
 
   void setPlusMonth() {
     _selectedMonth = _selectedMonth.add(Duration(days: _days.length));
     setDayList(_selectedMonth);
+    notifyListeners();
   }
 
   void setMinusMonth() {
     _selectedMonth = _selectedMonth.subtract(Duration(days: _days.length));
     setDayList(_selectedMonth);
+    notifyListeners();
   }
 }

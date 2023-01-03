@@ -14,7 +14,7 @@ class AccountBook extends StatefulWidget {
 }
 
 class _AccountBookState extends State<AccountBook>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
   late AccountProvider _accountProvider;
   late TabController _tabController;
 
@@ -65,7 +65,7 @@ class _AccountBookState extends State<AccountBook>
                                 children: [
                                   Text(
                                     dayToWeekday(element.weekday),
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                         fontSize: 10,
                                         color:
                                             Color.fromRGBO(155, 156, 160, 1)),
@@ -162,7 +162,7 @@ class _AccountBookState extends State<AccountBook>
     return Scaffold(
         body: _accountProvider.state == AccountState.success
             ? Container(
-                color: Color.fromRGBO(255, 255, 255, 1),
+                color: const Color.fromRGBO(255, 255, 255, 1),
                 width: MediaQuery.of(context).size.width,
                 height: MediaQuery.of(context).size.height,
                 child: Column(
@@ -193,20 +193,20 @@ class _AccountBookState extends State<AccountBook>
                   child: Column(
                     children: [
                       Text(
-                        DateFormat('yyyy년 MM월 dd일').format(item.date),
+                        '${item.price} 원',
                         style: const TextStyle(
-                          fontSize: 17,
-                          fontWeight: FontWeight.w500,
+                          fontSize: 30,
+                          fontWeight: FontWeight.w700,
                         ),
                       ),
                       const SizedBox(
                         height: 10,
                       ),
                       Text(
-                        '${item.price.toString()} 원',
+                        DateFormat('yyyy년 MM월 dd일').format(item.date),
                         style: const TextStyle(
-                          fontSize: 30,
-                          fontWeight: FontWeight.w700,
+                          fontSize: 17,
+                          fontWeight: FontWeight.w500,
                         ),
                       ),
                     ],
