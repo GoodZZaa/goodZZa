@@ -74,7 +74,7 @@ class BottomNavigation extends StatelessWidget {
               activeIcon: Container(
                   padding: itemPadding,
                   child: const Icon(
-                    Icons.money,
+                    Icons.control_camera_outlined,
                     size: 20,
                     color: unSelected,
                   )),

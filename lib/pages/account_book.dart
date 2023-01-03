@@ -22,8 +22,8 @@ class _AccountBookState extends State<AccountBook>
   void initState() {
     super.initState();
     _accountProvider = Provider.of<AccountProvider>(context, listen: false);
+    _accountProvider.initDate();
     _accountProvider.getData();
-    _accountProvider.setDayList(DateTime.now());
 
     _tabController = TabController(
         length: _accountProvider.days.length,
@@ -33,7 +33,6 @@ class _AccountBookState extends State<AccountBook>
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
     _tabController.dispose();
   }
@@ -48,45 +47,68 @@ class _AccountBookState extends State<AccountBook>
           child: Column(
             children: [
               TabBar(
-                indicatorPadding: const EdgeInsets.all(5),
-                onTap: (value) {},
+                onTap: (value) {
+                  _accountProvider.setDay(value + 1);
+                },
+                labelPadding: const EdgeInsets.all(5),
                 controller: _tabController,
                 isScrollable: true,
                 tabs: _accountProvider.days
                     .map((element) => Tab(
-                          height: 54,
-                          child: Container(
-                              alignment: Alignment.center,
-                              height: 44,
-                              width: 22,
-                              child: Column(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  Text(
-                                    dayToWeekday(element.weekday),
-                                    style: const TextStyle(
-                                        fontSize: 10,
+                        height: 66,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
+                                margin: const EdgeInsets.only(bottom: 5),
+                                decoration: element ==
+                                        _accountProvider.selectedDate
+                                    ? BoxDecoration(
+                                        borderRadius: BorderRadius.circular(7),
                                         color:
-                                            Color.fromRGBO(155, 156, 160, 1)),
-                                  ),
-                                  Text(
-                                    element.day.toString(),
-                                    style: const TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w600,
+                                            const Color.fromRGBO(47, 45, 45, 1))
+                                    : BoxDecoration(
+                                        borderRadius: BorderRadius.circular(7),
+                                        color: const Color.fromRGBO(
+                                            255, 255, 255, 1)),
+                                alignment: Alignment.center,
+                                height: 50,
+                                width: 45,
+                                child: Column(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    Text(
+                                      dayToWeekday(element.weekday),
+                                      style: const TextStyle(
+                                          fontSize: 10,
+                                          color:
+                                              Color.fromRGBO(155, 156, 160, 1)),
                                     ),
-                                  )
-                                ],
-                              )),
-                        ))
+                                    Text(
+                                      element.day.toString(),
+                                      style: const TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    )
+                                  ],
+                                )),
+                            Icon(Icons.circle,
+                                size: 8,
+                                color: _accountProvider.paymentItems
+                                        .where((e) => e.date == element)
+                                        .toList()
+                                        .isEmpty
+                                    ? Colors.transparent
+                                    : Colors.black45)
+                          ],
+                        )))
                     .toList(),
                 labelColor: const Color.fromRGBO(248, 247, 255, 1),
                 unselectedLabelColor:
                     const Color.fromARGB(0xFF, 0x36, 0x39, 0x42),
-                indicator: BoxDecoration(
-                    borderRadius: BorderRadius.circular(7),
-                    color: const Color.fromRGBO(47, 45, 45, 1)),
+                indicator: const BoxDecoration(color: Colors.transparent),
               ),
               Container(
                 margin: const EdgeInsets.only(
@@ -145,7 +167,7 @@ class _AccountBookState extends State<AccountBook>
                   ],
                 ),
               ),
-              SizedBox(
+              Container(
                   height: 300,
                   child: TabBarView(
                       controller: _tabController,
@@ -272,7 +294,7 @@ class _AccountBookState extends State<AccountBook>
           IconButton(
               iconSize: 15,
               onPressed: () {
-                _accountProvider.setMinusMonth();
+                _accountProvider.setMonthBefore();
                 _tabController = TabController(
                     length: _accountProvider.days.length, vsync: this);
               },
@@ -280,14 +302,14 @@ class _AccountBookState extends State<AccountBook>
                 Icons.arrow_back_ios_new,
               )),
           Text(
-            "${_accountProvider.selectedMonth.month}월",
+            "${_accountProvider.selectedDate.month}월",
             style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
             textAlign: TextAlign.start,
           ),
           IconButton(
               iconSize: 15,
               onPressed: () {
-                _accountProvider.setPlusMonth();
+                _accountProvider.setMonthNext();
                 _tabController = TabController(
                     length: _accountProvider.days.length, vsync: this);
               },
@@ -315,7 +337,7 @@ class _AccountBookState extends State<AccountBook>
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                '${_accountProvider.selectedMonth.month}월 총 예산',
+                '${_accountProvider.selectedDate.month}월 총 예산',
                 style: const TextStyle(
                   color: Colors.black,
                   fontSize: 13,
@@ -369,7 +391,7 @@ class _AccountBookState extends State<AccountBook>
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text('${_accountProvider.selectedMonth.month}월',
+              Text('${_accountProvider.selectedDate.month}월',
                   style: const TextStyle(
                       fontSize: 16,
                       color: Color.fromRGBO(57, 63, 66, 1),

@@ -11,8 +11,8 @@ class Account {
 enum AccountState { loading, fail, success }
 
 class AccountProvider extends ChangeNotifier {
-  DateTime _selectedMonth = DateTime.now();
-  DateTime get selectedMonth => _selectedMonth;
+  late DateTime _selectedDate;
+  DateTime get selectedDate => _selectedDate;
 
   List<DateTime> get days => _days;
   List<DateTime> _days = <DateTime>[];
@@ -23,6 +23,7 @@ class AccountProvider extends ChangeNotifier {
   late Account _account;
   Account get account => _account;
 
+  // 임시 더미데이터
   List<PaymentItem> paymentItems = <PaymentItem>[
     PaymentItem(
         amount: 1,
@@ -61,14 +62,42 @@ class AccountProvider extends ChangeNotifier {
         year: 2023),
     PaymentItem(
         amount: 1,
-        price: 1400,
-        productName: '편의점',
+        price: 7200,
+        productName: '올리브영',
         date: DateTime(2023, 1, 3),
+        month: 1,
+        year: 2023),
+    PaymentItem(
+        amount: 1,
+        price: 12000,
+        productName: '하나로마트',
+        date: DateTime(2023, 1, 3),
+        month: 1,
+        year: 2023),
+    PaymentItem(
+        amount: 1,
+        price: 7200,
+        productName: '올리브영',
+        date: DateTime(2023, 1, 5),
+        month: 1,
+        year: 2023),
+    PaymentItem(
+        amount: 1,
+        price: 12000,
+        productName: '하나로마트',
+        date: DateTime(2023, 1, 5),
         month: 1,
         year: 2023),
   ];
 
+  void initDate() {
+    final now = DateTime.now();
+    _selectedDate = DateTime(now.year, now.month, now.day);
+    setDayList(_selectedDate);
+  }
+
   void setDayList(DateTime date) {
+    // 월별 날짜 수 계산 및 날짜 리스트 생성
     int diff = date.difference(DateTime(date.year, date.month + 1, 1)).inDays;
     int lastDayOfMonth = date.day - diff;
 
@@ -85,15 +114,22 @@ class AccountProvider extends ChangeNotifier {
     _state = AccountState.success;
   }
 
-  void setPlusMonth() {
-    _selectedMonth = _selectedMonth.add(Duration(days: _days.length));
-    setDayList(_selectedMonth);
+  void setDay(int day) {
+    _selectedDate = DateTime(_selectedDate.year, _selectedDate.month, day);
     notifyListeners();
   }
 
-  void setMinusMonth() {
-    _selectedMonth = _selectedMonth.subtract(Duration(days: _days.length));
-    setDayList(_selectedMonth);
+  void setMonthNext() {
+    // 다음달
+    _selectedDate = _selectedDate.add(Duration(days: _days.length));
+    setDayList(_selectedDate);
+    notifyListeners();
+  }
+
+  void setMonthBefore() {
+    // 이전달
+    _selectedDate = _selectedDate.subtract(Duration(days: _days.length));
+    setDayList(_selectedDate);
     notifyListeners();
   }
 }
