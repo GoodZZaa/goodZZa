@@ -100,9 +100,10 @@ class AccountProvider extends ChangeNotifier {
     // 월별 날짜 수 계산 및 날짜 리스트 생성
     int diff = date.difference(DateTime(date.year, date.month + 1, 1)).inDays;
     int lastDayOfMonth = date.day - diff;
+    print(lastDayOfMonth.toString());
 
     _days = [];
-    for (int i = 1; i <= lastDayOfMonth; i++) {
+    for (int i = 1; i < lastDayOfMonth; i++) {
       _days.add(DateTime(date.year, date.month, i));
     }
   }

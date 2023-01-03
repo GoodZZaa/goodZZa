@@ -17,6 +17,7 @@ class _AccountBookState extends State<AccountBook>
     with TickerProviderStateMixin {
   late AccountProvider _accountProvider;
   late TabController _tabController;
+  late PageController _pageController;
 
   @override
   void initState() {
@@ -29,6 +30,7 @@ class _AccountBookState extends State<AccountBook>
         length: _accountProvider.days.length,
         vsync: this,
         initialIndex: DateTime.now().day - 1);
+    _pageController = PageController(initialPage: 0);
   }
 
   @override
@@ -87,10 +89,20 @@ class _AccountBookState extends State<AccountBook>
                                     ),
                                     Text(
                                       element.day.toString(),
-                                      style: const TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w600,
-                                      ),
+                                      style: element ==
+                                              _accountProvider.selectedDate
+                                          ? const TextStyle(
+                                              color: Color.fromRGBO(
+                                                  248, 247, 255, 1),
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w600,
+                                            )
+                                          : const TextStyle(
+                                              color: Color.fromARGB(
+                                                  0xFF, 0x36, 0x39, 0x42),
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w600,
+                                            ),
                                     )
                                   ],
                                 )),
@@ -105,9 +117,6 @@ class _AccountBookState extends State<AccountBook>
                           ],
                         )))
                     .toList(),
-                labelColor: const Color.fromRGBO(248, 247, 255, 1),
-                unselectedLabelColor:
-                    const Color.fromARGB(0xFF, 0x36, 0x39, 0x42),
                 indicator: const BoxDecoration(color: Colors.transparent),
               ),
               Container(
@@ -322,58 +331,65 @@ class _AccountBookState extends State<AccountBook>
   }
 
   Widget accountCard() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Container(
-          width: 298,
-          height: 144,
-          padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 16),
-          decoration: const BoxDecoration(
-              color: Color.fromRGBO(217, 217, 217, 1),
-              borderRadius: BorderRadius.all(Radius.circular(8))),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                '${_accountProvider.selectedDate.month}월 총 예산',
-                style: const TextStyle(
-                  color: Colors.black,
-                  fontSize: 13,
-                  fontWeight: FontWeight.w400,
-                ),
-              ),
-              Text('${_accountProvider.account.max}원',
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w700,
-                  )),
-              Container(
-                alignment: Alignment.centerRight,
-                child: const Text(
-                  '남은잔액',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 13,
-                    fontWeight: FontWeight.w400,
-                  ),
-                  textAlign: TextAlign.right,
-                ),
-              ),
-              Container(
-                  alignment: Alignment.centerRight,
-                  child: Text(
-                      '${_accountProvider.account.max - _accountProvider.account.all}원',
-                      style: const TextStyle(
-                        fontSize: 36,
-                        fontWeight: FontWeight.w700,
-                      ),
-                      textAlign: TextAlign.right))
-            ],
+    // 미완성
+    return Container(
+      height: 150,
+      margin: const EdgeInsets.symmetric(horizontal: 40),
+      child: PageView.builder(
+          controller: _pageController,
+          itemCount: 3,
+          itemBuilder: (context, index) => accountCardItem()),
+    );
+  }
+
+  Widget accountCardItem() {
+    return Container(
+      width: 300,
+      height: 150,
+      padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 16),
+      decoration: const BoxDecoration(
+          color: Color.fromRGBO(217, 217, 217, 1),
+          borderRadius: BorderRadius.all(Radius.circular(8))),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            '${_accountProvider.selectedDate.month}월 총 예산',
+            style: const TextStyle(
+              color: Colors.black,
+              fontSize: 13,
+              fontWeight: FontWeight.w400,
+            ),
           ),
-        )
-      ],
+          Text('${_accountProvider.account.max}원',
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w700,
+              )),
+          Container(
+            alignment: Alignment.centerRight,
+            child: const Text(
+              '남은잔액',
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 13,
+                fontWeight: FontWeight.w400,
+              ),
+              textAlign: TextAlign.right,
+            ),
+          ),
+          Container(
+              alignment: Alignment.centerRight,
+              child: Text(
+                  '${_accountProvider.account.max - _accountProvider.account.all}원',
+                  style: const TextStyle(
+                    fontSize: 36,
+                    fontWeight: FontWeight.w700,
+                  ),
+                  textAlign: TextAlign.right))
+        ],
+      ),
     );
   }
 
