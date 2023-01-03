@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:good_zza_code_in_songdo/models/payments.dart';
+import 'package:good_zza_code_in_songdo/utills/day_to_weekday.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
@@ -25,9 +26,9 @@ class _AccountBookState extends State<AccountBook>
     _accountProvider.setDayList(DateTime.now());
 
     _tabController = TabController(
-        length: _accountProvider.lastDayOfMonth,
+        length: _accountProvider.days.length,
         vsync: this,
-        initialIndex: _accountProvider.selectedDay);
+        initialIndex: DateTime.now().day - 1);
   }
 
   @override
@@ -52,18 +53,31 @@ class _AccountBookState extends State<AccountBook>
                 controller: _tabController,
                 isScrollable: true,
                 tabs: _accountProvider.days
-                    .map((e) => Tab(
+                    .map((element) => Tab(
                           height: 54,
                           child: Container(
                               alignment: Alignment.center,
                               height: 44,
                               width: 22,
-                              child: Text(
-                                e.toString(),
-                                style: const TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w600,
-                                ),
+                              child: Column(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  Text(
+                                    dayToWeekday(element.weekday),
+                                    style: TextStyle(
+                                        fontSize: 10,
+                                        color:
+                                            Color.fromRGBO(155, 156, 160, 1)),
+                                  ),
+                                  Text(
+                                    element.day.toString(),
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  )
+                                ],
                               )),
                         ))
                     .toList(),
@@ -138,7 +152,7 @@ class _AccountBookState extends State<AccountBook>
                       children: _accountProvider.days
                           .map((e) => paymentListView(_accountProvider
                               .paymentItems
-                              .where((element) => element.date.day == e)
+                              .where((element) => element.date == e)
                               .toList()))
                           .toList()))
             ],
