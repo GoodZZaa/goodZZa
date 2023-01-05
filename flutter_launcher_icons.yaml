@@ -1,0 +1,9 @@
+flutter_icons:
+  ios: true
+  android: true
+  image_path: "assets/images/app_icon.png"
+  remove_alpha_ios: true
+
+
+# flutter pub add flutter_launcher_icons --dev
+# flutter pub run flutter_launcher_icons:main
