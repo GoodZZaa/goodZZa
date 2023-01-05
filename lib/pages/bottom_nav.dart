@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:good_zza_code_in_songdo/pages/home_page.dart';
 import 'package:provider/provider.dart';
 
 import '../provider/bottom_nav_provider.dart';
@@ -19,7 +20,7 @@ class BottomNavigation extends StatelessWidget {
     return Scaffold(
       body: SafeArea(
         child: [
-          Container(),
+          HomePage(),
           Container(),
           Container(),
           AccountBook(),
