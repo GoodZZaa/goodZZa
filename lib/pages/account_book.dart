@@ -45,159 +45,154 @@ class _AccountBookState extends State<AccountBook>
 
     Widget paymentTabView() {
       return Container(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Column(
-            children: [
-              TabBar(
-                onTap: (value) {
-                  _accountProvider.setDay(value + 1);
-                },
-                labelPadding: const EdgeInsets.all(5),
-                controller: _tabController,
-                isScrollable: true,
-                tabs: _accountProvider.days
-                    .map((element) => Tab(
-                        height: 66,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Container(
-                                margin: const EdgeInsets.only(bottom: 5),
-                                decoration: element ==
-                                        _accountProvider.selectedDate
-                                    ? BoxDecoration(
-                                        borderRadius: BorderRadius.circular(7),
-                                        color: const Color.fromRGBO(
-                                            88, 212, 175, 1))
-                                    : BoxDecoration(
-                                        borderRadius: BorderRadius.circular(7),
-                                        color: const Color.fromRGBO(
-                                            255, 255, 255, 1)),
-                                alignment: Alignment.center,
-                                height: 50,
-                                width: 45,
-                                child: Column(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    Text(
-                                      dayToWeekday(element.weekday),
-                                      style: element ==
-                                              _accountProvider.selectedDate
-                                          ? const TextStyle(
-                                              fontSize: 10,
-                                              color: Color.fromRGBO(
-                                                  255, 255, 255, 0.7))
-                                          : const TextStyle(
-                                              fontSize: 10,
-                                              color: Color.fromRGBO(
-                                                  155, 156, 160, 1)),
-                                    ),
-                                    Text(
-                                      element.day.toString(),
-                                      style: element ==
-                                              _accountProvider.selectedDate
-                                          ? const TextStyle(
-                                              color: Color.fromRGBO(
-                                                  248, 247, 255, 1),
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w600,
-                                            )
-                                          : const TextStyle(
-                                              color: Color.fromARGB(
-                                                  0xFF, 0x36, 0x39, 0x42),
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w600,
-                                            ),
-                                    )
-                                  ],
-                                )),
-                            Icon(Icons.circle,
+        children: [
+          TabBar(
+            onTap: (value) {
+              _accountProvider.setDay(value + 1);
+            },
+            labelPadding: const EdgeInsets.all(5),
+            controller: _tabController,
+            isScrollable: true,
+            tabs: _accountProvider.days
+                .map((element) => Tab(
+                    height: 66,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                            decoration: element == _accountProvider.selectedDate
+                                ? BoxDecoration(
+                                    borderRadius: BorderRadius.circular(7),
+                                    color:
+                                        const Color.fromRGBO(88, 212, 175, 1))
+                                : BoxDecoration(
+                                    borderRadius: BorderRadius.circular(7),
+                                    color:
+                                        const Color.fromRGBO(255, 255, 255, 1)),
+                            alignment: Alignment.center,
+                            height: 50,
+                            width: 45,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Text(
+                                  dayToWeekday(element.weekday),
+                                  style: element ==
+                                          _accountProvider.selectedDate
+                                      ? const TextStyle(
+                                          fontSize: 10,
+                                          color: Color.fromRGBO(
+                                              255, 255, 255, 0.7))
+                                      : const TextStyle(
+                                          fontSize: 10,
+                                          color:
+                                              Color.fromRGBO(155, 156, 160, 1)),
+                                ),
+                                Text(
+                                  element.day.toString(),
+                                  style: element ==
+                                          _accountProvider.selectedDate
+                                      ? const TextStyle(
+                                          color:
+                                              Color.fromRGBO(248, 247, 255, 1),
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w600,
+                                        )
+                                      : const TextStyle(
+                                          color: Color.fromARGB(
+                                              0xFF, 0x36, 0x39, 0x42),
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                )
+                              ],
+                            )),
+                        Container(
+                            padding: const EdgeInsets.only(top: 3),
+                            child: Icon(Icons.circle,
                                 size: 8,
                                 color: _accountProvider.paymentItems
                                         .where((e) => e.date == element)
                                         .toList()
                                         .isEmpty
                                     ? Colors.transparent
-                                    : const Color.fromRGBO(95, 89, 225, 1))
-                          ],
-                        )))
-                    .toList(),
-                indicator: const BoxDecoration(color: Colors.transparent),
-              ),
-              Container(
-                margin: const EdgeInsets.only(
-                    bottom: 10, top: 10, left: 10, right: 10),
-                height: 1,
-                width: double.maxFinite,
-                color: const Color.fromRGBO(218, 218, 218, 1),
-              ),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 7),
-                child: Row(
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    InkWell(
-                        onTap: () {},
-                        child: Container(
-                          padding: const EdgeInsets.all(3),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: const [
-                              SizedBox(
-                                width: 15,
-                              ),
-                              Text('전체',
-                                  style: TextStyle(
-                                      fontSize: 12.5,
-                                      fontWeight: FontWeight.w600)),
-                              Icon(Icons.keyboard_arrow_down_sharp, size: 20)
-                            ],
+                                    : const Color.fromRGBO(95, 89, 225, 1)))
+                      ],
+                    )))
+                .toList(),
+            indicator: const BoxDecoration(color: Colors.transparent),
+          ),
+          Container(
+            margin: const EdgeInsets.only(bottom: 10, left: 10, right: 10),
+            height: 1,
+            width: double.maxFinite,
+            color: const Color.fromRGBO(218, 218, 218, 1),
+          ),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 7),
+            child: Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                InkWell(
+                    onTap: () {},
+                    child: Container(
+                      padding: const EdgeInsets.all(3),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: const [
+                          SizedBox(
+                            width: 15,
                           ),
-                        )),
-                    InkWell(
-                        child: Container(
-                            padding: const EdgeInsets.all(3),
-                            child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  const Text(
-                                    '추가하기',
-                                    style: TextStyle(
-                                        fontSize: 13,
-                                        fontWeight: FontWeight.w500),
-                                  ),
-                                  const SizedBox(
-                                    width: 8,
-                                  ),
-                                  Image.asset(
-                                    'assets/icons/icon_plus.png',
-                                    height: 26,
-                                    width: 26,
-                                  )
-                                ])))
-                  ],
-                ),
-              ),
-              Container(
-                  height: 300,
-                  child: TabBarView(
-                      controller: _tabController,
-                      children: _accountProvider.days
-                          .map((e) => paymentListView(_accountProvider
-                              .paymentItems
-                              .where((element) => element.date == e)
-                              .toList()))
+                          Text('전체',
+                              style: TextStyle(
+                                  fontSize: 12.5, fontWeight: FontWeight.w600)),
+                          Icon(Icons.keyboard_arrow_down_sharp, size: 20)
+                        ],
+                      ),
+                    )),
+                InkWell(
+                    child: Container(
+                        padding: const EdgeInsets.all(3),
+                        child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              const Text(
+                                '추가하기',
+                                style: TextStyle(
+                                    fontSize: 13, fontWeight: FontWeight.w500),
+                              ),
+                              const SizedBox(
+                                width: 8,
+                              ),
+                              Image.asset(
+                                'assets/icons/icon_plus.png',
+                                height: 26,
+                                width: 26,
+                              )
+                            ])))
+              ],
+            ),
+          ),
+          Container(
+              height: 300,
+              child: TabBarView(
+                  controller: _tabController,
+                  children: _accountProvider.days
+                      .map((e) => paymentListView(_accountProvider.paymentItems
+                          .where((element) => element.date == e)
                           .toList()))
-            ],
-          ));
+                      .toList()))
+        ],
+      ));
     }
 
     return Scaffold(
         body: _accountProvider.state == AccountState.success
             ? Container(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
                 color: const Color.fromRGBO(255, 255, 255, 1),
                 width: MediaQuery.of(context).size.width,
                 height: MediaQuery.of(context).size.height,
@@ -252,7 +247,7 @@ class _AccountBookState extends State<AccountBook>
 
   Widget paymentListView(List<PaymentItem> items) {
     return Container(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
+        padding: const EdgeInsets.symmetric(horizontal: 10),
         width: double.infinity,
         child: ListView.builder(
             shrinkWrap: true,
@@ -263,14 +258,15 @@ class _AccountBookState extends State<AccountBook>
 
   Widget paymentItemCard(PaymentItem item) {
     return Container(
-        margin: const EdgeInsets.symmetric(vertical: 5),
-        height: 75,
-        width: double.infinity,
+        margin: EdgeInsets.all(8),
         child: InkWell(
             onTap: () => paymentBottomSheet(item),
             child: Container(
                 decoration: const BoxDecoration(
                     color: Colors.white,
+                    boxShadow: [
+                      BoxShadow(color: Color.fromARGB(255, 175, 175, 175))
+                    ],
                     border: Border(
                         left: BorderSide(
                             color: Color.fromRGBO(95, 89, 225, 1),
@@ -284,9 +280,19 @@ class _AccountBookState extends State<AccountBook>
                       Text(
                         item.productName,
                         style: const TextStyle(
-                          fontSize: 14,
+                          fontSize: 12.5,
                           fontWeight: FontWeight.w600,
                         ),
+                      ),
+                      const SizedBox(
+                        height: 4,
+                      ),
+                      Text(
+                        item.market,
+                        style: const TextStyle(
+                            fontSize: 8.5,
+                            fontWeight: FontWeight.w400,
+                            color: Color.fromRGBO(97, 96, 96, 1)),
                       ),
                       Container(
                         alignment: Alignment.centerRight,
@@ -302,8 +308,7 @@ class _AccountBookState extends State<AccountBook>
 
   Widget monthControll() {
     return Container(
-      alignment: Alignment.center,
-      padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 5),
+      padding: const EdgeInsets.symmetric(vertical: 20),
       child: Row(
         children: [
           IconButton(
@@ -337,27 +342,15 @@ class _AccountBookState extends State<AccountBook>
   }
 
   Widget accountCard() {
-    // 미완성
     return Container(
       height: 150,
-      margin: const EdgeInsets.symmetric(horizontal: 40),
-      child: PageView.builder(
-          controller: _pageController,
-          itemCount: 3,
-          itemBuilder: (context, index) => accountCardItem()),
-    );
-  }
-
-  Widget accountCardItem() {
-    return Container(
-      width: 300,
-      height: 150,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
+        image: const DecorationImage(
+            image: AssetImage('assets/images/img_main_frame.png'),
+            fit: BoxFit.cover),
+      ),
       padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 16),
-      decoration: const BoxDecoration(
-          image: DecorationImage(
-              image: AssetImage('assets/images/img_main_frame.png'),
-              fit: BoxFit.cover),
-          borderRadius: BorderRadius.all(Radius.circular(8))),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
