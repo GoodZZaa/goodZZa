@@ -12,20 +12,15 @@ class BottomNavigation extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     _bottomNavigationProvider = Provider.of<BottomNavigationProvider>(context);
-    const Color selected = Color.fromRGBO(63, 66, 72, 1);
-    const Color unSelected = Color.fromRGBO(204, 210, 223, 1);
+    const Color selected = Color.fromARGB(0xFF, 0x54, 0xB1, 0x75);
+    const Color unSelected = Color.fromRGBO(0xFF, 0xAE, 0xAE, 0xB2);
     const EdgeInsets itemPadding = EdgeInsets.fromLTRB(0, 8, 0, 5);
 
     // 페이지별 화면 추가 필요 영수증 촬영은 카메라 연결
     return Scaffold(
       body: SafeArea(
-        child: [
-          HomePage(),
-          Container(),
-          Container(),
-          AccountBook(),
-          Container()
-        ].elementAt(_bottomNavigationProvider.currentPage),
+        child: [HomePage(), Container(), AccountBook(), Container()]
+            .elementAt(_bottomNavigationProvider.currentPage),
       ),
       bottomNavigationBar: BottomNavigationBar(
           type: BottomNavigationBarType.fixed,
@@ -34,84 +29,76 @@ class BottomNavigation extends StatelessWidget {
             BottomNavigationBarItem(
               icon: Container(
                   padding: itemPadding,
-                  child: const Icon(
-                    Icons.money,
-                    size: 20,
+                  child: Image.asset(
+                    'assets/icons/bottom_nav_home.png',
+                    height: 20,
+                    width: 23,
                     color: unSelected,
                   )),
               activeIcon: Container(
-                  child: const Icon(
-                Icons.money,
-                size: 20,
-                color: unSelected,
-              )),
+                  padding: itemPadding,
+                  child: Image.asset(
+                    'assets/icons/bottom_nav_home.png',
+                    height: 20,
+                    width: 23,
+                    color: selected,
+                  )),
               label: '홈',
             ),
             BottomNavigationBarItem(
               icon: Container(
                   padding: itemPadding,
-                  child: const Icon(
-                    Icons.money,
-                    size: 20,
+                  child: Image.asset(
+                    'assets/icons/bottom_nav_shopping_cart.png',
+                    height: 20,
+                    width: 23,
                     color: unSelected,
                   )),
               activeIcon: Container(
                   padding: itemPadding,
-                  child: const Icon(
-                    Icons.money,
-                    size: 20,
-                    color: unSelected,
+                  child: Image.asset(
+                    'assets/icons/bottom_nav_shopping_cart.png',
+                    height: 20,
+                    width: 23,
+                    color: selected,
                   )),
-              label: '예산작성',
+              label: '예산안',
             ),
             BottomNavigationBarItem(
               icon: Container(
                   padding: itemPadding,
-                  child: const Icon(
-                    Icons.control_camera_outlined,
-                    size: 20,
+                  child: Image.asset(
+                    'assets/icons/bottom_nav_account_book.png',
+                    height: 20,
+                    width: 23,
                     color: unSelected,
                   )),
               activeIcon: Container(
                   padding: itemPadding,
-                  child: const Icon(
-                    Icons.control_camera_outlined,
-                    size: 20,
-                    color: unSelected,
-                  )),
-              label: '영수증 촬영',
-            ),
-            BottomNavigationBarItem(
-              icon: Container(
-                  padding: itemPadding,
-                  child: const Icon(
-                    Icons.money,
-                    size: 20,
-                    color: unSelected,
-                  )),
-              activeIcon: Container(
-                  padding: itemPadding,
-                  child: const Icon(
-                    Icons.money,
-                    size: 20,
-                    color: unSelected,
+                  child: Image.asset(
+                    'assets/icons/bottom_nav_account_book.png',
+                    height: 20,
+                    width: 23,
+                    color: selected,
                   )),
               label: '가계부',
             ),
             BottomNavigationBarItem(
               icon: Container(
                   padding: itemPadding,
-                  child: const Icon(
-                    Icons.money,
-                    size: 20,
+                  child: Image.asset(
+                    'assets/icons/bottom_nav_mypage.png',
+                    height: 20,
+                    width: 23,
                     color: unSelected,
                   )),
               activeIcon: Container(
                   padding: itemPadding,
-                  child: const Icon(
-                    Icons.money,
-                    size: 20,
-                    color: unSelected,
+                  child: Image.asset(
+                    'assets/icons/bottom_nav_mypage.png',
+                    height: 20,
+                    width: 23,
+                    color: selected,
                   )),
               label: '마이페이지',
             ),
