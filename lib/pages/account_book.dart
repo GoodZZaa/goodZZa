@@ -67,8 +67,8 @@ class _AccountBookState extends State<AccountBook>
                                         _accountProvider.selectedDate
                                     ? BoxDecoration(
                                         borderRadius: BorderRadius.circular(7),
-                                        color:
-                                            const Color.fromRGBO(47, 45, 45, 1))
+                                        color: const Color.fromRGBO(
+                                            88, 212, 175, 1))
                                     : BoxDecoration(
                                         borderRadius: BorderRadius.circular(7),
                                         color: const Color.fromRGBO(
@@ -82,10 +82,16 @@ class _AccountBookState extends State<AccountBook>
                                   children: [
                                     Text(
                                       dayToWeekday(element.weekday),
-                                      style: const TextStyle(
-                                          fontSize: 10,
-                                          color:
-                                              Color.fromRGBO(155, 156, 160, 1)),
+                                      style: element ==
+                                              _accountProvider.selectedDate
+                                          ? const TextStyle(
+                                              fontSize: 10,
+                                              color: Color.fromRGBO(
+                                                  255, 255, 255, 0.7))
+                                          : const TextStyle(
+                                              fontSize: 10,
+                                              color: Color.fromRGBO(
+                                                  155, 156, 160, 1)),
                                     ),
                                     Text(
                                       element.day.toString(),
@@ -113,7 +119,7 @@ class _AccountBookState extends State<AccountBook>
                                         .toList()
                                         .isEmpty
                                     ? Colors.transparent
-                                    : Colors.black45)
+                                    : const Color.fromRGBO(95, 89, 225, 1))
                           ],
                         )))
                     .toList(),
@@ -156,21 +162,20 @@ class _AccountBookState extends State<AccountBook>
                             child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 crossAxisAlignment: CrossAxisAlignment.center,
-                                children: const [
-                                  Text(
+                                children: [
+                                  const Text(
                                     '추가하기',
                                     style: TextStyle(
                                         fontSize: 13,
                                         fontWeight: FontWeight.w500),
                                   ),
-                                  SizedBox(
+                                  const SizedBox(
                                     width: 8,
                                   ),
-                                  Icon(
-                                    Icons.add_circle_rounded,
-                                    size: 36,
-                                    color:
-                                        Color.fromARGB(0xFF, 0xD9, 0xD9, 0xD9),
+                                  Image.asset(
+                                    'assets/icons/icon_plus.png',
+                                    height: 26,
+                                    width: 26,
                                   )
                                 ])))
                   ],
@@ -268,7 +273,8 @@ class _AccountBookState extends State<AccountBook>
                     color: Colors.white,
                     border: Border(
                         left: BorderSide(
-                            color: Color.fromRGBO(47, 45, 45, 1), width: 3.5))),
+                            color: Color.fromRGBO(95, 89, 225, 1),
+                            width: 3.5))),
                 padding:
                     const EdgeInsets.symmetric(vertical: 10, horizontal: 18),
                 child: Column(
@@ -296,7 +302,7 @@ class _AccountBookState extends State<AccountBook>
 
   Widget monthControll() {
     return Container(
-      alignment: Alignment.topLeft,
+      alignment: Alignment.center,
       padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 5),
       child: Row(
         children: [
@@ -348,7 +354,9 @@ class _AccountBookState extends State<AccountBook>
       height: 150,
       padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 16),
       decoration: const BoxDecoration(
-          color: Color.fromRGBO(217, 217, 217, 1),
+          image: DecorationImage(
+              image: AssetImage('assets/images/img_main_frame.png'),
+              fit: BoxFit.cover),
           borderRadius: BorderRadius.all(Radius.circular(8))),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -357,13 +365,14 @@ class _AccountBookState extends State<AccountBook>
           Text(
             '${_accountProvider.selectedDate.month}월 총 예산',
             style: const TextStyle(
-              color: Colors.black,
+              color: Colors.white,
               fontSize: 13,
               fontWeight: FontWeight.w400,
             ),
           ),
           Text('${_accountProvider.account.max}원',
               style: const TextStyle(
+                color: Colors.white,
                 fontSize: 16,
                 fontWeight: FontWeight.w700,
               )),
@@ -372,7 +381,7 @@ class _AccountBookState extends State<AccountBook>
             child: const Text(
               '남은잔액',
               style: TextStyle(
-                color: Colors.black,
+                color: Colors.white,
                 fontSize: 13,
                 fontWeight: FontWeight.w400,
               ),
@@ -384,6 +393,7 @@ class _AccountBookState extends State<AccountBook>
               child: Text(
                   '${_accountProvider.account.max - _accountProvider.account.all}원',
                   style: const TextStyle(
+                    color: Colors.white,
                     fontSize: 36,
                     fontWeight: FontWeight.w700,
                   ),
