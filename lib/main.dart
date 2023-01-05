@@ -18,5 +18,6 @@ class MyApp extends StatelessWidget {
 
 
     /// 요렇게 수정한 내용. 
+    // 리모트 수정
   }
 }
