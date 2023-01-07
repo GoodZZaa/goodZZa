@@ -21,8 +21,6 @@ class SplashScreen extends StatelessWidget {
                           create: (context) => BottomNavigationProvider()),
                       ChangeNotifierProvider(
                           create: (context) => AccountProvider()),
-                      ChangeNotifierProvider(
-                          create: (context) => SearchProvider()),
                     ],
                     child: BottomNavigation(),
                   )),

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:good_zza_code_in_songdo/pages/home_search_page.dart';
+import 'package:good_zza_code_in_songdo/provider/search_provider.dart';
+import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -63,10 +65,11 @@ class _HomePage extends State<HomePage> {
                     Expanded(
                       child: OutlinedButton.icon(
                         onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => HomeSearchPage()));
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => ChangeNotifierProvider(
+                                    create: (context) => SearchProvider(),
+                                    child: const HomeSearchPage(),
+                                  )));
                         },
                         icon: Icon(
                           Icons.search,
