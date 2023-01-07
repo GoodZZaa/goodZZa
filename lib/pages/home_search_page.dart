@@ -1,21 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:good_zza_code_in_songdo/provider/search_provider.dart';
+import 'package:provider/provider.dart';
 
-class Home_Search_Page extends StatefulWidget {
-  const Home_Search_Page({Key? key}) : super(key: key);
+class HomeSearchPage extends StatefulWidget {
+  const HomeSearchPage({Key? key}) : super(key: key);
 
   @override
-  State<Home_Search_Page> createState() => _Home_Search_Page();
+  State<HomeSearchPage> createState() => _HomeSearchPage();
 }
 
-class _Home_Search_Page extends State<Home_Search_Page> {
+class _HomeSearchPage extends State<HomeSearchPage> {
+  late SearchProvider _searchProvider;
+
+  @override
+  void initState() {
+    super.initState();
+    _searchProvider = Provider.of<SearchProvider>(context, listen: false);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: EmptyAppBar(),
       appBar: AppBar(
         backgroundColor: Colors.white,
-        systemOverlayStyle: SystemUiOverlayStyle(
+        systemOverlayStyle: const SystemUiOverlayStyle(
           statusBarColor: Colors.black,
           statusBarIconBrightness: Brightness.dark,
           statusBarBrightness: Brightness.light,
@@ -59,10 +68,13 @@ class _Home_Search_Page extends State<Home_Search_Page> {
         actions: [
           Container(
             width: 50,
-            child: Icon(
-              Icons.shopping_cart,
-              size: 28,
-              color: Color.fromRGBO(200, 200, 203, 1),
+            child: IconButton(
+              icon: Icon(
+                Icons.shopping_cart,
+                size: 28,
+                color: Color.fromRGBO(200, 200, 203, 1),
+              ),
+              onPressed: () {},
             ),
           ),
         ],

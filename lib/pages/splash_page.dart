@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:good_zza_code_in_songdo/provider/search_provider.dart';
 import 'package:provider/provider.dart';
 
 import '../provider/account_book_provider.dart';
@@ -20,6 +21,8 @@ class SplashScreen extends StatelessWidget {
                           create: (context) => BottomNavigationProvider()),
                       ChangeNotifierProvider(
                           create: (context) => AccountProvider()),
+                      ChangeNotifierProvider(
+                          create: (context) => SearchProvider()),
                     ],
                     child: BottomNavigation(),
                   )),
