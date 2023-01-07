@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:good_zza_code_in_songdo/pages/home_page.dart';
+import 'package:good_zza_code_in_songdo/pages/account_book2.dart';
 import 'package:provider/provider.dart';
 
 import '../provider/bottom_nav_provider.dart';
@@ -19,7 +20,7 @@ class BottomNavigation extends StatelessWidget {
     // 페이지별 화면 추가 필요 영수증 촬영은 카메라 연결
     return Scaffold(
       body: SafeArea(
-        child: [HomePage(), Container(), AccountBook(), Container()]
+        child: [HomePage(), Container(), AccountBook2(), Container()]
             .elementAt(_bottomNavigationProvider.currentPage),
       ),
       bottomNavigationBar: BottomNavigationBar(

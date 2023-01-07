@@ -13,11 +13,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: SplashScreen(),
     );
-
-
-    /// 요렇게 수정한 내용. 
-    // 리모트 수정
   }
 }
