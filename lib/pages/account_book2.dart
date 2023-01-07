@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../provider/account_book_provider.dart';
+import 'history_month.dart';
 
 class AccountBook2 extends StatefulWidget {
   const AccountBook2({super.key});
@@ -51,54 +52,58 @@ class _AccountBookS3tate extends State<AccountBook2>
     _accountProvider = Provider.of<AccountProvider>(context);
 
     return Scaffold(
-      body: _accountProvider.state == AccountState.success
-        ? NestedScrollView(
-          controller: scrollController,
-          physics: const BouncingScrollPhysics(),
-          headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-            return [
-              SliverAppBar(
-                pinned: false,
-                forceElevated: innerBoxIsScrolled,
-                expandedHeight: 250.0, // appbar 크기
-                flexibleSpace: FlexibleSpaceBar(
-                  background: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        monthControl(),
-                        accountCard(),
-                      ]
+        body: _accountProvider.state == AccountState.success
+            ? NestedScrollView(
+                controller: scrollController,
+                physics: const BouncingScrollPhysics(),
+                headerSliverBuilder:
+                    (BuildContext context, bool innerBoxIsScrolled) {
+                  return [
+                    SliverAppBar(
+                      pinned: false,
+                      forceElevated: innerBoxIsScrolled,
+                      expandedHeight: 250.0, // appbar 크기
+                      flexibleSpace: FlexibleSpaceBar(
+                        background: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                monthControl(),
+                                accountCard(),
+                              ]),
+                        ),
+                      ),
+                      elevation: 0,
+                      backgroundColor: Colors.white,
                     ),
-                  ),
-                ),
-                elevation: 0,
-                backgroundColor: Colors.white,
-              ),
-              SliverOverlapAbsorber(
-                handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
-                sliver: SliverPersistentHeader(
-                    pinned: true,
-                    delegate:  AccountBookHeaderDelegate(_tabController)),
-              ),
-            ];
-          },
-          body: paymentTabView()
-        )
-        : failMessageWidget());
+                    SliverOverlapAbsorber(
+                      handle: NestedScrollView.sliverOverlapAbsorberHandleFor(
+                          context),
+                      sliver: SliverPersistentHeader(
+                          pinned: true,
+                          delegate: AccountBookHeaderDelegate(_tabController)),
+                    ),
+                  ];
+                },
+                body: paymentTabView())
+            : failMessageWidget());
   }
 
   Widget paymentTabView() {
     var idx = 1;
     return TabBarView(
-      physics: const BouncingScrollPhysics(),
-      controller: _tabController,
-      children: _accountProvider.days
-          .map((e) => AccountTabScreen(
-            _accountProvider.paymentItems.where((element) => element.date == e,).toList()
-            , key: ValueKey(idx++)))
-          .toList());
+        physics: const BouncingScrollPhysics(),
+        controller: _tabController,
+        children: _accountProvider.days
+            .map((e) => AccountTabScreen(
+                _accountProvider.paymentItems
+                    .where(
+                      (element) => element.date == e,
+                    )
+                    .toList(),
+                key: ValueKey(idx++)))
+            .toList());
   }
 
   Widget monthControl() {
@@ -137,56 +142,65 @@ class _AccountBookS3tate extends State<AccountBook2>
   }
 
   Widget accountCard() {
-    return Container(
-      height: 150,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
-        image: const DecorationImage(
-            image: AssetImage('assets/images/img_main_frame.png'),
-            fit: BoxFit.cover),
-      ),
-      padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            '${_accountProvider.selectedDate.month}월 총 예산',
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 13,
-              fontWeight: FontWeight.w400,
-            ),
-          ),
-          Text('${_accountProvider.account.max}원',
+    return GestureDetector(
+      onTap: () {
+        Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => ChangeNotifierProvider(
+                  create: (context) => AccountProvider(),
+                  child: const HistoryMonth(),
+                )));
+      },
+      child: Container(
+        height: 150,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+          image: const DecorationImage(
+              image: AssetImage('assets/images/img_main_frame.png'),
+              fit: BoxFit.cover),
+        ),
+        padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              '${_accountProvider.selectedDate.month}월 총 예산',
               style: const TextStyle(
-                color: Colors.white,
-                fontSize: 16,
-                fontWeight: FontWeight.w700,
-              )),
-          Container(
-            alignment: Alignment.centerRight,
-            child: const Text(
-              '남은잔액',
-              style: TextStyle(
                 color: Colors.white,
                 fontSize: 13,
                 fontWeight: FontWeight.w400,
               ),
-              textAlign: TextAlign.right,
             ),
-          ),
-          Container(
+            Text('${_accountProvider.account.max}원',
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w700,
+                )),
+            Container(
               alignment: Alignment.centerRight,
-              child: Text(
-                  '${_accountProvider.account.max - _accountProvider.account.all}원',
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 36,
-                    fontWeight: FontWeight.w700,
-                  ),
-                  textAlign: TextAlign.right))
-        ],
+              child: const Text(
+                '남은잔액',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 13,
+                  fontWeight: FontWeight.w400,
+                ),
+                textAlign: TextAlign.right,
+              ),
+            ),
+            Container(
+                alignment: Alignment.centerRight,
+                child: Text(
+                    '${_accountProvider.account.max - _accountProvider.account.all}원',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 36,
+                      fontWeight: FontWeight.w700,
+                    ),
+                    textAlign: TextAlign.right))
+          ],
+        ),
       ),
     );
   }
@@ -252,9 +266,7 @@ class _AccountBookS3tate extends State<AccountBook2>
   }
 }
 
-
 class AccountBookHeaderDelegate extends SliverPersistentHeaderDelegate {
-
   AccountBookHeaderDelegate(TabController tabController) {
     _tabController = tabController;
   }
@@ -262,7 +274,8 @@ class AccountBookHeaderDelegate extends SliverPersistentHeaderDelegate {
   late TabController _tabController;
 
   @override
-  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
+  Widget build(
+      BuildContext context, double shrinkOffset, bool overlapsContent) {
     var accountProvider = Provider.of<AccountProvider>(context);
 
     return Container(
@@ -310,70 +323,68 @@ class AccountBookHeaderDelegate extends SliverPersistentHeaderDelegate {
             isScrollable: true,
             tabs: accountProvider.days
                 .map((element) => Tab(
-                height: 66,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                        decoration: element == accountProvider.selectedDate
-                            ? BoxDecoration(
-                            borderRadius: BorderRadius.circular(7),
-                            color:
-                            const Color.fromRGBO(88, 212, 175, 1))
-                            : BoxDecoration(
-                            borderRadius: BorderRadius.circular(7),
-                            color:
-                            const Color.fromRGBO(255, 255, 255, 1)),
-                        alignment: Alignment.center,
-                        height: 50,
-                        width: 45,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            Text(
-                              dayToWeekday(element.weekday),
-                              style: element ==
-                                  accountProvider.selectedDate
-                                  ? const TextStyle(
-                                  fontSize: 10,
-                                  color: Color.fromRGBO(
-                                      255, 255, 255, 0.7))
-                                  : const TextStyle(
-                                  fontSize: 10,
-                                  color:
-                                  Color.fromRGBO(155, 156, 160, 1)),
-                            ),
-                            Text(
-                              element.day.toString(),
-                              style: element ==
-                                  accountProvider.selectedDate
-                                  ? const TextStyle(
-                                color:
-                                Color.fromRGBO(248, 247, 255, 1),
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                              )
-                                  : const TextStyle(
-                                color: Color.fromARGB(
-                                    0xFF, 0x36, 0x39, 0x42),
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            )
-                          ],
-                        )),
-                    Container(
-                        padding: const EdgeInsets.only(top: 3),
-                        child: Icon(Icons.circle,
-                            size: 8,
-                            color: accountProvider.paymentItems
-                                .where((e) => e.date == element)
-                                .toList()
-                                .isEmpty
-                                ? Colors.transparent
-                                : const Color.fromRGBO(95, 89, 225, 1)))
-                  ],
-                )))
+                    height: 66,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                            decoration: element == accountProvider.selectedDate
+                                ? BoxDecoration(
+                                    borderRadius: BorderRadius.circular(7),
+                                    color:
+                                        const Color.fromRGBO(88, 212, 175, 1))
+                                : BoxDecoration(
+                                    borderRadius: BorderRadius.circular(7),
+                                    color:
+                                        const Color.fromRGBO(255, 255, 255, 1)),
+                            alignment: Alignment.center,
+                            height: 50,
+                            width: 45,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Text(
+                                  dayToWeekday(element.weekday),
+                                  style: element == accountProvider.selectedDate
+                                      ? const TextStyle(
+                                          fontSize: 10,
+                                          color: Color.fromRGBO(
+                                              255, 255, 255, 0.7))
+                                      : const TextStyle(
+                                          fontSize: 10,
+                                          color:
+                                              Color.fromRGBO(155, 156, 160, 1)),
+                                ),
+                                Text(
+                                  element.day.toString(),
+                                  style: element == accountProvider.selectedDate
+                                      ? const TextStyle(
+                                          color:
+                                              Color.fromRGBO(248, 247, 255, 1),
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w600,
+                                        )
+                                      : const TextStyle(
+                                          color: Color.fromARGB(
+                                              0xFF, 0x36, 0x39, 0x42),
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                )
+                              ],
+                            )),
+                        Container(
+                            padding: const EdgeInsets.only(top: 3),
+                            child: Icon(Icons.circle,
+                                size: 8,
+                                color: accountProvider.paymentItems
+                                        .where((e) => e.date == element)
+                                        .toList()
+                                        .isEmpty
+                                    ? Colors.transparent
+                                    : const Color.fromRGBO(95, 89, 225, 1)))
+                      ],
+                    )))
                 .toList(),
             indicator: const BoxDecoration(color: Colors.transparent),
           ),
@@ -458,7 +469,8 @@ class AccountTabScreen extends StatefulWidget {
   State<AccountTabScreen> createState() => _AccountTabScreenState();
 }
 
-class _AccountTabScreenState extends State<AccountTabScreen>  with AutomaticKeepAliveClientMixin {
+class _AccountTabScreenState extends State<AccountTabScreen>
+    with AutomaticKeepAliveClientMixin {
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -473,9 +485,10 @@ class _AccountTabScreenState extends State<AccountTabScreen>  with AutomaticKeep
               controller: ScrollController(),
               slivers: [
                 SliverList(
-                  delegate: SliverChildBuilderDelegate(
-                    (context, index) => paymentItemCard(widget._list[index]),
-                    childCount: widget._list.length))
+                    delegate: SliverChildBuilderDelegate(
+                        (context, index) =>
+                            paymentItemCard(widget._list[index]),
+                        childCount: widget._list.length))
               ],
             ),
           ),
@@ -500,7 +513,7 @@ class _AccountTabScreenState extends State<AccountTabScreen>  with AutomaticKeep
                             color: Color.fromRGBO(95, 89, 225, 1),
                             width: 3.5))),
                 padding:
-                const EdgeInsets.symmetric(vertical: 10, horizontal: 18),
+                    const EdgeInsets.symmetric(vertical: 10, horizontal: 18),
                 child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -540,36 +553,36 @@ class _AccountTabScreenState extends State<AccountTabScreen>  with AutomaticKeep
               topLeft: Radius.circular(20.0), topRight: Radius.circular(20.0))),
       context: context,
       builder: (BuildContext context) => Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        mainAxisSize: MainAxisSize.max,
-        children: [
-          Container(
-              padding:
-              const EdgeInsets.symmetric(vertical: 20, horizontal: 40),
-              alignment: Alignment.topLeft,
-              child: Column(
-                children: [
-                  Text(
-                    '${item.price} 원',
-                    style: const TextStyle(
-                      fontSize: 30,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  Text(
-                    DateFormat('yyyy년 MM월 dd일').format(item.date),
-                    style: const TextStyle(
-                      fontSize: 17,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ],
-              ))
-        ],
-      ));
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              Container(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 20, horizontal: 40),
+                  alignment: Alignment.topLeft,
+                  child: Column(
+                    children: [
+                      Text(
+                        '${item.price} 원',
+                        style: const TextStyle(
+                          fontSize: 30,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Text(
+                        DateFormat('yyyy년 MM월 dd일').format(item.date),
+                        style: const TextStyle(
+                          fontSize: 17,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
+                  ))
+            ],
+          ));
 
   @override
   bool get wantKeepAlive => true;
