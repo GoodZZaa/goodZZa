@@ -40,7 +40,7 @@ class AccountService {
         '$_baseUrl/api/v1/account-book/monthly-payout',
         {'year': year, 'month': month});
     if (result.result == Result.success) {
-      return MonthlyPayoutResponse.fromJson(result.response);
+      return MonthlyPayoutResponse.fromJson(result.response['payouts']);
     } else {
       print(result.response);
       return null;
