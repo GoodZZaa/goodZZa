@@ -51,43 +51,49 @@ class _AccountBookS3tate extends State<AccountBook2>
   Widget build(BuildContext context) {
     _accountProvider = Provider.of<AccountProvider>(context);
 
+    if (_accountProvider.state == AccountState.fail) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('불러오기에 실패했어요!'),
+        ),
+      );
+    }
+
     return Scaffold(
-        body: _accountProvider.state == AccountState.success
-            ? NestedScrollView(
-                controller: scrollController,
-                physics: const BouncingScrollPhysics(),
-                headerSliverBuilder:
-                    (BuildContext context, bool innerBoxIsScrolled) {
-                  return [
-                    SliverAppBar(
-                      pinned: false,
-                      forceElevated: innerBoxIsScrolled,
-                      expandedHeight: 250.0, // appbar 크기
-                      flexibleSpace: FlexibleSpaceBar(
-                        background: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 20),
-                          child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                monthControl(),
-                                accountCard(),
-                              ]),
-                        ),
-                      ),
-                      elevation: 0,
-                      backgroundColor: Colors.white,
+        body: NestedScrollView(
+            controller: scrollController,
+            physics: const BouncingScrollPhysics(),
+            headerSliverBuilder:
+                (BuildContext context, bool innerBoxIsScrolled) {
+              return [
+                SliverAppBar(
+                  pinned: false,
+                  forceElevated: innerBoxIsScrolled,
+                  expandedHeight: 250.0, // appbar 크기
+                  flexibleSpace: FlexibleSpaceBar(
+                    background: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            monthControl(),
+                            accountCard(),
+                          ]),
                     ),
-                    SliverOverlapAbsorber(
-                      handle: NestedScrollView.sliverOverlapAbsorberHandleFor(
-                          context),
-                      sliver: SliverPersistentHeader(
-                          pinned: true,
-                          delegate: AccountBookHeaderDelegate(_tabController)),
-                    ),
-                  ];
-                },
-                body: paymentTabView())
-            : failMessageWidget());
+                  ),
+                  elevation: 0,
+                  backgroundColor: Colors.white,
+                ),
+                SliverOverlapAbsorber(
+                  handle:
+                      NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+                  sliver: SliverPersistentHeader(
+                      pinned: true,
+                      delegate: AccountBookHeaderDelegate(_tabController)),
+                ),
+              ];
+            },
+            body: paymentTabView()));
   }
 
   Widget paymentTabView() {
@@ -171,7 +177,7 @@ class _AccountBookS3tate extends State<AccountBook2>
                 fontWeight: FontWeight.w400,
               ),
             ),
-            Text('${_accountProvider.accountBudget?.totalBalance}원',
+            Text('${_accountProvider.accountBudget?.totalBalance ?? '-'}원',
                 style: const TextStyle(
                   color: Colors.white,
                   fontSize: 16,
@@ -191,14 +197,14 @@ class _AccountBookS3tate extends State<AccountBook2>
             ),
             Container(
                 alignment: Alignment.centerRight,
-                child:
-                    Text('${_accountProvider.accountBudget?.remainingBalance}원',
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 36,
-                          fontWeight: FontWeight.w700,
-                        ),
-                        textAlign: TextAlign.right))
+                child: Text(
+                    '${_accountProvider.accountBudget?.remainingBalance ?? '-'}원',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 36,
+                      fontWeight: FontWeight.w700,
+                    ),
+                    textAlign: TextAlign.right))
           ],
         ),
       ),
@@ -245,25 +251,25 @@ class _AccountBookS3tate extends State<AccountBook2>
     );
   }
 
-  Widget failMessageWidget() {
-    switch (_accountProvider.state) {
-      case AccountState.loading:
-        return const Center(
-          child: CircularProgressIndicator(
-              color: Color.fromARGB(0xFF, 0xFB, 0x95, 0x32)),
-        );
-      case AccountState.fail:
-        return const Center(
-            child:
-                Text("원하는 경로가 없어요!\n다시 검색해주세요", textAlign: TextAlign.center));
+  // Widget failMessageWidget() {
+  //   switch (_accountProvider.state) {
+  //     case AccountState.loading:
+  //       return const Center(
+  //         child: CircularProgressIndicator(
+  //             color: Color.fromARGB(0xFF, 0xFB, 0x95, 0x32)),
+  //       );
+  //     case AccountState.fail:
+  //       return const Center(
+  //           child:
+  //               Text("원하는 경로가 없어요!\n다시 검색해주세요", textAlign: TextAlign.center));
 
-      default:
-        return const Center(
-          child: CircularProgressIndicator(
-              color: Color.fromARGB(0xFF, 0xFB, 0x95, 0x32)),
-        );
-    }
-  }
+  //     default:
+  //       return const Center(
+  //         child: CircularProgressIndicator(
+  //             color: Color.fromARGB(0xFF, 0xFB, 0x95, 0x32)),
+  //       );
+  //   }
+  // }
 }
 
 class AccountBookHeaderDelegate extends SliverPersistentHeaderDelegate {

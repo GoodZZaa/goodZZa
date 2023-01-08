@@ -16,7 +16,7 @@ class AccountProvider extends ChangeNotifier {
   AccountState _state = AccountState.loading;
   AccountState get state => _state;
 
-  late AccountMonthlyBudget? _accountBudget;
+  AccountMonthlyBudget? _accountBudget;
   AccountMonthlyBudget? get accountBudget => _accountBudget;
 
   List<PayoutItem> _payoutItems = <PayoutItem>[];
@@ -50,11 +50,14 @@ class AccountProvider extends ChangeNotifier {
       _state = AccountState.success;
     }
 
-    MonthlyPayoutResponse? response = await _accountService.getMonthlyPayout(
-        _selectedDate.year, _selectedDate.month);
-    if (response != null) {
-      _payoutItems = response.payoutItems;
+    MonthlyPayoutResponse? paymentResponse = await _accountService
+        .getMonthlyPayout(_selectedDate.year, _selectedDate.month);
+    if (paymentResponse != null) {
+      _payoutItems = paymentResponse.payoutItems;
+    } else {
+      _state = AccountState.fail;
     }
+    notifyListeners();
   }
 
   void setDay(int day) {
