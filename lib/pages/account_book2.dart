@@ -26,7 +26,7 @@ class _AccountBookS3tate extends State<AccountBook2>
   void initState() {
     super.initState();
     _accountProvider = Provider.of<AccountProvider>(context, listen: false);
-    _accountProvider.initDate();
+    _accountProvider.init();
     _accountProvider.getData();
 
     _tabController = TabController(
@@ -97,7 +97,7 @@ class _AccountBookS3tate extends State<AccountBook2>
         controller: _tabController,
         children: _accountProvider.days
             .map((e) => AccountTabScreen(
-                _accountProvider.paymentItems
+                _accountProvider.payoutItems
                     .where(
                       (element) => element.date == e,
                     )
@@ -171,7 +171,7 @@ class _AccountBookS3tate extends State<AccountBook2>
                 fontWeight: FontWeight.w400,
               ),
             ),
-            Text('${_accountProvider.account.max}원',
+            Text('${_accountProvider.accountBudget?.totalBalance}원',
                 style: const TextStyle(
                   color: Colors.white,
                   fontSize: 16,
@@ -191,14 +191,14 @@ class _AccountBookS3tate extends State<AccountBook2>
             ),
             Container(
                 alignment: Alignment.centerRight,
-                child: Text(
-                    '${_accountProvider.account.max - _accountProvider.account.all}원',
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 36,
-                      fontWeight: FontWeight.w700,
-                    ),
-                    textAlign: TextAlign.right))
+                child:
+                    Text('${_accountProvider.accountBudget?.remainingBalance}원',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 36,
+                          fontWeight: FontWeight.w700,
+                        ),
+                        textAlign: TextAlign.right))
           ],
         ),
       ),
@@ -377,7 +377,7 @@ class AccountBookHeaderDelegate extends SliverPersistentHeaderDelegate {
                             padding: const EdgeInsets.only(top: 3),
                             child: Icon(Icons.circle,
                                 size: 8,
-                                color: accountProvider.paymentItems
+                                color: accountProvider.payoutItems
                                         .where((e) => e.date == element)
                                         .toList()
                                         .isEmpty
@@ -459,9 +459,9 @@ class AccountBookHeaderDelegate extends SliverPersistentHeaderDelegate {
 }
 
 class AccountTabScreen extends StatefulWidget {
-  late final List<PaymentItem> _list;
+  late final List<PayoutItem> _list;
 
-  AccountTabScreen(List<PaymentItem>? list, {Key? key}) : super(key: key) {
+  AccountTabScreen(List<PayoutItem>? list, {Key? key}) : super(key: key) {
     _list = list!;
   }
 
@@ -497,11 +497,11 @@ class _AccountTabScreenState extends State<AccountTabScreen>
     );
   }
 
-  Widget paymentItemCard(PaymentItem item) {
+  Widget paymentItemCard(PayoutItem item) {
     return Container(
         margin: const EdgeInsets.all(8),
         child: InkWell(
-            onTap: () => paymentBottomSheet(item),
+            // onTap: () => paymentBottomSheet(item),
             child: Container(
                 decoration: const BoxDecoration(
                     color: Colors.white,
@@ -519,7 +519,7 @@ class _AccountTabScreenState extends State<AccountTabScreen>
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        item.productName,
+                        item.products.toString(),
                         style: const TextStyle(
                           fontSize: 12.5,
                           fontWeight: FontWeight.w600,
@@ -537,7 +537,7 @@ class _AccountTabScreenState extends State<AccountTabScreen>
                       ),
                       Container(
                         alignment: Alignment.centerRight,
-                        child: Text('${item.price}원',
+                        child: Text('${item.totalPrice}원',
                             style: const TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.w700,
@@ -547,42 +547,42 @@ class _AccountTabScreenState extends State<AccountTabScreen>
                     ]))));
   }
 
-  void paymentBottomSheet(PaymentItem item) => showModalBottomSheet(
-      shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(20.0), topRight: Radius.circular(20.0))),
-      context: context,
-      builder: (BuildContext context) => Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              Container(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 20, horizontal: 40),
-                  alignment: Alignment.topLeft,
-                  child: Column(
-                    children: [
-                      Text(
-                        '${item.price} 원',
-                        style: const TextStyle(
-                          fontSize: 30,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      Text(
-                        DateFormat('yyyy년 MM월 dd일').format(item.date),
-                        style: const TextStyle(
-                          fontSize: 17,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ],
-                  ))
-            ],
-          ));
+  // void paymentBottomSheet(PayoutItem item) => showModalBottomSheet(
+  //     shape: const RoundedRectangleBorder(
+  //         borderRadius: BorderRadius.only(
+  //             topLeft: Radius.circular(20.0), topRight: Radius.circular(20.0))),
+  //     context: context,
+  //     builder: (BuildContext context) => Column(
+  //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //           mainAxisSize: MainAxisSize.max,
+  //           children: [
+  //             Container(
+  //                 padding:
+  //                     const EdgeInsets.symmetric(vertical: 20, horizontal: 40),
+  //                 alignment: Alignment.topLeft,
+  //                 child: Column(
+  //                   children: [
+  //                     Text(
+  //                       '${item.totalPrice} 원',
+  //                       style: const TextStyle(
+  //                         fontSize: 30,
+  //                         fontWeight: FontWeight.w700,
+  //                       ),
+  //                     ),
+  //                     const SizedBox(
+  //                       height: 10,
+  //                     ),
+  //                     Text(
+  //                       DateFormat('yyyy년 MM월 dd일').format(item.date),
+  //                       style: const TextStyle(
+  //                         fontSize: 17,
+  //                         fontWeight: FontWeight.w500,
+  //                       ),
+  //                     ),
+  //                   ],
+  //                 ))
+  //           ],
+  //         ));
 
   @override
   bool get wantKeepAlive => true;

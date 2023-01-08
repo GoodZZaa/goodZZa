@@ -1,14 +1,20 @@
-import 'package:good_zza_code_in_songdo/models/payments.dart';
-
-class MonthBudgets {
+class AccountMonthlyBudget {
   int years;
   int months;
-  int? budget;
-  List<PaymentItem>? paymentItem;
+  int remainingBalance;
+  int totalBalance;
 
-  MonthBudgets(
+  AccountMonthlyBudget(
       {required this.years,
       required this.months,
-      this.budget,
-      this.paymentItem});
+      required this.remainingBalance,
+      required this.totalBalance});
+
+  factory AccountMonthlyBudget.fromJson(
+          int years, int months, Map<String, dynamic> json) =>
+      AccountMonthlyBudget(
+          years: years,
+          months: months,
+          remainingBalance: json['remainingBalance'],
+          totalBalance: json['totalBalance']);
 }

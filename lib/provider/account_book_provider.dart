@@ -1,16 +1,12 @@
 import 'package:flutter/cupertino.dart';
+import 'package:good_zza_code_in_songdo/models/month_budget.dart';
 import 'package:good_zza_code_in_songdo/models/payments.dart';
-
-class Account {
-  int max;
-  int all;
-
-  Account({required this.all, required this.max});
-}
+import 'package:good_zza_code_in_songdo/service/account_service.dart';
 
 enum AccountState { loading, fail, success }
 
 class AccountProvider extends ChangeNotifier {
+  final AccountService _accountService = AccountService();
   late DateTime _selectedDate;
   DateTime get selectedDate => _selectedDate;
 
@@ -20,154 +16,16 @@ class AccountProvider extends ChangeNotifier {
   AccountState _state = AccountState.loading;
   AccountState get state => _state;
 
-  late Account _account;
-  Account get account => _account;
+  late AccountMonthlyBudget? _accountBudget;
+  AccountMonthlyBudget? get accountBudget => _accountBudget;
 
-  // 임시 더미데이터
-  List<PaymentItem> paymentItems = <PaymentItem>[
-    PaymentItem(
-        amount: 1,
-        price: 1400,
-        productName: '편의점',
-        market: '7eleven',
-        date: DateTime(2022, 12, 15),
-        month: 12,
-        year: 2022),
-    PaymentItem(
-        amount: 1,
-        price: 9900,
-        productName: '넷플릭스',
-        market: '넷플릭스',
-        date: DateTime(2022, 12, 15),
-        month: 12,
-        year: 2022),
-    PaymentItem(
-        amount: 1,
-        price: 10400,
-        productName: '올리브영',
-        market: 'cj',
-        date: DateTime(2022, 1, 15),
-        month: 1,
-        year: 2022),
-    PaymentItem(
-        amount: 1,
-        price: 1400,
-        productName: '편의점',
-        market: '7eleven',
-        date: DateTime(2023, 1, 15),
-        month: 1,
-        year: 2023),
-    PaymentItem(
-        amount: 1,
-        price: 1400,
-        productName: '편의점',
-        market: '7eleven',
-        date: DateTime(2023, 1, 3),
-        month: 1,
-        year: 2023),
-    PaymentItem(
-        amount: 1,
-        price: 7200,
-        productName: '올리브영',
-        market: 'cj',
-        date: DateTime(2023, 1, 3),
-        month: 1,
-        year: 2023),
-    PaymentItem(
-        amount: 1,
-        price: 12000,
-        productName: '마트 장보기',
-        market: '하나로마트',
-        date: DateTime(2023, 1, 3),
-        month: 1,
-        year: 2023),
-    PaymentItem(
-        amount: 1,
-        price: 7200,
-        productName: '올리브영',
-        market: 'cj',
-        date: DateTime(2023, 1, 3),
-        month: 1,
-        year: 2023),
-    PaymentItem(
-        amount: 1,
-        price: 12000,
-        productName: '마트 장보기',
-        market: '하나로마트',
-        date: DateTime(2023, 1, 3),
-        month: 1,
-        year: 2023),
-    PaymentItem(
-        amount: 1,
-        price: 7200,
-        productName: '올리브영',
-        market: 'cj',
-        date: DateTime(2023, 1, 5),
-        month: 1,
-        year: 2023),
+  List<PayoutItem> _payoutItems = <PayoutItem>[];
+  List<PayoutItem> get payoutItems => _payoutItems;
 
-    PaymentItem(
-        amount: 1,
-        price: 1400,
-        productName: '편의점',
-        market: '7eleven',
-        date: DateTime(2023, 1, 7),
-        month: 1,
-        year: 2023),
-    PaymentItem(
-        amount: 1,
-        price: 7200,
-        productName: '올리브영',
-        market: 'cj',
-        date: DateTime(2023, 1, 7),
-        month: 1,
-        year: 2023),
-    PaymentItem(
-        amount: 1,
-        price: 12000,
-        productName: '마트 장보기',
-        market: '하나로마트',
-        date: DateTime(2023, 1, 7),
-        month: 1,
-        year: 2023),
-    PaymentItem(
-        amount: 1,
-        price: 7200,
-        productName: '올리브영',
-        market: 'cj',
-        date: DateTime(2023, 1, 7),
-        month: 1,
-        year: 2023),
-    PaymentItem(
-        amount: 1,
-        price: 12000,
-        productName: '마트 장보기',
-        market: '하나로마트',
-        date: DateTime(2023, 1, 7),
-        month: 1,
-        year: 2023),
-    PaymentItem(
-        amount: 1,
-        price: 7200,
-        productName: '올리브영',
-        market: 'cj',
-        date: DateTime(2023, 1, 7),
-        month: 1,
-        year: 2023),
-
-    PaymentItem(
-        amount: 1,
-        price: 12000,
-        productName: '캠핑 장보기',
-        market: '롯데마트',
-        date: DateTime(2023, 1, 5),
-        month: 1,
-        year: 2023),
-  ];
-
-  void initDate() {
+  void init() {
     final now = DateTime.now();
     _selectedDate = DateTime(now.year, now.month, now.day);
+    getData();
     setDayList(_selectedDate);
   }
 
@@ -184,10 +42,19 @@ class AccountProvider extends ChangeNotifier {
   }
 
   void getData() async {
-    // api 호출 -> 데이터 get
-    //_state = ~
-    _account = Account(all: 2000, max: 10000);
-    _state = AccountState.success;
+    _accountBudget = await _accountService.getAccountForMonth(
+        _selectedDate.year, _selectedDate.month);
+    if (_accountBudget == null) {
+      _state = AccountState.fail;
+    } else {
+      _state = AccountState.success;
+    }
+
+    MonthlyPayoutResponse? response = await _accountService.getMonthlyPayout(
+        _selectedDate.year, _selectedDate.month);
+    if (response != null) {
+      _payoutItems = response.payoutItems;
+    }
   }
 
   void setDay(int day) {
@@ -198,6 +65,7 @@ class AccountProvider extends ChangeNotifier {
   void setMonthNext() {
     // 다음달
     _selectedDate = _selectedDate.add(Duration(days: _days.length));
+    getData();
     setDayList(_selectedDate);
     notifyListeners();
   }
@@ -205,6 +73,7 @@ class AccountProvider extends ChangeNotifier {
   void setMonthBefore() {
     // 이전달
     _selectedDate = _selectedDate.subtract(Duration(days: _days.length));
+    getData();
     setDayList(_selectedDate);
     notifyListeners();
   }

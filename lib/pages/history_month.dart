@@ -15,7 +15,7 @@ class _HistoryMonthState extends State<HistoryMonth> {
   void initState() {
     super.initState();
     _accountProvider = Provider.of<AccountProvider>(context, listen: false);
-    _accountProvider.initDate();
+    _accountProvider.init();
     _accountProvider.getData();
   }
 
@@ -131,14 +131,13 @@ class _HistoryMonthState extends State<HistoryMonth> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              Text('${_accountProvider.account.max}원',
+              Text('${_accountProvider.accountBudget?.totalBalance}원',
                   style: TextStyle(
                       color: Colors.black, fontWeight: FontWeight.bold)),
               Text('20000원',
                   style: TextStyle(
                       color: Colors.black, fontWeight: FontWeight.bold)),
-              Text(
-                  '${_accountProvider.account.max - _accountProvider.account.all}원',
+              Text('${_accountProvider.accountBudget?.remainingBalance}원',
                   style: TextStyle(
                       color: Colors.black, fontWeight: FontWeight.bold)),
             ],
