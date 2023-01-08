@@ -12,6 +12,7 @@ class HomeSearchPage extends StatefulWidget {
 
 class _HomeSearchPage extends State<HomeSearchPage> {
   late SearchProvider _searchProvider;
+  final _textEditingController = TextEditingController();
 
   @override
   void initState() {
@@ -20,7 +21,17 @@ class _HomeSearchPage extends State<HomeSearchPage> {
   }
 
   @override
+  void dispose() {
+    // 텍스트에디팅컨트롤러를 제거하고, 등록된 리스너도 제거된다.
+    _searchProvider.dispose();
+    _textEditingController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    _searchProvider = Provider.of<SearchProvider>(context);
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -44,6 +55,7 @@ class _HomeSearchPage extends State<HomeSearchPage> {
           height: 40,
           child: Center(
             child: TextField(
+              controller: _textEditingController,
               decoration: InputDecoration(
                 border: InputBorder.none,
                 enabledBorder: OutlineInputBorder(
@@ -61,6 +73,14 @@ class _HomeSearchPage extends State<HomeSearchPage> {
                   ),
                 ),
               ),
+              onChanged: (text) {
+                // 현재 텍스트필드의 텍스트를 출력
+                // print("search input: $text");
+              },
+              onSubmitted: (value) async {
+                // _textEditingController.text = value;
+                await _searchProvider.search(_textEditingController.text);
+              },
             ),
           ),
         ),
@@ -79,49 +99,59 @@ class _HomeSearchPage extends State<HomeSearchPage> {
           ),
         ],
       ),
-      // body: Column(
-      //   children: [
-      //     Row(
-      //       mainAxisAlignment: MainAxisAlignment.spaceAround,
-      //       crossAxisAlignment: CrossAxisAlignment.center,
-      //       children: [
-      //         IconButton(
-      //             onPressed: () {
-      //               Navigator.pop(context);
-      //             },
-      //             icon: Icon(
-      //               Icons.arrow_back,
-      //               size: 20,
-      //             )),
-      //         Column(
-      //           children: [
-      //             Row(
-      //               children: [
-      //                 Icon(
-      //                   Icons.location_on,
-      //                   size: 20,
-      //                 ),
-      //                 SizedBox(width: 5),
-      //                 Text(
-      //                   "서울시 종로구 삼성동 1번길",
-      //                   style: TextStyle(fontSize: 16),
-      //                 )
-      //               ],
-      //             ),
-      //             Text(
-      //               "1.5km 이내",
-      //               style: TextStyle(fontSize: 14),
-      //             )
-      //           ],
-      //         ),
-      //         Icon(
-      //           Icons.shopping_cart,
-      //           size: 28,
-      //           color: Color.fromRGBO(200, 200, 203, 1),
-      //         )
-      //       ],
+      // body: ListView.builder(
+      //   itemCount: _searchProvider.products.length,
+      //   scrollDirection: Axis.horizontal,
+      //   shrinkWrap: true,
+      //   itemBuilder: (context, index) => ListTile(
+      //     title: Text(
+      //       _searchProvider.products[index].productName ?? '',
+      //       style: const TextStyle(
+      //         color: Colors.black,
+      //         fontSize: 16,
+      //         fontWeight: FontWeight.w700,
+      //       ),
       //     ),
-      //   ],
+      //   ),
+      // ),
+
+      body: Consumer<SearchProvider>(builder: (context, data, index) {
+        final _products = data.products;
+        return ListView.builder(
+          itemCount: _products.length,
+          scrollDirection: Axis.vertical,
+          shrinkWrap: true,
+          itemBuilder: (context, index) {
+            final product = _products[index];
+            return ListTile(
+              title: Text(
+                product.productName ?? '',
+                style: const TextStyle(
+                  color: Colors.black,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            );
+          },
+        );
+      }),
+
+      // ListView(
+      //   children: _searchProvider.products
+      //       .map(
+      //         (e) => ListTile(
+      //           title: Text(
+      //             e.productName ?? '',
+      //             style: const TextStyle(
+      //               color: Colors.black,
+      //               fontSize: 16,
+      //               fontWeight: FontWeight.w700,
+      //             ),
+      //           ),
+      //         ),
+      //       )
+      //       .toList(),
       // ),
     );
   }
