@@ -13,8 +13,11 @@ class AccountProvider extends ChangeNotifier {
   List<DateTime> get days => _days;
   List<DateTime> _days = <DateTime>[];
 
-  AccountState _state = AccountState.loading;
-  AccountState get state => _state;
+  AccountState _budgetState = AccountState.loading;
+  AccountState get budgetState => _budgetState;
+
+  AccountState _payoutState = AccountState.loading;
+  AccountState get payoutState => _payoutState;
 
   AccountMonthlyBudget? _accountBudget;
   AccountMonthlyBudget? get accountBudget => _accountBudget;
@@ -25,7 +28,8 @@ class AccountProvider extends ChangeNotifier {
   void init() {
     final now = DateTime.now();
     _selectedDate = DateTime(now.year, now.month, now.day);
-    getData();
+    getBudgetData();
+    getPayoutData();
     setDayList(_selectedDate);
   }
 
@@ -41,22 +45,28 @@ class AccountProvider extends ChangeNotifier {
     }
   }
 
-  void getData() async {
-    _accountBudget = await _accountService.getAccountForMonth(
+  void getBudgetData() async {
+    var accountResult = await _accountService.getAccountForMonth(
         _selectedDate.year, _selectedDate.month);
-    if (_accountBudget == null) {
-      _state = AccountState.fail;
-    } else {
-      _state = AccountState.success;
+    _budgetState = accountResult['state'];
+
+    if (_budgetState == AccountState.success) {
+      _accountBudget = accountResult['data'];
     }
 
-    MonthlyPayoutResponse? paymentResponse = await _accountService
-        .getMonthlyPayout(_selectedDate.year, _selectedDate.month);
-    if (paymentResponse != null) {
-      _payoutItems = paymentResponse.payoutItems;
-    } else {
-      _state = AccountState.fail;
+    notifyListeners();
+  }
+
+  void getPayoutData() async {
+    var payoutResult = await _accountService.getMonthlyPayout(
+        _selectedDate.year, _selectedDate.month);
+
+    _payoutState = payoutResult['state'];
+
+    if (_payoutState == AccountState.success) {
+      _payoutItems = payoutResult['state'].payoutItems;
     }
+
     notifyListeners();
   }
 
@@ -68,7 +78,8 @@ class AccountProvider extends ChangeNotifier {
   void setMonthNext() {
     // 다음달
     _selectedDate = _selectedDate.add(Duration(days: _days.length));
-    getData();
+    getBudgetData();
+    getPayoutData();
     setDayList(_selectedDate);
     notifyListeners();
   }
@@ -76,7 +87,8 @@ class AccountProvider extends ChangeNotifier {
   void setMonthBefore() {
     // 이전달
     _selectedDate = _selectedDate.subtract(Duration(days: _days.length));
-    getData();
+    getBudgetData();
+    getPayoutData();
     setDayList(_selectedDate);
     notifyListeners();
   }

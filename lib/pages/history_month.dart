@@ -16,7 +16,6 @@ class _HistoryMonthState extends State<HistoryMonth> {
     super.initState();
     _accountProvider = Provider.of<AccountProvider>(context, listen: false);
     _accountProvider.init();
-    _accountProvider.getData();
   }
 
   @override

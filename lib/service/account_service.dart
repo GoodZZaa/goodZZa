@@ -3,6 +3,7 @@ import 'package:good_zza_code_in_songdo/models/network_result.dart';
 import 'package:good_zza_code_in_songdo/models/payments.dart';
 import 'package:good_zza_code_in_songdo/network/dio_client.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:good_zza_code_in_songdo/provider/account_book_provider.dart';
 
 class AccountService {
   static AccountService? _instance;
@@ -12,16 +13,23 @@ class AccountService {
 
   final String _baseUrl = dotenv.env['apiBaseUrl']!;
 
-  Future<AccountMonthlyBudget?> getAccountForMonth(int year, int month) async {
+  Future<Map<String, dynamic>> getAccountForMonth(int year, int month) async {
     NetWorkResult result = await DioClient().get(
         '$_baseUrl/api/v1/account-book/monthly-balence',
         {'year': year, 'month': month});
 
+    print(result.response);
+
     if (result.result == Result.success) {
-      return AccountMonthlyBudget.fromJson(year, month, result.response);
+      return {
+        'state': AccountState.success,
+        'data': AccountMonthlyBudget.fromJson(year, month, result.response)
+      };
+      ;
     } else {
-      print(result.response);
-      return null;
+      return {
+        'state': AccountState.fail,
+      };
     }
   }
 
@@ -35,15 +43,19 @@ class AccountService {
     }
   }
 
-  Future<MonthlyPayoutResponse?> getMonthlyPayout(int year, int month) async {
+  Future<Map<String, dynamic>> getMonthlyPayout(int year, int month) async {
     NetWorkResult result = await DioClient().get(
         '$_baseUrl/api/v1/account-book/monthly-payout',
         {'year': year, 'month': month});
+
     if (result.result == Result.success) {
-      return MonthlyPayoutResponse.fromJson(result.response['payouts']);
+      return {
+        'state': AccountState.success,
+        'data': MonthlyPayoutResponse.fromJson(result.response['payouts'])
+      };
     } else {
       print(result.response);
-      return null;
+      return {'state': AccountState.fail};
     }
   }
 }

@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:good_zza_code_in_songdo/models/payments.dart';
 import 'package:good_zza_code_in_songdo/utills/day_to_weekday.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../provider/account_book_provider.dart';
@@ -27,7 +25,6 @@ class _AccountBookS3tate extends State<AccountBook2>
     super.initState();
     _accountProvider = Provider.of<AccountProvider>(context, listen: false);
     _accountProvider.init();
-    _accountProvider.getData();
 
     _tabController = TabController(
         length: _accountProvider.days.length,
@@ -51,13 +48,12 @@ class _AccountBookS3tate extends State<AccountBook2>
   Widget build(BuildContext context) {
     _accountProvider = Provider.of<AccountProvider>(context);
 
-    if (_accountProvider.state == AccountState.fail) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('불러오기에 실패했어요!'),
-        ),
-      );
-    }
+    // if (_accountProvider.budgetState == AccountState.fail) {
+    //   _accountProvider.getBudgetData();
+    // }
+    // if (_accountProvider.payoutState == AccountState.fail) {
+    //   _accountProvider.getPayoutData();
+    // }
 
     return Scaffold(
         body: NestedScrollView(
@@ -103,6 +99,7 @@ class _AccountBookS3tate extends State<AccountBook2>
         controller: _tabController,
         children: _accountProvider.days
             .map((e) => AccountTabScreen(
+                _accountProvider.payoutState,
                 _accountProvider.payoutItems
                     .where(
                       (element) => element.date == e,
@@ -165,48 +162,53 @@ class _AccountBookS3tate extends State<AccountBook2>
               fit: BoxFit.cover),
         ),
         padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              '${_accountProvider.selectedDate.month}월 총 예산',
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 13,
-                fontWeight: FontWeight.w400,
-              ),
-            ),
-            Text('${_accountProvider.accountBudget?.totalBalance ?? '-'}원',
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w700,
-                )),
-            Container(
-              alignment: Alignment.centerRight,
-              child: const Text(
-                '남은잔액',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 13,
-                  fontWeight: FontWeight.w400,
-                ),
-                textAlign: TextAlign.right,
-              ),
-            ),
-            Container(
-                alignment: Alignment.centerRight,
-                child: Text(
-                    '${_accountProvider.accountBudget?.remainingBalance ?? '-'}원',
+        child: _accountProvider.budgetState == AccountState.fail
+            ? Center(
+                child: Text('내 예산을 불러오는데 실패했어요'),
+              )
+            : Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    '${_accountProvider.selectedDate.month}월 총 예산',
                     style: const TextStyle(
                       color: Colors.white,
-                      fontSize: 36,
-                      fontWeight: FontWeight.w700,
+                      fontSize: 13,
+                      fontWeight: FontWeight.w400,
                     ),
-                    textAlign: TextAlign.right))
-          ],
-        ),
+                  ),
+                  Text(
+                      '${_accountProvider.accountBudget?.totalBalance ?? '-'}원',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w700,
+                      )),
+                  Container(
+                    alignment: Alignment.centerRight,
+                    child: const Text(
+                      '남은잔액',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 13,
+                        fontWeight: FontWeight.w400,
+                      ),
+                      textAlign: TextAlign.right,
+                    ),
+                  ),
+                  Container(
+                      alignment: Alignment.centerRight,
+                      child: Text(
+                          '${_accountProvider.accountBudget?.remainingBalance ?? '-'}원',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 36,
+                            fontWeight: FontWeight.w700,
+                          ),
+                          textAlign: TextAlign.right))
+                ],
+              ),
       ),
     );
   }
@@ -466,9 +468,12 @@ class AccountBookHeaderDelegate extends SliverPersistentHeaderDelegate {
 
 class AccountTabScreen extends StatefulWidget {
   late final List<PayoutItem> _list;
+  late AccountState _state;
 
-  AccountTabScreen(List<PayoutItem>? list, {Key? key}) : super(key: key) {
+  AccountTabScreen(AccountState state, List<PayoutItem>? list, {Key? key})
+      : super(key: key) {
     _list = list!;
+    _state = state;
   }
 
   @override
@@ -480,27 +485,29 @@ class _AccountTabScreenState extends State<AccountTabScreen>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: Column(
-        children: [
-          const SizedBox(height: 220),
-          Expanded(
-            child: CustomScrollView(
-              physics: const BouncingScrollPhysics(),
-              controller: ScrollController(),
-              slivers: [
-                SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                        (context, index) =>
-                            paymentItemCard(widget._list[index]),
-                        childCount: widget._list.length))
+    return widget._state == AccountState.fail
+        ? const Text('지출내역을 불러오는데 실패했어요')
+        : Container(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Column(
+              children: [
+                const SizedBox(height: 220),
+                Expanded(
+                  child: CustomScrollView(
+                    physics: const BouncingScrollPhysics(),
+                    controller: ScrollController(),
+                    slivers: [
+                      SliverList(
+                          delegate: SliverChildBuilderDelegate(
+                              (context, index) =>
+                                  paymentItemCard(widget._list[index]),
+                              childCount: widget._list.length))
+                    ],
+                  ),
+                ),
               ],
             ),
-          ),
-        ],
-      ),
-    );
+          );
   }
 
   Widget paymentItemCard(PayoutItem item) {
