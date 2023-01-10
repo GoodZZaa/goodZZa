@@ -51,13 +51,13 @@ class _AccountBookS3tate extends State<AccountBook2>
   Widget build(BuildContext context) {
     _accountProvider = Provider.of<AccountProvider>(context);
 
-    if (_accountProvider.state == AccountState.fail) {
+    /* if (_accountProvider.state == AccountState.fail) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('불러오기에 실패했어요!'),
         ),
       );
-    }
+    }*/
 
     return Scaffold(
         body: NestedScrollView(

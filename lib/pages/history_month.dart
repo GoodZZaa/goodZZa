@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../models/payments.dart';
 import '../provider/account_book_provider.dart';
 
 class HistoryMonth extends StatefulWidget {
@@ -55,7 +56,7 @@ class _HistoryMonthState extends State<HistoryMonth> {
         title: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text("월 지출 내역",
+            Text("${_accountProvider.selectedDate.month}월 지출 내역",
                 style: TextStyle(
                     color: Colors.black, fontWeight: FontWeight.bold)),
           ],
@@ -87,15 +88,15 @@ class _HistoryMonthState extends State<HistoryMonth> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
-            '${_accountProvider.selectedDate.month}월 24일 장보기',
+            '${_accountProvider.selectedDate.month}월 ${_accountProvider.selectedDate.day}일 장보기',
             style: const TextStyle(
               color: Colors.black,
               fontSize: 16,
               fontWeight: FontWeight.bold,
             ),
           ),
-          Text('햇반,파,주스 등..외 5개',
-              // 물품 리스트는 어디서? 그리고 개수는?
+          Text(
+              '${_accountProvider.payoutItems.toString()} 등..외 ${_accountProvider.payoutItems.length}개',
               style: const TextStyle(
                 fontSize: 10,
                 color: Colors.grey,
