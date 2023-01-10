@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:good_zza_code_in_songdo/models/month_budget.dart';
 import 'package:provider/provider.dart';
 import '../models/payments.dart';
 import '../provider/account_book_provider.dart';
@@ -61,13 +62,26 @@ class _HistoryMonthState extends State<HistoryMonth> {
           ],
         ));
   }
+
   Widget HistoryList() {
     // 리스트빌더로 HistoryCard 를 만든다.
     // var historyList = _accountProvider.payoutItems;
     var historyList = [
-      PayoutItem(date: "1월1일", products: ["가지", "복숭아"], totalPrice: 1000, market: "우리마켓"),
-      PayoutItem(date: "1월2일", products: ["가지", "복숭아"], totalPrice: 1000, market: "우리마켓2"),
-      PayoutItem(date: "1월3일", products: ["가지", "복숭아"], totalPrice: 1000, market: "우리마켓3"),
+      PayoutItem(
+          date: "1월1일",
+          products: ["가지", "복숭아"],
+          totalPrice: 1000,
+          market: "우리마켓"),
+      PayoutItem(
+          date: "1월2일",
+          products: ["가지", "복숭아"],
+          totalPrice: 1000,
+          market: "우리마켓2"),
+      PayoutItem(
+          date: "1월3일",
+          products: ["가지", "복숭아"],
+          totalPrice: 1000,
+          market: "우리마켓3"),
     ];
 
     return Expanded(
@@ -136,6 +150,28 @@ class _HistoryMonthState extends State<HistoryMonth> {
   }
 
   Widget BudgetList() {
+    var monthBudgetList = [
+      AccountMonthlyBudget(
+          years: 2023, months: 1, remainingBalance: 4200, totalBalance: 5000),
+      AccountMonthlyBudget(
+          years: 2023, months: 1, remainingBalance: 7500, totalBalance: 8000),
+      AccountMonthlyBudget(
+          years: 2023, months: 1, remainingBalance: 9200, totalBalance: 15000),
+    ];
+
+    return Expanded(
+      child: ListView.builder(
+        itemCount: monthBudgetList.length,
+        itemBuilder: (context, index) {
+          return BudgetCard(
+            budgetCard: monthBudgetList[index],
+          );
+        },
+      ),
+    );
+  }
+
+  Widget BudgetCard({required AccountMonthlyBudget budgetCard}) {
     return Expanded(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -152,13 +188,13 @@ class _HistoryMonthState extends State<HistoryMonth> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              Text('${_accountProvider.accountBudget?.totalBalance}원',
+              Text('${budgetCard.totalBalance}원',
                   style: TextStyle(
                       color: Colors.black, fontWeight: FontWeight.bold)),
-              Text('20000원',
+              Text('${budgetCard.totalBalance - budgetCard.remainingBalance}원',
                   style: TextStyle(
                       color: Colors.black, fontWeight: FontWeight.bold)),
-              Text('${_accountProvider.accountBudget?.remainingBalance}원',
+              Text('${budgetCard.remainingBalance}원',
                   style: TextStyle(
                       color: Colors.black, fontWeight: FontWeight.bold)),
             ],
