@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../models/payments.dart';
 import '../provider/account_book_provider.dart';
 
 class HistoryMonth extends StatefulWidget {
@@ -54,24 +55,44 @@ class _HistoryMonthState extends State<HistoryMonth> {
         title: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text("월 지출 내역",
+            Text("${_accountProvider.selectedDate.month}월 지출 내역",
                 style: TextStyle(
                     color: Colors.black, fontWeight: FontWeight.bold)),
           ],
         ));
   }
-
   Widget HistoryList() {
+    // 리스트빌더로 HistoryCard 를 만든다.
+    // var historyList = _accountProvider.payoutItems;
+    var historyList = [
+      PayoutItem(date: "1월1일", products: ["가지", "복숭아"], totalPrice: 1000, market: "우리마켓"),
+      PayoutItem(date: "1월2일", products: ["가지", "복숭아"], totalPrice: 1000, market: "우리마켓2"),
+      PayoutItem(date: "1월3일", products: ["가지", "복숭아"], totalPrice: 1000, market: "우리마켓3"),
+    ];
+
+    return Expanded(
+      child: ListView.builder(
+        itemCount: historyList.length,
+        itemBuilder: (context, index) {
+          return HistoryCard(
+            payoutItem: historyList[index],
+          );
+        },
+      ),
+    );
+  }
+
+  Widget HistoryCard({required PayoutItem payoutItem}) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        _MarketImage(),
-        _CartMonth(),
+        _MarketImage(payoutItem),
+        _CartMonth(payoutItem),
       ],
     );
   }
 
-  Widget _MarketImage() {
+  Widget _MarketImage(PayoutItem payoutItem) {
     return SizedBox(
       width: 100,
       height: 100,
@@ -79,22 +100,23 @@ class _HistoryMonthState extends State<HistoryMonth> {
     );
   }
 
-  Widget _CartMonth() {
+  Widget _CartMonth(PayoutItem payoutItem) {
     return Expanded(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
-            '${_accountProvider.selectedDate.month}월 24일 장보기',
+            '${payoutItem.date} 장보기',
             style: const TextStyle(
               color: Colors.black,
               fontSize: 16,
               fontWeight: FontWeight.bold,
             ),
           ),
-          Text('햇반,파,주스 등..외 5개',
-              // 물품 리스트는 어디서? 그리고 개수는?
+          Text(
+              // 컬렉션
+              '${payoutItem.products.toString()} 등..외 ${payoutItem.products.length}개',
               style: const TextStyle(
                 fontSize: 10,
                 color: Colors.grey,
@@ -102,7 +124,7 @@ class _HistoryMonthState extends State<HistoryMonth> {
               )),
           Container(
               alignment: Alignment.centerRight,
-              child: Text('7500원',
+              child: Text('${payoutItem.totalPrice}원',
                   style: const TextStyle(
                     fontSize: 32,
                     fontWeight: FontWeight.w600,
