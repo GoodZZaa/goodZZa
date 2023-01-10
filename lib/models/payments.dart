@@ -30,4 +30,13 @@ class PayoutItem {
       products: json['products'] as List<String>,
       totalPrice: json['totalPrice'],
       market: json['market']);
+  // factory PayoutItem.fromJson(Map<String, dynamic> jsonMap) {
+  //   List<String> b = json.decode(jsonMap['products']);
+
+  //   return PayoutItem(
+  //       date: jsonMap['date'],
+  //       products: b,
+  //       totalPrice: jsonMap['totalPrice'],
+  //       market: jsonMap['market']);
+  // }
 }
