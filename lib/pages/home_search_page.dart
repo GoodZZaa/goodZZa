@@ -22,16 +22,57 @@ class _HomeSearchPage extends State<HomeSearchPage> {
 
   @override
   void dispose() {
-    // 텍스트에디팅컨트롤러를 제거하고, 등록된 리스너도 제거된다.
     _searchProvider.dispose();
     _textEditingController.dispose();
     super.dispose();
   }
 
+  _renderListView() {
+    _searchProvider = Provider.of<SearchProvider>(context);
+    final products = _searchProvider.products;
+    final loading = _searchProvider.isLoading;
+
+    if (loading && products.length == 0) {
+      return Center(
+        child: CircularProgressIndicator(),
+      );
+    }
+
+    if (!loading && products.length == 0) {
+      // hive data
+      return Center(
+        child: Text('아이템이 없습니다.'),
+      );
+    }
+
+    return ListView.builder(
+      itemCount: products.length + 1,
+      scrollDirection: Axis.vertical,
+      shrinkWrap: true,
+      itemBuilder: (context, index) {
+        if (products.isEmpty) {
+          return Container();
+        }
+        if (index == products.length) {
+          Future.microtask(() => _searchProvider.fetchNext());
+          return const Center(child: CircularProgressIndicator());
+        }
+        return ListTile(
+          title: Text(
+            products[index].productName ?? '',
+            style: const TextStyle(
+              color: Colors.black,
+              fontSize: 16,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    _searchProvider = Provider.of<SearchProvider>(context);
-
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -99,43 +140,10 @@ class _HomeSearchPage extends State<HomeSearchPage> {
           ),
         ],
       ),
-      // body: ListView.builder(
-      //   itemCount: _searchProvider.products.length,
-      //   scrollDirection: Axis.horizontal,
-      //   shrinkWrap: true,
-      //   itemBuilder: (context, index) => ListTile(
-      //     title: Text(
-      //       _searchProvider.products[index].productName ?? '',
-      //       style: const TextStyle(
-      //         color: Colors.black,
-      //         fontSize: 16,
-      //         fontWeight: FontWeight.w700,
-      //       ),
-      //     ),
-      //   ),
-      // ),
-
-      body: Consumer<SearchProvider>(builder: (context, data, index) {
-        final _products = data.products;
-        return ListView.builder(
-          itemCount: _products.length,
-          scrollDirection: Axis.vertical,
-          shrinkWrap: true,
-          itemBuilder: (context, index) {
-            final product = _products[index];
-            return ListTile(
-              title: Text(
-                product.productName ?? '',
-                style: const TextStyle(
-                  color: Colors.black,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-            );
-          },
-        );
-      }),
+      body: _renderListView(),
+      // Consumer<SearchProvider>(builder: (context, data, index) {
+      //   return _renderListView();
+      // }),
 
       // ListView(
       //   children: _searchProvider.products

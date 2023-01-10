@@ -13,16 +13,30 @@ class SearchProvider extends ChangeNotifier {
 
   final int _pageSize = 20;
   int _pageNumber = 0;
+  bool isLoading = false;
   bool _hasNextPage = true;
-  bool _isFirstLoadRunning = false;
-  bool _isLoadMoreRunning = false;
+
+  // bool _isLoadMoreRunning = false;
   String _previousKeyword = "";
   List<MartProduct> _products = [];
 
   List<MartProduct> get products => _products;
 
-  void _firstLoad(String keyword) async {
-    _isFirstLoadRunning = true;
+  _init() {
+    _pageNumber = 0;
+    _hasNextPage = true;
+    isLoading = false;
+    _products.clear();
+  }
+
+  fetchNext() {
+    assert(_pageNumber != null);
+    _pageLoad(_previousKeyword);
+  }
+
+  void _pageLoad(String keyword) async {
+    isLoading = true;
+    notifyListeners();
 
     try {
       Map<String, String> queryParams = {
@@ -44,7 +58,7 @@ class SearchProvider extends ChangeNotifier {
       var martProducts = (json["martProducts"] as List)
           .map((e) => MartProduct.fromJson(e))
           .toList();
-      _products = martProducts;
+      _products = [..._products, ...martProducts];
 
       _pageNumber = json["pageNumber"];
     } catch (e) {
@@ -53,7 +67,7 @@ class SearchProvider extends ChangeNotifier {
       }
       rethrow;
     } finally {
-      _isFirstLoadRunning = false;
+      isLoading = false;
       notifyListeners();
     }
   }
@@ -62,8 +76,9 @@ class SearchProvider extends ChangeNotifier {
     if (_previousKeyword == keyword) {
       return;
     }
+    _init();
 
-    _firstLoad(keyword);
+    _pageLoad(keyword);
     _previousKeyword = keyword;
   }
 }
