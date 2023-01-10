@@ -61,18 +61,38 @@ class _HistoryMonthState extends State<HistoryMonth> {
           ],
         ));
   }
-
   Widget HistoryList() {
+    // 리스트빌더로 HistoryCard 를 만든다.
+    // var historyList = _accountProvider.payoutItems;
+    var historyList = [
+      PayoutItem(date: "1월1일", products: ["가지", "복숭아"], totalPrice: 1000, market: "우리마켓"),
+      PayoutItem(date: "1월2일", products: ["가지", "복숭아"], totalPrice: 1000, market: "우리마켓2"),
+      PayoutItem(date: "1월3일", products: ["가지", "복숭아"], totalPrice: 1000, market: "우리마켓3"),
+    ];
+
+    return Expanded(
+      child: ListView.builder(
+        itemCount: historyList.length,
+        itemBuilder: (context, index) {
+          return HistoryCard(
+            payoutItem: historyList[index],
+          );
+        },
+      ),
+    );
+  }
+
+  Widget HistoryCard({required PayoutItem payoutItem}) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        _MarketImage(),
-        _CartMonth(),
+        _MarketImage(payoutItem),
+        _CartMonth(payoutItem),
       ],
     );
   }
 
-  Widget _MarketImage() {
+  Widget _MarketImage(PayoutItem payoutItem) {
     return SizedBox(
       width: 100,
       height: 100,
@@ -80,14 +100,14 @@ class _HistoryMonthState extends State<HistoryMonth> {
     );
   }
 
-  Widget _CartMonth() {
+  Widget _CartMonth(PayoutItem payoutItem) {
     return Expanded(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
-            '${_accountProvider.selectedDate.month}월 ${_accountProvider.selectedDate.day}일 장보기',
+            '${payoutItem.date} 장보기',
             style: const TextStyle(
               color: Colors.black,
               fontSize: 16,
@@ -96,7 +116,7 @@ class _HistoryMonthState extends State<HistoryMonth> {
           ),
           Text(
               // 컬렉션
-              '${_accountProvider.payoutItems.toString()} 등..외 ${_accountProvider.payoutItems.length}개',
+              '${payoutItem.products.toString()} 등..외 ${payoutItem.products.length}개',
               style: const TextStyle(
                 fontSize: 10,
                 color: Colors.grey,
@@ -104,7 +124,7 @@ class _HistoryMonthState extends State<HistoryMonth> {
               )),
           Container(
               alignment: Alignment.centerRight,
-              child: Text('7500원',
+              child: Text('${payoutItem.totalPrice}원',
                   style: const TextStyle(
                     fontSize: 32,
                     fontWeight: FontWeight.w600,
