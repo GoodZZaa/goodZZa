@@ -95,6 +95,7 @@ class _HistoryMonthState extends State<HistoryMonth> {
             ),
           ),
           Text(
+              // 컬렉션
               '${_accountProvider.payoutItems.toString()} 등..외 ${_accountProvider.payoutItems.length}개',
               style: const TextStyle(
                 fontSize: 10,
