@@ -3,6 +3,7 @@ import 'package:good_zza_code_in_songdo/models/month_budget.dart';
 import 'package:provider/provider.dart';
 import '../models/payments.dart';
 import '../provider/account_book_provider.dart';
+import 'history_daily.dart';
 
 class HistoryMonth extends StatefulWidget {
   const HistoryMonth({Key? key}) : super(key: key);
@@ -101,7 +102,7 @@ class _HistoryMonthState extends State<HistoryMonth> {
 
   Widget HistoryCard({required PayoutItem payoutItem}) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
+      //mainAxisAlignment: MainAxisAlignment.center,
       children: [
         _MarketImage(payoutItem),
         _CartMonth(payoutItem),
@@ -113,41 +114,50 @@ class _HistoryMonthState extends State<HistoryMonth> {
     return SizedBox(
       width: 100,
       height: 100,
-      child: Image.asset("assets/images/good_zza.png"),
+      child: Image.asset("assets/images/hanaro_mart.jpeg"),
     );
   }
 
   Widget _CartMonth(PayoutItem payoutItem) {
-    return Expanded(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            '${payoutItem.date} 장보기',
-            style: const TextStyle(
-              color: Colors.black,
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          Text(
-              // 컬렉션
-              '${payoutItem.products.toString()} 등..외 ${payoutItem.products.length}개',
+    return GestureDetector(
+      onTap: () {
+        Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => ChangeNotifierProvider(
+                  create: (context) => AccountProvider(),
+                  child: const HistoryDaily(),
+                )));
+      },
+      child: Expanded(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              '${payoutItem.date} 장보기',
               style: const TextStyle(
-                fontSize: 10,
-                color: Colors.grey,
-                fontWeight: FontWeight.w700,
-              )),
-          Container(
-              alignment: Alignment.centerRight,
-              child: Text('${payoutItem.totalPrice}원',
-                  style: const TextStyle(
-                    fontSize: 32,
-                    fontWeight: FontWeight.w600,
-                  ),
-                  textAlign: TextAlign.right)),
-        ],
+                color: Colors.black,
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            Text(
+                // 컬렉션
+                '${payoutItem.products.toString()} 등..외 ${payoutItem.products.length}개',
+                style: const TextStyle(
+                  fontSize: 10,
+                  color: Colors.grey,
+                  fontWeight: FontWeight.w700,
+                )),
+            Container(
+                alignment: Alignment.centerRight,
+                child: Text('${payoutItem.totalPrice}원',
+                    style: const TextStyle(
+                      fontSize: 32,
+                      fontWeight: FontWeight.w600,
+                    ),
+                    textAlign: TextAlign.right)),
+          ],
+        ),
       ),
     );
   }
