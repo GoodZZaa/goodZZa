@@ -15,7 +15,7 @@ class AccountService {
 
   Future<Map<String, dynamic>> getAccountForMonth(int year, int month) async {
     NetWorkResult result = await DioClient().get(
-        '$_baseUrl/api/v1/account-book/monthly-balence',
+        '$_baseUrl/api/v1/account-book/monthly-balance',
         {'year': year, 'month': month});
 
     print(result.response);
