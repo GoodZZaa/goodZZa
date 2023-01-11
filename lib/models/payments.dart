@@ -1,12 +1,12 @@
 import 'dart:convert';
 
+import 'package:intl/intl.dart';
+
 class MonthlyPayoutResponse {
   final List<PayoutItem> payoutItems;
   MonthlyPayoutResponse({required this.payoutItems});
 
-  factory MonthlyPayoutResponse.fromJson(String jsonString) {
-    List<dynamic> listFromJson = json.decode(jsonString);
-
+  factory MonthlyPayoutResponse.fromJson(List<dynamic> listFromJson) {
     List<PayoutItem> items =
         listFromJson.map((e) => PayoutItem.fromJson(e)).toList();
     return MonthlyPayoutResponse(payoutItems: items);
@@ -14,8 +14,8 @@ class MonthlyPayoutResponse {
 }
 
 class PayoutItem {
-  String date;
-  List<String> products;
+  DateTime date;
+  List<dynamic> products;
   int totalPrice;
   String market;
 
@@ -25,11 +25,19 @@ class PayoutItem {
       required this.totalPrice,
       required this.market});
 
-  factory PayoutItem.fromJson(Map<String, dynamic> json) => PayoutItem(
-      date: json['date'],
-      products: json['products'] as List<String>,
-      totalPrice: json['totalPrice'],
-      market: json['market']);
+  factory PayoutItem.fromJson(Map<String, dynamic> json) {
+    List<String> products = (json['products'] as List<dynamic>)
+        .map(
+          (e) => e.toString(),
+        )
+        .toList();
+
+    return PayoutItem(
+        date: DateFormat('yyyy-MM-dd').parse(json['date']),
+        products: products,
+        totalPrice: json['totalPrice'],
+        market: ' json[]');
+  }
   // factory PayoutItem.fromJson(Map<String, dynamic> jsonMap) {
   //   List<String> b = json.decode(jsonMap['products']);
 

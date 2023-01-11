@@ -163,7 +163,7 @@ class _AccountBookS3tate extends State<AccountBook2>
         ),
         padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 16),
         child: _accountProvider.budgetState == AccountState.fail
-            ? Center(
+            ? const Center(
                 child: Text('내 예산을 불러오는데 실패했어요'),
               )
             : Column(
