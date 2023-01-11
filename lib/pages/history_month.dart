@@ -153,10 +153,6 @@ class _HistoryMonthState extends State<HistoryMonth> {
     var monthBudgetList = [
       AccountMonthlyBudget(
           years: 2023, months: 1, remainingBalance: 4200, totalBalance: 5000),
-      AccountMonthlyBudget(
-          years: 2023, months: 1, remainingBalance: 7500, totalBalance: 8000),
-      AccountMonthlyBudget(
-          years: 2023, months: 1, remainingBalance: 9200, totalBalance: 15000),
     ];
 
     return Expanded(
