@@ -50,7 +50,10 @@ class _HistoryMonthState extends State<HistoryMonth> {
   AppBar HistoryTitle() {
     return AppBar(
         centerTitle: true,
-        leading: Icon(Icons.arrow_back_ios_sharp, color: Colors.lightBlue),
+        leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            color: Colors.lightBlue,
+            onPressed: () => Navigator.pop(context)),
         backgroundColor: Colors.white,
         elevation: 0.0,
         title: Row(
