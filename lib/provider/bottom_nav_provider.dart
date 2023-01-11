@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class BottomNavigationProvider extends ChangeNotifier {
-  int _currentPage = 2;
+  int _currentPage = 3;
   int get currentPage => _currentPage;
 
   // page 업데이트
