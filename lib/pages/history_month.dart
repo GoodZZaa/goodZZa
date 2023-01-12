@@ -102,7 +102,7 @@ class _HistoryMonthState extends State<HistoryMonth> {
 
   Widget HistoryCard({required PayoutItem payoutItem}) {
     return Row(
-      //mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         _MarketImage(payoutItem),
         _CartMonth(payoutItem),
@@ -119,15 +119,15 @@ class _HistoryMonthState extends State<HistoryMonth> {
   }
 
   Widget _CartMonth(PayoutItem payoutItem) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) => ChangeNotifierProvider(
-                  create: (context) => AccountProvider(),
-                  child: const HistoryDaily(),
-                )));
-      },
-      child: Expanded(
+    return Expanded(
+      child: GestureDetector(
+        onTap: () {
+          Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => ChangeNotifierProvider(
+                    create: (context) => AccountProvider(),
+                    child: const HistoryDaily(),
+                  )));
+        },
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,

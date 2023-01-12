@@ -141,7 +141,7 @@ class _HistoryDailyState extends State<HistoryDaily> {
               )),
           Container(
               alignment: Alignment.centerRight,
-              child: Text('${payoutItem.totalPrice}원',
+              child: Text('${payoutItem.totalPrice}dnj원',
                   style: const TextStyle(
                     fontSize: 32,
                     fontWeight: FontWeight.w600,
