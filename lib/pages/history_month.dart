@@ -72,17 +72,17 @@ class _HistoryMonthState extends State<HistoryMonth> {
     // var historyList = _accountProvider.payoutItems;
     var historyList = [
       PayoutItem(
-          date: "1월1일",
+          date: DateTime(2022, 1, 3),
           products: ["가지", "복숭아"],
           totalPrice: 1000,
           market: "우리마켓"),
       PayoutItem(
-          date: "1월2일",
+          date: DateTime(2022, 1, 3),
           products: ["가지", "복숭아"],
           totalPrice: 1000,
           market: "우리마켓2"),
       PayoutItem(
-          date: "1월3일",
+          date: DateTime(2022, 1, 3),
           products: ["가지", "복숭아"],
           totalPrice: 1000,
           market: "우리마켓3"),

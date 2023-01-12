@@ -64,7 +64,7 @@ class AccountProvider extends ChangeNotifier {
     _payoutState = payoutResult['state'];
 
     if (_payoutState == AccountState.success) {
-      _payoutItems = payoutResult['state'].payoutItems;
+      _payoutItems = payoutResult['data'].payoutItems;
     }
 
     notifyListeners();
