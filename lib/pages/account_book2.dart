@@ -54,41 +54,53 @@ class _AccountBookS3tate extends State<AccountBook2>
     //   _accountProvider.getPayoutData();
     // }
 
-    return Scaffold(
-        body: NestedScrollView(
-            controller: scrollController,
-            physics: const BouncingScrollPhysics(),
-            headerSliverBuilder:
-                (BuildContext context, bool innerBoxIsScrolled) {
-              return [
-                SliverAppBar(
-                  pinned: false,
-                  forceElevated: innerBoxIsScrolled,
-                  expandedHeight: 250.0, // appbar 크기
-                  flexibleSpace: FlexibleSpaceBar(
-                    background: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            monthControl(),
-                            accountCard(),
-                          ]),
+    if (_accountProvider.budgetState == AccountState.success &&
+        _accountProvider.budgetState == AccountState.success) {
+      return Scaffold(
+          body: NestedScrollView(
+              controller: scrollController,
+              physics: const BouncingScrollPhysics(),
+              headerSliverBuilder:
+                  (BuildContext context, bool innerBoxIsScrolled) {
+                return [
+                  SliverAppBar(
+                    pinned: false,
+                    forceElevated: innerBoxIsScrolled,
+                    expandedHeight: 250.0, // appbar 크기
+                    flexibleSpace: FlexibleSpaceBar(
+                      background: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              monthControl(),
+                              accountCard(),
+                            ]),
+                      ),
                     ),
+                    elevation: 0,
+                    backgroundColor: Colors.white,
                   ),
-                  elevation: 0,
-                  backgroundColor: Colors.white,
-                ),
-                SliverOverlapAbsorber(
-                  handle:
-                      NestedScrollView.sliverOverlapAbsorberHandleFor(context),
-                  sliver: SliverPersistentHeader(
-                      pinned: true,
-                      delegate: AccountBookHeaderDelegate(_tabController)),
-                ),
-              ];
-            },
-            body: paymentTabView()));
+                  SliverOverlapAbsorber(
+                    handle: NestedScrollView.sliverOverlapAbsorberHandleFor(
+                        context),
+                    sliver: SliverPersistentHeader(
+                        pinned: true,
+                        delegate: AccountBookHeaderDelegate(_tabController)),
+                  ),
+                ];
+              },
+              body: paymentTabView()));
+    } else if (_accountProvider.budgetState == AccountState.loading &&
+        _accountProvider.budgetState == AccountState.loading) {
+      return const Center(
+        child: Text('데이터 로딩중'),
+      );
+    } else {
+      return const Center(
+        child: Text('데이터를 불러오는데에 실패하였습니다'),
+      );
+    }
   }
 
   Widget paymentTabView() {
