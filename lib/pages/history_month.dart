@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:good_zza_code_in_songdo/models/month_budget.dart';
 import 'package:provider/provider.dart';
 import '../models/payments.dart';
 import '../provider/account_book_provider.dart';
@@ -13,17 +12,19 @@ class HistoryMonth extends StatefulWidget {
 }
 
 class _HistoryMonthState extends State<HistoryMonth> {
-  late AccountProvider _accountProvider;
+  late AccountProvider _accountProvider; //account provider 객체 생성
 
+  @override //이거 있고 없고 실행시 무슨 차이?
   void initState() {
     super.initState();
     _accountProvider = Provider.of<AccountProvider>(context, listen: false);
-    _accountProvider.init();
+    //객체 초기화(초기화란? 만든 저장소를 사용할 수 있게 초기값을 넣어주는 것)
+    _accountProvider.init(); // 서버에 저장된 값을 불러와주는 메서드를 시작시마다 불러오도록
   }
 
   @override
   Widget build(BuildContext context) {
-    _accountProvider = Provider.of<AccountProvider>(context);
+    _accountProvider = Provider.of<AccountProvider>(context); // 왜 한번 더 쓰지..?
 
     return Scaffold(
       appBar: HistoryTitle(),
@@ -40,7 +41,7 @@ class _HistoryMonthState extends State<HistoryMonth> {
               color: const Color.fromRGBO(218, 218, 218, 1),
             ),
             SizedBox(height: 20),
-            BudgetList(),
+            BudgetCard()
             //Budgets(),
           ],
         ),
@@ -70,7 +71,8 @@ class _HistoryMonthState extends State<HistoryMonth> {
   Widget HistoryList() {
     // 리스트빌더로 HistoryCard 를 만든다.
     // var historyList = _accountProvider.payoutItems;
-    var historyList = [
+
+    /*var historyList = [
       PayoutItem(
           date: DateTime(2022, 1, 3),
           products: ["가지", "복숭아"],
@@ -86,14 +88,14 @@ class _HistoryMonthState extends State<HistoryMonth> {
           products: ["가지", "복숭아"],
           totalPrice: 1000,
           market: "우리마켓3"),
-    ];
+    ];*/
 
     return Expanded(
       child: ListView.builder(
-        itemCount: historyList.length,
+        itemCount: _accountProvider.payoutItems.length,
         itemBuilder: (context, index) {
           return HistoryCard(
-            payoutItem: historyList[index],
+            payoutItem: _accountProvider.payoutItems[index],
           );
         },
       ),
@@ -101,16 +103,17 @@ class _HistoryMonthState extends State<HistoryMonth> {
   }
 
   Widget HistoryCard({required PayoutItem payoutItem}) {
+    // 왜 required 필요?
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        _MarketImage(payoutItem),
-        _CartMonth(payoutItem),
+        MarketImage(payoutItem),
+        CartMonth(payoutItem),
       ],
     );
   }
 
-  Widget _MarketImage(PayoutItem payoutItem) {
+  Widget MarketImage(PayoutItem payoutItem) {
     return SizedBox(
       width: 100,
       height: 100,
@@ -118,7 +121,7 @@ class _HistoryMonthState extends State<HistoryMonth> {
     );
   }
 
-  Widget _CartMonth(PayoutItem payoutItem) {
+  Widget CartMonth(PayoutItem payoutItem) {
     return Expanded(
       child: GestureDetector(
         onTap: () {
@@ -133,7 +136,7 @@ class _HistoryMonthState extends State<HistoryMonth> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              '${payoutItem.date} 장보기',
+              '${payoutItem.date.month}월 ${payoutItem.date.day}일 장보기',
               style: const TextStyle(
                 color: Colors.black,
                 fontSize: 16,
@@ -141,7 +144,6 @@ class _HistoryMonthState extends State<HistoryMonth> {
               ),
             ),
             Text(
-                // 컬렉션
                 '${payoutItem.products.toString()} 등..외 ${payoutItem.products.length}개',
                 style: const TextStyle(
                   fontSize: 10,
@@ -162,25 +164,7 @@ class _HistoryMonthState extends State<HistoryMonth> {
     );
   }
 
-  Widget BudgetList() {
-    var monthBudgetList = [
-      AccountMonthlyBudget(
-          years: 2023, months: 1, remainingBalance: 4200, totalBalance: 5000),
-    ];
-
-    return Expanded(
-      child: ListView.builder(
-        itemCount: monthBudgetList.length,
-        itemBuilder: (context, index) {
-          return BudgetCard(
-            budgetCard: monthBudgetList[index],
-          );
-        },
-      ),
-    );
-  }
-
-  Widget BudgetCard({required AccountMonthlyBudget budgetCard}) {
+  Widget BudgetCard() {
     return Expanded(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -197,13 +181,14 @@ class _HistoryMonthState extends State<HistoryMonth> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              Text('${budgetCard.totalBalance}원',
+              Text('${_accountProvider.accountBudget?.totalBalance}원',
                   style: TextStyle(
                       color: Colors.black, fontWeight: FontWeight.bold)),
-              Text('${budgetCard.totalBalance - budgetCard.remainingBalance}원',
+              Text(
+                  '${_accountProvider.accountBudget!.totalBalance - _accountProvider.accountBudget!.remainingBalance}원',
                   style: TextStyle(
                       color: Colors.black, fontWeight: FontWeight.bold)),
-              Text('${budgetCard.remainingBalance}원',
+              Text('${_accountProvider.accountBudget?.remainingBalance}원',
                   style: TextStyle(
                       color: Colors.black, fontWeight: FontWeight.bold)),
             ],
