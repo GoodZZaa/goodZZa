@@ -1,5 +1,6 @@
 class MartProduct {
   int? martProductId;
+  String? martName;
   String? productName;
   String? imageUrl;
   int? price;
@@ -11,6 +12,7 @@ class MartProduct {
 
   MartProduct({
     required this.martProductId,
+    required this.martName,
     required this.productName,
     required this.imageUrl,
     required this.price,
@@ -23,6 +25,7 @@ class MartProduct {
 
   MartProduct.fromJson(Map<String, dynamic> json) {
     martProductId = json['martProductId'];
+    martName = json['martName'];
     productName = json['productName'];
     imageUrl = json['imageUrl'];
     price = json['price'];
