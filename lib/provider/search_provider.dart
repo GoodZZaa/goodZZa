@@ -30,7 +30,6 @@ class SearchProvider extends ChangeNotifier {
   }
 
   fetchNext() {
-    assert(_pageNumber != null);
     _pageLoad(_previousKeyword);
   }
 
