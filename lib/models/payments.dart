@@ -36,7 +36,7 @@ class PayoutItem {
         date: DateFormat('yyyy-MM-dd').parse(json['date']),
         products: products,
         totalPrice: json['totalPrice'],
-        market: ' json[]');
+        market: json['martName']);
   }
   // factory PayoutItem.fromJson(Map<String, dynamic> jsonMap) {
   //   List<String> b = json.decode(jsonMap['products']);
