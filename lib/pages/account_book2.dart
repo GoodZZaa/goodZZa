@@ -550,7 +550,10 @@ class _AccountTabScreenState extends State<AccountTabScreen>
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        item.products.toString(),
+                        item.products
+                            .toString()
+                            .replaceAll('[', '')
+                            .replaceAll(']', ''),
                         style: const TextStyle(
                           fontSize: 12.5,
                           fontWeight: FontWeight.w600,

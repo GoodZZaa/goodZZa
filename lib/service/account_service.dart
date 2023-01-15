@@ -49,6 +49,7 @@ class AccountService {
         {'year': year, 'month': month});
 
     if (result.result == Result.success) {
+      print(result.response);
       return {
         'state': AccountState.success,
         'data': MonthlyPayoutResponse.fromJson(result.response['payouts'])
@@ -56,6 +57,31 @@ class AccountService {
     } else {
       print(result.response);
       return {'state': AccountState.fail};
+    }
+  }
+
+  Future<void> postPayout(int year, int month, List<String> products, int price,
+      String marketName) async {
+    NetWorkResult result =
+        await DioClient().post('$_baseUrl/api/v1/account-book/monthly-payout', {
+      'year': year,
+      'month': month,
+      'products': products,
+      'price': price,
+      'marketName': marketName
+    });
+
+    if (result.result == Result.success) {
+      // return result.response;
+    }
+  }
+
+  Future<void> postReceiptImg(int year, int month, int day, String img) async {
+    NetWorkResult result = await DioClient()
+        .post('$_baseUrl/api/v1/account-book/receipt-image', {'img': img});
+
+    if (result.result == Result.success) {
+      // return result.response;
     }
   }
 }
