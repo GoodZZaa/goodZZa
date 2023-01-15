@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:good_zza_code_in_songdo/models/payments.dart';
+import 'package:good_zza_code_in_songdo/pages/set_monthbudget.dart';
 import 'package:good_zza_code_in_songdo/utills/day_to_weekday.dart';
 import 'package:provider/provider.dart';
 import '../provider/account_book_provider.dart';
@@ -158,11 +159,17 @@ class _AccountBookS3tate extends State<AccountBook2>
   Widget accountCard() {
     return GestureDetector(
       onTap: () {
-        Navigator.of(context).push(MaterialPageRoute(
+        /* Navigator.of(context).push(MaterialPageRoute(
             builder: (context) => ChangeNotifierProvider(
                   create: (context) => AccountProvider(),
                   child: HistoryMonth(),
-                )));
+                )));*/
+
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (BuildContext context) => SetMonthBudget(),
+          ),
+        );
       },
       child: Container(
         height: 150,

@@ -14,6 +14,7 @@ class HistoryDaily extends StatefulWidget {
 class _HistoryDailyState extends State<HistoryDaily> {
   late AccountProvider _accountProvider;
 
+  @override
   void initState() {
     super.initState();
     _accountProvider = Provider.of<AccountProvider>(context, listen: false);
@@ -59,7 +60,8 @@ class _HistoryDailyState extends State<HistoryDaily> {
         title: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text("${_accountProvider.selectedDate.month}월 지출 내역",
+            Text(
+                "${_accountProvider.selectedDate.month}월 ${_accountProvider.selectedDate.day}지출 내역",
                 style: TextStyle(
                     color: Colors.black, fontWeight: FontWeight.bold)),
           ],
