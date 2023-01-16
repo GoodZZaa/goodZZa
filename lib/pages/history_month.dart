@@ -123,7 +123,9 @@ class _HistoryMonthState extends State<HistoryMonth> {
               ),
             ),
             Text(
-                '${payoutItem.products.toString()} 등..외 ${payoutItem.products.length}개',
+                '${payoutItem.products.sublist(0, 2)} 등..외 ${payoutItem.products.length}개',
+                //sublist하면 [] 왜 생기지?
+                //문제는 2개 이상이 없으면 에러 뜬다..
                 style: const TextStyle(
                   fontSize: 10,
                   color: Colors.grey,
