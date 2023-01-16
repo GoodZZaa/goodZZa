@@ -9,6 +9,21 @@ class SetMonthBudget extends StatefulWidget {
 }
 
 class _SetMonthBudgetState extends State<SetMonthBudget> {
+  final List<String> buttons = [
+    '9',
+    '8',
+    '7',
+    '6',
+    '5',
+    '4',
+    '3',
+    '2',
+    '1',
+    '00',
+    '0',
+    'Del'
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,8 +55,50 @@ class _SetMonthBudgetState extends State<SetMonthBudget> {
           Container(
             child: Text("이번달 하루 생활비 100000원"),
           ),
-          Container()
+          Container(
+            child: Expanded(
+              flex: 2,
+              child: Container(
+                child: GridView.builder(
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 3),
+                    itemBuilder: (BuildContext context, int index) {
+                      return MyButton(
+                        buttonText: buttons[index],
+                        color: Colors.teal,
+                        textColor: Colors.white,
+                      );
+                    }),
+              ),
+            ),
+          )
         ],
+      ),
+    );
+  }
+}
+
+class MyButton extends StatelessWidget {
+  final color;
+  final textColor;
+  final String buttonText;
+
+  MyButton({this.color, this.textColor, required this.buttonText});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(20),
+        child: Container(
+          color: color,
+          child: Center(
+              child: Text(
+            buttonText,
+            style: TextStyle(color: textColor),
+          )),
+        ),
       ),
     );
   }
