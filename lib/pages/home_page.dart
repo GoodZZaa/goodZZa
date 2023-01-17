@@ -8,7 +8,6 @@ import 'package:provider/provider.dart';
 import '../provider/account_book_provider.dart';
 import 'history_month.dart';
 
-
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -16,8 +15,7 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePage();
 }
 
-class _HomePage extends State<HomePage>
-    with TickerProviderStateMixin {
+class _HomePage extends State<HomePage> with TickerProviderStateMixin {
   late AccountProvider _accountProvider;
   late TabController _tabController;
 
@@ -29,13 +27,10 @@ class _HomePage extends State<HomePage>
     _accountProvider = Provider.of<AccountProvider>(context, listen: false);
     _accountProvider.init();
 
-
     _tabController = TabController(
         length: _accountProvider.days.length,
         vsync: this,
-        initialIndex: DateTime
-            .now()
-            .day - 1);
+        initialIndex: DateTime.now().day - 1);
 
     _tabController.addListener(() {
       setState(() {
@@ -53,8 +48,6 @@ class _HomePage extends State<HomePage>
   @override
   Widget build(BuildContext context) {
     _accountProvider = Provider.of<AccountProvider>(context);
-
-
 
     return Scaffold(
       body: SingleChildScrollView(
@@ -96,15 +89,14 @@ class _HomePage extends State<HomePage>
                   child: IconButton(
                     icon: Row(
                         mainAxisAlignment: MainAxisAlignment.end,
-                        crossAxisAlignment: CrossAxisAlignment.end
-                        ,
-                        children: [ Icon(
-                          Icons.shopping_cart,
-                          size: 28,
-                          color: Color.fromRGBO(200, 200, 203, 1),
-                        ),
-                        ]
-                    ),
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Icon(
+                            Icons.shopping_cart,
+                            size: 28,
+                            color: Color.fromRGBO(200, 200, 203, 1),
+                          ),
+                        ]),
                     onPressed: () {},
                   ),
                 ),
@@ -121,8 +113,7 @@ class _HomePage extends State<HomePage>
                       child: OutlinedButton.icon(
                         onPressed: () {
                           Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) =>
-                                  ChangeNotifierProvider(
+                              builder: (context) => ChangeNotifierProvider(
                                     create: (context) => SearchProvider(),
                                     child: const HomeSearchPage(),
                                   )));
@@ -133,7 +124,7 @@ class _HomePage extends State<HomePage>
                         ),
                         label: Text(
                           "물건을 검색해보세요.                                                             "
-                              "                                                      ",
+                          "                                                      ",
                           style: TextStyle(
                               color: Color.fromRGBO(200, 200, 203, 1)),
                         ),
@@ -145,10 +136,7 @@ class _HomePage extends State<HomePage>
               width: 5,
               height: 10,
             ),
-            Container(
-              width: 390,
-                height: 144,
-                child: SaleCard()),
+            Container(width: 390, height: 144, child: SaleCard()),
             SizedBox(
               height: 10,
             ),
@@ -265,12 +253,23 @@ class _HomePage extends State<HomePage>
       children: [
         Expanded(
           child: GestureDetector(
-            onTap: (){
+            onTap: () {
               Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => MultiProvider(
+                        providers: [
+                          ChangeNotifierProvider(
+                              create: (context) => AccountProvider()),
+                          ChangeNotifierProvider(
+                              create: (context) => SearchProvider()),
+                        ],
+                        child: const HistoryMonth(),
+                      )));
+
+              /*Navigator.of(context).push(MaterialPageRoute(
                   builder: (context) => ChangeNotifierProvider(
                     create: (context) => AccountProvider(),
                     child: const HistoryMonth(),
-                  )));
+                  )));*/
             },
             child: Expanded(
               child: Container(
@@ -278,9 +277,11 @@ class _HomePage extends State<HomePage>
                   borderRadius: BorderRadius.circular(12),
                   image: const DecorationImage(
                     image: AssetImage('assets/images/img_main_frame.png'),
-                    fit: BoxFit.cover,),
+                    fit: BoxFit.cover,
+                  ),
                 ),
-                padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 16),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 18, horizontal: 16),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -293,7 +294,8 @@ class _HomePage extends State<HomePage>
                         fontWeight: FontWeight.w400,
                       ),
                     ),
-                    Text('${_accountProvider.accountBudget?.totalBalance ?? '-'}원',
+                    Text(
+                        '${_accountProvider.accountBudget?.totalBalance ?? '-'}원',
                         style: const TextStyle(
                           color: Colors.white,
                           fontSize: 16,
@@ -327,7 +329,6 @@ class _HomePage extends State<HomePage>
                 //child: Image.asset('assets/images/img_main_frame.png')),
 
                 height: 144,
-
               ),
             ),
           ),
@@ -346,7 +347,8 @@ class _HomePage extends State<HomePage>
           decoration: const BoxDecoration(
               image: const DecorationImage(
                 image: AssetImage('assets/images/daon_sikjajae_mart.jpeg'),
-                fit: BoxFit.cover,),
+                fit: BoxFit.cover,
+              ),
               color: Color.fromRGBO(217, 217, 217, 1),
               borderRadius: BorderRadius.all(Radius.circular(8))),
         ),
@@ -356,7 +358,8 @@ class _HomePage extends State<HomePage>
           decoration: const BoxDecoration(
               image: const DecorationImage(
                 image: AssetImage('assets/images/hanaro_mart.jpeg'),
-                fit: BoxFit.cover,),
+                fit: BoxFit.cover,
+              ),
               color: Color.fromRGBO(217, 217, 217, 1),
               borderRadius: BorderRadius.all(Radius.circular(8))),
         ),
@@ -366,7 +369,8 @@ class _HomePage extends State<HomePage>
           decoration: const BoxDecoration(
               image: const DecorationImage(
                 image: AssetImage('assets/images/jangbogo_sikjajae_mart.jpeg'),
-                fit: BoxFit.cover,),
+                fit: BoxFit.cover,
+              ),
               color: Color.fromRGBO(217, 217, 217, 1),
               borderRadius: BorderRadius.all(Radius.circular(8))),
         ),
@@ -376,7 +380,8 @@ class _HomePage extends State<HomePage>
           decoration: const BoxDecoration(
               image: const DecorationImage(
                 image: AssetImage('assets/images/lotte_mart.jpeg'),
-                fit: BoxFit.cover,),
+                fit: BoxFit.cover,
+              ),
               color: Color.fromRGBO(217, 217, 217, 1),
               borderRadius: BorderRadius.all(Radius.circular(8))),
         ),
@@ -386,7 +391,8 @@ class _HomePage extends State<HomePage>
           decoration: const BoxDecoration(
               image: const DecorationImage(
                 image: AssetImage('assets/images/neo_mart.jpeg'),
-                fit: BoxFit.cover,),
+                fit: BoxFit.cover,
+              ),
               color: Color.fromRGBO(217, 217, 217, 1),
               borderRadius: BorderRadius.all(Radius.circular(8))),
         ),
@@ -399,26 +405,25 @@ class _HomePage extends State<HomePage>
       width: 180,
       height: 260,
       decoration:
-      BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(8))),
+          BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(8))),
       child: Column(
         children: [
           Expanded(
               flex: 1,
               child: Container(
                 child: Expanded(
-                    child: 
-                  Image(image: 
-                      AssetImage('assets/images/apple.png'),
-                      fit: BoxFit.fill,
-                      //'https://recipe1.ezmember.co.kr/cache/recipe/2019/01/03/6b7f6dc09df57b1f46c4e87bf81e200b1.jpg'),
-                  )                ),
+                    child: Image(
+                  image: AssetImage('assets/images/apple.png'),
+                  fit: BoxFit.fill,
+                  //'https://recipe1.ezmember.co.kr/cache/recipe/2019/01/03/6b7f6dc09df57b1f46c4e87bf81e200b1.jpg'),
+                )),
                 color: Colors.white,
               )),
           Expanded(
               flex: 1,
               child: Container(
                 padding:
-                EdgeInsets.only(left: 13, top: 13, right: 13, bottom: 13),
+                    EdgeInsets.only(left: 13, top: 13, right: 13, bottom: 13),
                 color: Colors.white,
                 child: SingleChildScrollView(
                   child: Column(
@@ -433,8 +438,8 @@ class _HomePage extends State<HomePage>
                       ),
                       Text(
                         "16,000원",
-                        style:
-                        TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                            fontSize: 14, fontWeight: FontWeight.bold),
                       ),
                       SizedBox(
                         height: 10,
@@ -448,7 +453,7 @@ class _HomePage extends State<HomePage>
                                     onPressed: () {},
                                     style: TextButton.styleFrom(
                                         backgroundColor:
-                                        Color.fromRGBO(147, 147, 147, 1)),
+                                            Color.fromRGBO(147, 147, 147, 1)),
                                     child: Text(
                                       "          Add to cart          ",
                                       style: TextStyle(

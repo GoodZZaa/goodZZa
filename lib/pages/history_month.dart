@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/payments.dart';
 import '../provider/account_book_provider.dart';
+import '../provider/search_provider.dart';
 import 'history_daily.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class HistoryMonth extends StatefulWidget {
   const HistoryMonth({Key? key}) : super(key: key);
@@ -13,11 +15,13 @@ class HistoryMonth extends StatefulWidget {
 
 class _HistoryMonthState extends State<HistoryMonth> {
   late AccountProvider _accountProvider; //account provider 객체 생성
+  late SearchProvider _searchProvider;
 
   @override //이거 있고 없고 실행시 무슨 차이?
   void initState() {
     super.initState();
     _accountProvider = Provider.of<AccountProvider>(context, listen: false);
+    _searchProvider = Provider.of<SearchProvider>(context, listen: false);
     //객체 초기화(초기화란? 만든 저장소를 사용할 수 있게 초기값을 넣어주는 것)
     _accountProvider.init(); // 서버에 저장된 값을 불러와주는 메서드를 시작시마다 불러오도록
   }
@@ -25,6 +29,7 @@ class _HistoryMonthState extends State<HistoryMonth> {
   @override
   Widget build(BuildContext context) {
     _accountProvider = Provider.of<AccountProvider>(context); // 왜 한번 더 쓰지..?
+    _searchProvider = Provider.of<SearchProvider>(context);
 
     return Scaffold(
       appBar: HistoryTitle(),
@@ -92,11 +97,49 @@ class _HistoryMonthState extends State<HistoryMonth> {
     );
   }
 
-  Widget MarketImage(PayoutItem payoutItem) {
+  /*Widget MarketImage(PayoutItem payoutItem) {
     return SizedBox(
       width: 100,
       height: 100,
-      child: Image.asset("assets/images/hanaro_mart.jpeg"),
+      child: Image.network(''),
+    );
+  }
+*/
+  Widget MarketImage(PayoutItem payoutItem) {
+    final products = _searchProvider.products;
+
+    return Container(
+      height: 80,
+      width: MediaQuery.of(context).size.width * 0.30,
+      child: ListView.builder(
+          itemCount: products.length + 1,
+          scrollDirection: Axis.vertical,
+          shrinkWrap: true,
+          itemBuilder: (context, index) {
+            return CachedNetworkImage(
+              imageBuilder: (context, imageProvider) => Container(
+                margin: const EdgeInsets.all(10),
+                width: 100,
+                height: 70,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(10)),
+                  // shape: BoxShape.circle,
+                  image:
+                      DecorationImage(image: imageProvider, fit: BoxFit.cover),
+                ),
+              ),
+              imageUrl: products[index].imageUrl ??
+                  'https://www.thejungleadventure.com/assets/images/noimage/noimage.png',
+              /*progressIndicatorBuilder: (context, url, downloadProgress) =>
+                  Container(
+                width: 100,
+                height: 70,
+                child:
+                    CircularProgressIndicator(value: downloadProgress.progress),
+              ),
+              errorWidget: (context, url, error) => Icon(Icons.error),*/
+            );
+          }),
     );
   }
 
