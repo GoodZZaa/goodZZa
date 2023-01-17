@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:good_zza_code_in_songdo/models/payments.dart';
 import 'package:good_zza_code_in_songdo/pages/set_monthbudget.dart';
 import 'package:good_zza_code_in_songdo/utills/day_to_weekday.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import '../provider/account_book_provider.dart';
 import 'history_month.dart';
@@ -10,10 +11,10 @@ class AccountBook2 extends StatefulWidget {
   const AccountBook2({super.key});
 
   @override
-  State<AccountBook2> createState() => _AccountBookS3tate();
+  State<AccountBook2> createState() => _AccountBookState();
 }
 
-class _AccountBookS3tate extends State<AccountBook2>
+class _AccountBookState extends State<AccountBook2>
     with TickerProviderStateMixin {
   late AccountProvider _accountProvider;
   late TabController _tabController;
@@ -159,11 +160,11 @@ class _AccountBookS3tate extends State<AccountBook2>
   Widget accountCard() {
     return GestureDetector(
       onTap: () {
-        /* Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) => ChangeNotifierProvider(
-                  create: (context) => AccountProvider(),
-                  child: HistoryMonth(),
-                )));*/
+        // /* Navigator.of(context).push(MaterialPageRoute(
+        //     builder: (context) => ChangeNotifierProvider(
+        //           create: (context) => AccountProvider(),
+        //           child: HistoryMonth(),
+        //         )));*/
 
         Navigator.of(context).push(
           MaterialPageRoute(
@@ -532,7 +533,7 @@ class _AccountTabScreenState extends State<AccountTabScreen>
     return Container(
         margin: const EdgeInsets.all(8),
         child: InkWell(
-            // onTap: () => paymentBottomSheet(item),
+            onTap: () => paymentBottomSheet(item),
             child: Container(
                 decoration: const BoxDecoration(
                     color: Colors.white,
@@ -581,42 +582,52 @@ class _AccountTabScreenState extends State<AccountTabScreen>
                     ]))));
   }
 
-  // void paymentBottomSheet(PayoutItem item) => showModalBottomSheet(
-  //     shape: const RoundedRectangleBorder(
-  //         borderRadius: BorderRadius.only(
-  //             topLeft: Radius.circular(20.0), topRight: Radius.circular(20.0))),
-  //     context: context,
-  //     builder: (BuildContext context) => Column(
-  //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //           mainAxisSize: MainAxisSize.max,
-  //           children: [
-  //             Container(
-  //                 padding:
-  //                     const EdgeInsets.symmetric(vertical: 20, horizontal: 40),
-  //                 alignment: Alignment.topLeft,
-  //                 child: Column(
-  //                   children: [
-  //                     Text(
-  //                       '${item.totalPrice} 원',
-  //                       style: const TextStyle(
-  //                         fontSize: 30,
-  //                         fontWeight: FontWeight.w700,
-  //                       ),
-  //                     ),
-  //                     const SizedBox(
-  //                       height: 10,
-  //                     ),
-  //                     Text(
-  //                       DateFormat('yyyy년 MM월 dd일').format(item.date),
-  //                       style: const TextStyle(
-  //                         fontSize: 17,
-  //                         fontWeight: FontWeight.w500,
-  //                       ),
-  //                     ),
-  //                   ],
-  //                 ))
-  //           ],
-  //         ));
+  void paymentBottomSheet(PayoutItem item) => showModalBottomSheet(
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(20.0), topRight: Radius.circular(20.0))),
+      context: context,
+      builder: (BuildContext context) => Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              Container(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 50, horizontal: 40),
+                  alignment: Alignment.topLeft,
+                  child: Column(
+                    children: [
+                      Text(
+                        item.products
+                            .toString()
+                            .replaceAll('[', '')
+                            .replaceAll(']', ''),
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      Text(
+                        '${item.totalPrice} 원',
+                        style: const TextStyle(
+                          fontSize: 30,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Text(
+                        DateFormat('yyyy년 MM월 dd일').format(item.date),
+                        style: const TextStyle(
+                          fontSize: 17,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
+                  ))
+            ],
+          ));
 
   @override
   bool get wantKeepAlive => true;

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:good_zza_code_in_songdo/models/payments.dart';
+import 'package:good_zza_code_in_songdo/provider/history_month_provider.dart';
 import 'package:good_zza_code_in_songdo/utills/day_to_weekday.dart';
 import 'package:good_zza_code_in_songdo/pages/home_search_page.dart';
 import 'package:good_zza_code_in_songdo/provider/search_provider.dart';
@@ -254,15 +255,11 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
         Expanded(
           child: GestureDetector(
             onTap: () {
+              final now = DateTime.now();
               Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => MultiProvider(
-                        providers: [
-                          ChangeNotifierProvider(
-                              create: (context) => AccountProvider()),
-                          ChangeNotifierProvider(
-                              create: (context) => SearchProvider()),
-                        ],
-                        child: const HistoryMonth(),
+                  builder: (context) => ChangeNotifierProvider(
+                        create: (context) => HistoryMonthProvider(),
+                        child: HistoryMonth(year: now.year, month: now.month),
                       )));
 
               /*Navigator.of(context).push(MaterialPageRoute(
