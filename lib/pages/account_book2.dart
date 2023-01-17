@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:good_zza_code_in_songdo/models/payments.dart';
 import 'package:good_zza_code_in_songdo/pages/set_monthbudget.dart';
 import 'package:good_zza_code_in_songdo/utills/day_to_weekday.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import '../provider/account_book_provider.dart';
 import 'history_month.dart';
@@ -10,10 +11,10 @@ class AccountBook2 extends StatefulWidget {
   const AccountBook2({super.key});
 
   @override
-  State<AccountBook2> createState() => _AccountBookS3tate();
+  State<AccountBook2> createState() => _AccountBookState();
 }
 
-class _AccountBookS3tate extends State<AccountBook2>
+class _AccountBookState extends State<AccountBook2>
     with TickerProviderStateMixin {
   late AccountProvider _accountProvider;
   late TabController _tabController;
@@ -159,11 +160,11 @@ class _AccountBookS3tate extends State<AccountBook2>
   Widget accountCard() {
     return GestureDetector(
       onTap: () {
-        /* Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) => ChangeNotifierProvider(
-                  create: (context) => AccountProvider(),
-                  child: HistoryMonth(),
-                )));*/
+        // /* Navigator.of(context).push(MaterialPageRoute(
+        //     builder: (context) => ChangeNotifierProvider(
+        //           create: (context) => AccountProvider(),
+        //           child: HistoryMonth(),
+        //         )));*/
 
         Navigator.of(context).push(
           MaterialPageRoute(
@@ -304,171 +305,183 @@ class AccountBookHeaderDelegate extends SliverPersistentHeaderDelegate {
       BuildContext context, double shrinkOffset, bool overlapsContent) {
     var accountProvider = Provider.of<AccountProvider>(context);
 
-    return Container(
-      color: const Color.fromRGBO(255, 255, 255, 1),
-      padding: const EdgeInsets.only(top: 20, left: 20, right: 20),
-      child: Column(
-        children: [
-          Container(
-            height: 1,
-            width: double.maxFinite,
-            color: const Color.fromRGBO(218, 218, 218, 1),
-            margin: const EdgeInsets.only(bottom: 10),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+    return Consumer<AccountProvider>(
+      builder: (context, accountProvider, child) {
+        return Container(
+          color: const Color.fromRGBO(255, 255, 255, 1),
+          padding: const EdgeInsets.only(top: 20, left: 20, right: 20),
+          child: Column(
             children: [
-              Text('${accountProvider.selectedDate.month}월',
-                  style: const TextStyle(
-                      fontSize: 16,
-                      color: Color.fromRGBO(57, 63, 66, 1),
-                      fontWeight: FontWeight.w500)),
-              const SizedBox(
-                width: 25,
+              Container(
+                height: 1,
+                width: double.maxFinite,
+                color: const Color.fromRGBO(218, 218, 218, 1),
+                margin: const EdgeInsets.only(bottom: 10),
               ),
-              const Text('지출내역',
-                  style: TextStyle(
-                      fontSize: 16,
-                      color: Color.fromARGB(0xFF, 0x36, 0x39, 0x42),
-                      fontWeight: FontWeight.w700))
-            ],
-          ),
-          Container(
-            margin: const EdgeInsets.only(top: 10, bottom: 10),
-            height: 1,
-            width: double.maxFinite,
-            color: const Color.fromRGBO(218, 218, 218, 1),
-          ),
-          TabBar(
-            onTap: (value) {
-              accountProvider.setDay(value + 1);
-            },
-            labelPadding: const EdgeInsets.all(5),
-            physics: const BouncingScrollPhysics(),
-            controller: _tabController,
-            isScrollable: true,
-            tabs: accountProvider.days
-                .map((element) => Tab(
-                    height: 66,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Container(
-                            decoration: element == accountProvider.selectedDate
-                                ? BoxDecoration(
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text('${accountProvider.selectedDate.month}월',
+                      style: const TextStyle(
+                          fontSize: 16,
+                          color: Color.fromRGBO(57, 63, 66, 1),
+                          fontWeight: FontWeight.w500)),
+                  const SizedBox(
+                    width: 25,
+                  ),
+                  const Text('지출내역',
+                      style: TextStyle(
+                          fontSize: 16,
+                          color: Color.fromARGB(0xFF, 0x36, 0x39, 0x42),
+                          fontWeight: FontWeight.w700))
+                ],
+              ),
+              Container(
+                margin: const EdgeInsets.only(top: 10, bottom: 10),
+                height: 1,
+                width: double.maxFinite,
+                color: const Color.fromRGBO(218, 218, 218, 1),
+              ),
+              TabBar(
+                onTap: (value) {
+                  accountProvider.setDay(value + 1);
+                },
+                labelPadding: const EdgeInsets.all(5),
+                physics: const BouncingScrollPhysics(),
+                controller: _tabController,
+                isScrollable: true,
+                tabs: accountProvider.days
+                    .map((element) =>
+                    Tab(
+                        height: 66,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
+                                decoration: element ==
+                                    accountProvider.selectedDate
+                                    ? BoxDecoration(
                                     borderRadius: BorderRadius.circular(7),
                                     color:
-                                        const Color.fromRGBO(88, 212, 175, 1))
-                                : BoxDecoration(
+                                    const Color.fromRGBO(88, 212, 175, 1))
+                                    : BoxDecoration(
                                     borderRadius: BorderRadius.circular(7),
                                     color:
-                                        const Color.fromRGBO(255, 255, 255, 1)),
-                            alignment: Alignment.center,
-                            height: 50,
-                            width: 45,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                Text(
-                                  dayToWeekday(element.weekday),
-                                  style: element == accountProvider.selectedDate
-                                      ? const TextStyle(
+                                    const Color.fromRGBO(255, 255, 255, 1)),
+                                alignment: Alignment.center,
+                                height: 50,
+                                width: 45,
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment
+                                      .spaceEvenly,
+                                  children: [
+                                    Text(
+                                      dayToWeekday(element.weekday),
+                                      style: element ==
+                                          accountProvider.selectedDate
+                                          ? const TextStyle(
                                           fontSize: 10,
                                           color: Color.fromRGBO(
                                               255, 255, 255, 0.7))
-                                      : const TextStyle(
+                                          : const TextStyle(
                                           fontSize: 10,
                                           color:
-                                              Color.fromRGBO(155, 156, 160, 1)),
-                                ),
-                                Text(
-                                  element.day.toString(),
-                                  style: element == accountProvider.selectedDate
-                                      ? const TextStyle(
-                                          color:
-                                              Color.fromRGBO(248, 247, 255, 1),
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w600,
-                                        )
-                                      : const TextStyle(
-                                          color: Color.fromARGB(
-                                              0xFF, 0x36, 0x39, 0x42),
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                )
-                              ],
-                            )),
-                        Container(
-                            padding: const EdgeInsets.only(top: 3),
-                            child: Icon(Icons.circle,
-                                size: 8,
-                                color: accountProvider.payoutItems
+                                          Color.fromRGBO(155, 156, 160, 1)),
+                                    ),
+                                    Text(
+                                      element.day.toString(),
+                                      style: element ==
+                                          accountProvider.selectedDate
+                                          ? const TextStyle(
+                                        color:
+                                        Color.fromRGBO(248, 247, 255, 1),
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w600,
+                                      )
+                                          : const TextStyle(
+                                        color: Color.fromARGB(
+                                            0xFF, 0x36, 0x39, 0x42),
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    )
+                                  ],
+                                )),
+                            Container(
+                                padding: const EdgeInsets.only(top: 3),
+                                child: Icon(Icons.circle,
+                                    size: 8,
+                                    color: accountProvider.payoutItems
                                         .where((e) => e.date == element)
                                         .toList()
                                         .isEmpty
-                                    ? Colors.transparent
-                                    : const Color.fromRGBO(95, 89, 225, 1)))
-                      ],
-                    )))
-                .toList(),
-            indicator: const BoxDecoration(color: Colors.transparent),
-          ),
-          Container(
-            margin: const EdgeInsets.only(bottom: 10, left: 10, right: 10),
-            height: 1,
-            width: double.maxFinite,
-            color: const Color.fromRGBO(218, 218, 218, 1),
-          ),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 7),
-            child: Row(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                InkWell(
-                    onTap: () {},
-                    child: Container(
-                      padding: const EdgeInsets.all(3),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: const [
-                          SizedBox(
-                            width: 15,
-                          ),
-                          Text('전체',
-                              style: TextStyle(
-                                  fontSize: 12.5, fontWeight: FontWeight.w600)),
-                          Icon(Icons.keyboard_arrow_down_sharp, size: 20)
-                        ],
-                      ),
-                    )),
-                InkWell(
-                    child: Container(
-                        padding: const EdgeInsets.all(3),
-                        child: Row(
+                                        ? Colors.transparent
+                                        : const Color.fromRGBO(95, 89, 225, 1)))
+                          ],
+                        )))
+                    .toList(),
+                indicator: const BoxDecoration(color: Colors.transparent),
+              ),
+              Container(
+                margin: const EdgeInsets.only(bottom: 10, left: 10, right: 10),
+                height: 1,
+                width: double.maxFinite,
+                color: const Color.fromRGBO(218, 218, 218, 1),
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 7),
+                child: Row(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    InkWell(
+                        onTap: () {},
+                        child: Container(
+                          padding: const EdgeInsets.all(3),
+                          child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              const Text(
-                                '추가하기',
-                                style: TextStyle(
-                                    fontSize: 13, fontWeight: FontWeight.w500),
+                            children: const [
+                              SizedBox(
+                                width: 15,
                               ),
-                              const SizedBox(
-                                width: 8,
-                              ),
-                              Image.asset(
-                                'assets/icons/icon_plus.png',
-                                height: 26,
-                                width: 26,
-                              )
-                            ])))
-              ],
-            ),
+                              Text('전체',
+                                  style: TextStyle(
+                                      fontSize: 12.5,
+                                      fontWeight: FontWeight.w600)),
+                              Icon(Icons.keyboard_arrow_down_sharp, size: 20)
+                            ],
+                          ),
+                        )),
+                    InkWell(
+                        child: Container(
+                            padding: const EdgeInsets.all(3),
+                            child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  const Text(
+                                    '추가하기',
+                                    style: TextStyle(
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.w500),
+                                  ),
+                                  const SizedBox(
+                                    width: 8,
+                                  ),
+                                  Image.asset(
+                                    'assets/icons/icon_plus.png',
+                                    height: 26,
+                                    width: 26,
+                                  )
+                                ])))
+                  ],
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
+        );
+
+      }
     );
   }
 
@@ -532,7 +545,7 @@ class _AccountTabScreenState extends State<AccountTabScreen>
     return Container(
         margin: const EdgeInsets.all(8),
         child: InkWell(
-            // onTap: () => paymentBottomSheet(item),
+            onTap: () => paymentBottomSheet(item),
             child: Container(
                 decoration: const BoxDecoration(
                     color: Colors.white,
@@ -581,42 +594,52 @@ class _AccountTabScreenState extends State<AccountTabScreen>
                     ]))));
   }
 
-  // void paymentBottomSheet(PayoutItem item) => showModalBottomSheet(
-  //     shape: const RoundedRectangleBorder(
-  //         borderRadius: BorderRadius.only(
-  //             topLeft: Radius.circular(20.0), topRight: Radius.circular(20.0))),
-  //     context: context,
-  //     builder: (BuildContext context) => Column(
-  //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //           mainAxisSize: MainAxisSize.max,
-  //           children: [
-  //             Container(
-  //                 padding:
-  //                     const EdgeInsets.symmetric(vertical: 20, horizontal: 40),
-  //                 alignment: Alignment.topLeft,
-  //                 child: Column(
-  //                   children: [
-  //                     Text(
-  //                       '${item.totalPrice} 원',
-  //                       style: const TextStyle(
-  //                         fontSize: 30,
-  //                         fontWeight: FontWeight.w700,
-  //                       ),
-  //                     ),
-  //                     const SizedBox(
-  //                       height: 10,
-  //                     ),
-  //                     Text(
-  //                       DateFormat('yyyy년 MM월 dd일').format(item.date),
-  //                       style: const TextStyle(
-  //                         fontSize: 17,
-  //                         fontWeight: FontWeight.w500,
-  //                       ),
-  //                     ),
-  //                   ],
-  //                 ))
-  //           ],
-  //         ));
+  void paymentBottomSheet(PayoutItem item) => showModalBottomSheet(
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(20.0), topRight: Radius.circular(20.0))),
+      context: context,
+      builder: (BuildContext context) => Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              Container(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 50, horizontal: 40),
+                  alignment: Alignment.topLeft,
+                  child: Column(
+                    children: [
+                      Text(
+                        item.products
+                            .toString()
+                            .replaceAll('[', '')
+                            .replaceAll(']', ''),
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      Text(
+                        '${item.totalPrice} 원',
+                        style: const TextStyle(
+                          fontSize: 30,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Text(
+                        DateFormat('yyyy년 MM월 dd일').format(item.date),
+                        style: const TextStyle(
+                          fontSize: 17,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
+                  ))
+            ],
+          ));
 
   @override
   bool get wantKeepAlive => true;

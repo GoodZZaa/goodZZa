@@ -60,6 +60,7 @@ class _SetMonthBudgetState extends State<SetMonthBudget> {
               flex: 2,
               child: Container(
                 child: GridView.builder(
+                    itemCount: buttons.length,
                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 3),
                     itemBuilder: (BuildContext context, int index) {
