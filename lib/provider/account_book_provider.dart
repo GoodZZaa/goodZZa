@@ -7,6 +7,7 @@ enum AccountState { loading, fail, success }
 
 class AccountProvider extends ChangeNotifier {
   final AccountService _accountService = AccountService();
+
   late DateTime _selectedDate;
   DateTime get selectedDate => _selectedDate;
 

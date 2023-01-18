@@ -7,7 +7,7 @@ import 'history_daily.dart';
 
 class HistoryMonth extends StatefulWidget {
   final int year;
-  final int month;
+  final int month; // 홈 page에서 넘어온 현재의 year 과 month 값 담기
   const HistoryMonth({required this.year, required this.month});
 
   @override
@@ -16,25 +16,24 @@ class HistoryMonth extends StatefulWidget {
 
 class _HistoryMonthState extends State<HistoryMonth> {
   late HistoryMonthProvider _historyMonthProvider;
+  /*기존의 accountprovider 대신에 새로 만든 이유:
+    account provider에는 가계부 홈 화면에서 '달'마다 값이 달라지는 데이터도 받아오는데
+    메인 홈에서는 현재 년과 월만 필요 */
+  // late 쓰면 초기화는 나중으로 미룬다.
 
-  @override //이거 있고 없고 실행시 무슨 차이?
+  @override
   void initState() {
     super.initState();
-    // _accountProvider = Provider.of<AccountProvider>(context, listen: false);
-    // _searchProvider = Provider.of<SearchProvider>(context, listen: false);
-    // //객체 초기화(초기화란? 만든 저장소를 사용할 수 있게 초기값을 넣어주는 것)
-    // _accountProvider.init(); // 서버에 저장된 값을 불러와주는 메서드를 시작시마다 불러오도록
     _historyMonthProvider =
         Provider.of<HistoryMonthProvider>(context, listen: false);
-
+    // 시작할 때 provider에서 값 가져와 주고
     _historyMonthProvider.getBudgetData(widget.year, widget.month);
     _historyMonthProvider.getPayoutData(widget.year, widget.month);
+    // HistoryMonty 실행할 때 가져온 year과 month값을 넣어서 getBudgetData 메소드 실행
   }
 
   @override
   Widget build(BuildContext context) {
-    // _accountProvider = Provider.of<AccountProvider>(context); // 왜 한번 더 쓰지..?
-    // _searchProvider = Provider.of<SearchProvider>(context);
     _historyMonthProvider = Provider.of<HistoryMonthProvider>(context);
 
     Widget bodyWidget() {
@@ -98,6 +97,7 @@ class _HistoryMonthState extends State<HistoryMonth> {
   Widget HistoryList() {
     return ListView.builder(
       shrinkWrap: true,
+      // 월 장보기 내역 없을 시에 '장보기'와 '예산박스' 사이에 공백이 생기는 거 없애주는 거
       itemCount: _historyMonthProvider.payoutItems.length,
       itemBuilder: (context, index) {
         return HistoryCard(
@@ -108,7 +108,6 @@ class _HistoryMonthState extends State<HistoryMonth> {
   }
 
   Widget HistoryCard(PayoutItem payoutItem) {
-    // 왜 required 필요?
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -118,14 +117,6 @@ class _HistoryMonthState extends State<HistoryMonth> {
     );
   }
 
-  /*Widget MarketImage(PayoutItem payoutItem) {
-    return SizedBox(
-      width: 100,
-      height: 100,
-      child: Image.network(''),
-    );
-  }
-*/
   Widget MarketImage(PayoutItem payoutItem) {
     return Container(
         height: 80,
@@ -133,32 +124,7 @@ class _HistoryMonthState extends State<HistoryMonth> {
         decoration: BoxDecoration(borderRadius: BorderRadius.circular(10)),
         child: Image.network(
           'https://avatars.githubusercontent.com/u/121633919?s=16&v=4',
-        )
-        // CachedNetworkImage(
-        //   imageBuilder: (context, imageProvider) => Container(
-        //     margin: const EdgeInsets.all(10),
-        //     width: 100,
-        //     height: 70,
-        //     decoration: BoxDecoration(
-        //       borderRadius: BorderRadius.all(Radius.circular(10)),
-        //       // shape: BoxShape.circle,
-        //       image:
-        //           DecorationImage(image: imageProvider, fit: BoxFit.cover),
-        //     ),
-        //   ),
-        //   imageUrl:
-        //       'https://www.thejungleadventure.com/assets/images/noimage/noimage.png',
-        //   /*progressIndicatorBuilder: (context, url, downloadProgress) =>
-        //       Container(
-        //     width: 100,
-        //     height: 70,
-        //     child:
-        //         CircularProgressIndicator(value: downloadProgress.progress),
-        //   ),
-        //   errorWidget: (context, url, error) => Icon(Icons.error),*/
-        // );
-
-        );
+        ));
   }
 
   Widget CartMonth(PayoutItem payoutItem) {
@@ -168,6 +134,8 @@ class _HistoryMonthState extends State<HistoryMonth> {
     } else {
       productItem = payoutItem.products.sublist(0, 2);
     }
+    // productItem 개수가 2개 이하면 error 떠서 추가해준 부분
+
     return Expanded(
       child: GestureDetector(
         onTap: () {
@@ -191,8 +159,7 @@ class _HistoryMonthState extends State<HistoryMonth> {
             ),
             Text(
                 '${productItem.toString().replaceAll('[', '').replaceAll(']', '')} 등..외 ${payoutItem.products.length}개',
-                //sublist하면 [] 왜 생기지?
-                //문제는 2개 이상이 없으면 에러 뜬다..
+                //replaceAll*
                 style: const TextStyle(
                   fontSize: 10,
                   color: Colors.grey,
@@ -200,7 +167,7 @@ class _HistoryMonthState extends State<HistoryMonth> {
                 )),
             Container(
                 alignment: Alignment.centerRight,
-                child: Text('${payoutItem.totalPrice}원',
+                child: Text('${(payoutItem.totalPrice)}원',
                     style: const TextStyle(
                       fontSize: 32,
                       fontWeight: FontWeight.w600,

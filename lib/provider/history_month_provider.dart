@@ -8,6 +8,9 @@ import 'account_book_provider.dart';
 class HistoryMonthProvider extends ChangeNotifier {
   final AccountService _accountService = AccountService();
 
+  // account_book_provider에 있는 아래꺼 가져온거
+  // enum AccountState { loading, fail, success }
+
   AccountState _state = AccountState.loading;
   AccountState get state => _state;
 
@@ -24,7 +27,12 @@ class HistoryMonthProvider extends ChangeNotifier {
   List<PayoutItem> get payoutItems => _payoutItems;
 
   void getBudgetData(int year, int month) async {
+    // async *비동기 뒤에 과정을 기다렸다가 getBudgetData 실행
+
     var accountResult = await _accountService.getAccountForMonth(year, month);
+    //accountService -> dio_client랑 연결 (서버 비밀로 만들어서 연결하는 거 신기!!)
+    //서버 api 주소랑 연결된 부분-> "월별 예산" 가져오기
+
     _budgetState = accountResult['state'];
 
     if (_budgetState == AccountState.success) {

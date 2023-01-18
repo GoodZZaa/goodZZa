@@ -260,13 +260,8 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
                   builder: (context) => ChangeNotifierProvider(
                         create: (context) => HistoryMonthProvider(),
                         child: HistoryMonth(year: now.year, month: now.month),
+                        //지금 현재 년도와 월을 넘겨준다.
                       )));
-
-              /*Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => ChangeNotifierProvider(
-                    create: (context) => AccountProvider(),
-                    child: const HistoryMonth(),
-                  )));*/
             },
             child: Expanded(
               child: Container(
