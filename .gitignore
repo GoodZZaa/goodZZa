@@ -43,3 +43,4 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 lib/test/sliver_test.dart
+macos/Flutter/GeneratedPluginRegistrant.swift
