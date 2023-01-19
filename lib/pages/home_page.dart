@@ -8,6 +8,12 @@ import 'package:good_zza_code_in_songdo/provider/search_provider.dart';
 import 'package:provider/provider.dart';
 import '../provider/account_book_provider.dart';
 import 'history_month.dart';
+import 'package:good_zza_code_in_songdo/models/cheapest_product.dart';
+import 'package:good_zza_code_in_songdo/models/cheapest_mart.dart';
+import 'package:good_zza_code_in_songdo/network/homeapge_gateway.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
+
+
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -22,9 +28,63 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
 
   final ScrollController scrollController = ScrollController();
 
+
+  List<CheapestMart> cheapestmart = [];
+  List<CheapestProduct> cheapestproduct = [];
+  bool isLoading = true;
+  int pageNumber = 1;
+  int totalCount = 100;
+  HomepageGateway homepageGateway = HomepageGateway();
+
+  final RefreshController refreshController =
+  RefreshController(initialLoadStatus: LoadStatus.idle);
+
+  void onRefresh() {
+    pageNumber = 1;
+    cheapestproduct.clear();
+
+    readCheapestProduct().then((_) {
+      refreshController.refreshCompleted(resetFooterState: true);
+    }).catchError((_) {
+      refreshController.refreshFailed();
+    });
+  }
+
+  void onLoading() {
+    if (cheapestproduct.length < totalCount) {
+      readCheapestProduct().then((_) {
+        refreshController.loadComplete();
+      }).catchError((_) {
+        refreshController.loadFailed();
+      });
+    } else {
+      refreshController.loadNoData();
+    }
+  }
+
+
+  Future readCheapestProduct() async {
+    cheapestproduct.addAll(await homepageGateway.getCheapestProduct(isFirst : true, pageNumber: pageNumber));
+    pageNumber++;
+    setState(() {
+      isLoading = false;
+    });
+  }
+
+
+
+
+
+
   @override
   void initState() {
     super.initState();
+    readCheapestProduct().then((value) {
+      setState(() {
+        isLoading = false;
+      });
+    });
+
     _accountProvider = Provider.of<AccountProvider>(context, listen: false);
     _accountProvider.init();
 
@@ -393,71 +453,85 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
   }
 
   Widget LowPriceProduct() {
-    return Container(
-      width: 180,
-      height: 260,
-      decoration:
-          BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(8))),
-      child: Column(
-        children: [
-          Expanded(
-              flex: 1,
-              child: Container(
-                child: Expanded(
-                    child: Image(
-                  image: AssetImage('assets/images/apple.png'),
-                  fit: BoxFit.fill,
-                  //'https://recipe1.ezmember.co.kr/cache/recipe/2019/01/03/6b7f6dc09df57b1f46c4e87bf81e200b1.jpg'),
-                )),
-                color: Colors.white,
-              )),
-          Expanded(
-              flex: 1,
-              child: Container(
-                padding:
-                    EdgeInsets.only(left: 13, top: 13, right: 13, bottom: 13),
-                color: Colors.white,
-                child: SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "세상에서 제일 맛있는 사과 5KG",
-                        style: TextStyle(fontSize: 12),
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Text(
-                        "16,000원",
-                        style: TextStyle(
-                            fontSize: 14, fontWeight: FontWeight.bold),
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Container(
-                          color: Colors.white,
-                          child: Align(
-                              alignment: Alignment.center,
-                              child: Expanded(
-                                child: TextButton(
-                                    onPressed: () {},
-                                    style: TextButton.styleFrom(
-                                        backgroundColor:
-                                            Color.fromRGBO(147, 147, 147, 1)),
-                                    child: Text(
-                                      "          Add to cart          ",
-                                      style: TextStyle(
-                                          color: Colors.white, fontSize: 12),
-                                    )),
-                              )))
-                    ],
-                  ),
-                ),
-              ))
-        ],
+    return SmartRefresher(
+      enablePullUp: true,
+      controller: this.refreshController,
+      //onRefresh: this.onRefresh,
+      onLoading: this.onLoading,
+      child: isLoading ? Center(child: CircularProgressIndicator(),) :
+
+      GridView.builder(gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        childAspectRatio: 2/3,
+        crossAxisSpacing: 20,
+        mainAxisSpacing: 20,
       ),
+
+          itemCount: cheapestproduct.length,
+          itemBuilder: (context, index){
+            return Container(
+              width: 180,
+              height: 260,
+              decoration:
+              BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(8))),
+              child: Column(
+                children: [
+                  Expanded(
+                      flex: 1,
+                      child: Container(
+                        width: 180,
+                        height: 130,
+                        color: Colors.white,
+                        child: Image.network(cheapestproduct[index].imageUrl,
+                            fit: BoxFit.cover),
+
+                      )),
+                  Expanded(
+                      flex: 1,
+                      child: Container(
+                        padding:
+                        EdgeInsets.only(left: 13, top: 13, right: 13, bottom: 13),
+                        color: Colors.white,
+                        child: SingleChildScrollView(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(cheapestproduct[index].productName,
+                                style: TextStyle(fontSize: 12),),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Text(cheapestproduct[index].price.toString()+'원',
+                                style: TextStyle(
+                                    fontSize: 14, fontWeight: FontWeight.bold),),
+
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Container(
+                                  color: Colors.white,
+                                  child: Align(
+                                      alignment: Alignment.center,
+                                      child: Expanded(
+                                        child: TextButton(
+                                            onPressed: () {},
+                                            style: TextButton.styleFrom(
+                                                backgroundColor:
+                                                Color.fromRGBO(147, 147, 147, 1)),
+                                            child: Text(
+                                              "          Add to cart          ",
+                                              style: TextStyle(
+                                                  color: Colors.white, fontSize: 12),
+                                            )),
+                                      )))
+                            ],
+                          ),
+                        ),
+                      ))
+                ],
+              ),
+            );
+          }),
     );
   }
 }
