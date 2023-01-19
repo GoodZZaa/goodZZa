@@ -1,17 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:good_zza_code_in_songdo/models/payments.dart';
-import 'package:good_zza_code_in_songdo/provider/history_month_provider.dart';
-import 'package:good_zza_code_in_songdo/utills/day_to_weekday.dart';
 import 'package:good_zza_code_in_songdo/pages/home_search_page.dart';
+import 'package:good_zza_code_in_songdo/provider/history_month_provider.dart';
+import 'package:good_zza_code_in_songdo/provider/home_provider.dart';
 import 'package:good_zza_code_in_songdo/provider/search_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
+
 import '../provider/account_book_provider.dart';
 import 'history_month.dart';
-import 'package:good_zza_code_in_songdo/models/cheapest_product.dart';
-import 'package:good_zza_code_in_songdo/models/cheapest_mart.dart';
-import 'package:good_zza_code_in_songdo/network/homeapge_gateway.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 
 
@@ -24,25 +21,26 @@ class HomePage extends StatefulWidget {
 
 class _HomePage extends State<HomePage> with TickerProviderStateMixin {
   late AccountProvider _accountProvider;
+  late HomeProvider _homeProvider;
   late TabController _tabController;
 
   final ScrollController scrollController = ScrollController();
 
 
-  List<CheapestMart> cheapestmart = [];
-  List<CheapestProduct> cheapestproduct = [];
-  bool isLoading = true;
-  int pageNumber = 1;
-  int totalCount = 100;
-  HomepageGateway homepageGateway = HomepageGateway();
+  // List<CheapestMart> cheapestmart = [];
+  // List<CheapestProduct> cheapestproduct = [];
+  // bool isLoading = true;
+  // int pageNumber = 1;
+  // int totalCount = 100;
+  // HomepageGateway homepageGateway = HomepageGateway();
 
   final RefreshController refreshController = RefreshController(initialLoadStatus: LoadStatus.idle);
 
   void onRefresh() {
-    pageNumber = 1;
-    cheapestproduct.clear();
+    _homeProvider.pageNumber = 1;
+    _homeProvider.cheapestproduct.clear();
 
-    readCheapestProduct().then((_) {
+    _homeProvider.readCheapestProduct().then((_) {
       refreshController.refreshCompleted(resetFooterState: true);
     }).catchError((_) {
       refreshController.refreshFailed();
@@ -50,8 +48,8 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
   }
 
   void onLoading() {
-    if (cheapestproduct.length < totalCount) {
-      readCheapestProduct().then((_) {
+    if (_homeProvider.cheapestproduct.length < _homeProvider.totalCount) {
+      _homeProvider.readCheapestProduct().then((_) {
         refreshController.loadComplete();
       }).catchError((_) {
         refreshController.loadFailed();
@@ -62,13 +60,13 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
   }
 
 
-  Future readCheapestProduct() async {
-    cheapestproduct.addAll(await homepageGateway.getCheapestProduct(isFirst : true, pageNumber: pageNumber));
-    pageNumber++;
-    setState(() {
-      isLoading = false;
-    });
-  }
+  // Future readCheapestProduct() async {
+  //   cheapestproduct.addAll(await homepageGateway.getCheapestProduct(isFirst : true, pageNumber: pageNumber));
+  //   pageNumber++;
+  //   setState(() {
+  //     isLoading = false;
+  //   });
+  // }
 
 
 
@@ -78,11 +76,15 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    readCheapestProduct().then((value) {
-      setState(() {
-        isLoading = false;
-      });
-    });
+
+    _homeProvider = Provider.of<HomeProvider>(context, listen: false);
+    _homeProvider.init();
+
+    // readCheapestProduct().then((value) {
+    //   setState(() {
+    //     isLoading = false;
+    //   });
+    // });
 
     _accountProvider = Provider.of<AccountProvider>(context, listen: false);
     _accountProvider.init();
@@ -197,110 +199,110 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
               height: 10,
             ),
             Container(width: 390, height: 144, child: SaleCard()),
-            SizedBox(
-              height: 10,
-            ),
-            Container(
-                margin: EdgeInsets.only(left: 20),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Text(
-                      '최저가 마트 추천',
-                      style: TextStyle(fontSize: 14),
-                    ),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Text(
-                      '1.5km',
-                      style: TextStyle(fontSize: 14),
-                    )
-                  ],
-                )),
-            SizedBox(
-              height: 10,
-            ),
-            RecommendCard(),
-            SizedBox(
-              height: 10,
-            ),
-            Container(
-              width: 390,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Align(
-                    child: Text(
-                      '현재 최저가 상품',
-                      style: TextStyle(fontSize: 14),
-                    ),
-                  ),
-                  Expanded(child: SizedBox()),
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: Container(
-                      padding: EdgeInsets.only(left: 5, right: 5),
-                      decoration: BoxDecoration(
-                          border: Border.all(
-                              color: Color.fromRGBO(200, 200, 203, 1)),
-                          borderRadius: BorderRadius.all(Radius.circular(8))),
-                      child: Row(
-                        children: [
-                          Text(
-                            'Filters',
-                            style: TextStyle(fontSize: 12),
-                          ),
-                          SizedBox(
-                            width: 10,
-                          ),
-                          Icon(
-                            Icons.filter_list_alt,
-                            size: 12,
-                          )
-                        ],
-                      ),
-                    ),
-                  )
-                ],
-              ),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Container(
-                margin: EdgeInsets.only(left: 20, right: 20),
-                child: Row(
-                  children: [
-                    LowPriceProduct(),
-                    Expanded(child: SizedBox()),
-                    LowPriceProduct(),
-                  ],
-                )),
-            SizedBox(
-              height: 10,
-            ),
-            Container(
-                margin: EdgeInsets.only(left: 20, right: 20),
-                child: Row(
-                  children: [
-                    LowPriceProduct(),
-                    Expanded(child: SizedBox()),
-                    LowPriceProduct(),
-                  ],
-                )),
-            SizedBox(
-              height: 10,
-            ),
-            Container(
-                margin: EdgeInsets.only(left: 20, right: 20),
-                child: Row(
-                  children: [
-                    LowPriceProduct(),
-                    Expanded(child: SizedBox()),
-                    LowPriceProduct(),
-                  ],
-                )),
+            // SizedBox(
+            //   height: 10,
+            // ),
+            // Container(
+            //     margin: EdgeInsets.only(left: 20),
+            //     child: Row(
+            //       mainAxisAlignment: MainAxisAlignment.start,
+            //       children: [
+            //         Text(
+            //           '최저가 마트 추천',
+            //           style: TextStyle(fontSize: 14),
+            //         ),
+            //         SizedBox(
+            //           width: 10,
+            //         ),
+            //         Text(
+            //           '1.5km',
+            //           style: TextStyle(fontSize: 14),
+            //         )
+            //       ],
+            //     )),
+            // SizedBox(
+            //   height: 10,
+            // ),
+            // RecommendCard(),
+            // SizedBox(
+            //   height: 10,
+            // ),
+            // Container(
+            //   width: 390,
+            //   child: Row(
+            //     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            //     children: [
+            //       Align(
+            //         child: Text(
+            //           '현재 최저가 상품',
+            //           style: TextStyle(fontSize: 14),
+            //         ),
+            //       ),
+            //       // Expanded(child: SizedBox()),
+            //       Align(
+            //         alignment: Alignment.centerRight,
+            //         child: Container(
+            //           padding: EdgeInsets.only(left: 5, right: 5),
+            //           decoration: BoxDecoration(
+            //               border: Border.all(
+            //                   color: Color.fromRGBO(200, 200, 203, 1)),
+            //               borderRadius: BorderRadius.all(Radius.circular(8))),
+            //           child: Row(
+            //             children: [
+            //               Text(
+            //                 'Filters',
+            //                 style: TextStyle(fontSize: 12),
+            //               ),
+            //               SizedBox(
+            //                 width: 10,
+            //               ),
+            //               Icon(
+            //                 Icons.filter_list_alt,
+            //                 size: 12,
+            //               )
+            //             ],
+            //           ),
+            //         ),
+            //       )
+            //     ],
+            //   ),
+            // ),
+            // SizedBox(
+            //   height: 10,
+            // ),
+            // Container(
+            //     margin: EdgeInsets.only(left: 20, right: 20),
+            //     child: Row(
+            //       children: [
+            //         // LowPriceProduct(),
+            //         Expanded(child: SizedBox()),
+            //         // LowPriceProduct(),
+            //       ],
+            //     )),
+            // SizedBox(
+            //   height: 10,
+            // ),
+            // Container(
+            //     margin: EdgeInsets.only(left: 20, right: 20),
+            //     child: Row(
+            //       children: [
+            //         // LowPriceProduct(),
+            //         Expanded(child: SizedBox()),
+            //         // LowPriceProduct(),
+            //       ],
+            //     )),
+            // SizedBox(
+            //   height: 10,
+            // ),
+            // Container(
+            //     margin: EdgeInsets.only(left: 20, right: 20),
+            //     child: Row(
+            //       children: [
+            //         // LowPriceProduct(),
+            //         Expanded(child: SizedBox()),
+            //         // LowPriceProduct(),
+            //       ],
+            //     )),
           ],
         ),
       ),
@@ -457,7 +459,7 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
       controller: this.refreshController,
       //onRefresh: this.onRefresh,
       onLoading: this.onLoading,
-      child: isLoading ? Center(child: CircularProgressIndicator(),) :
+      child: _homeProvider.isLoading ? Center(child: CircularProgressIndicator(),) :
 
       GridView.builder(gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
@@ -466,7 +468,7 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
         mainAxisSpacing: 20,
       ),
 
-          itemCount: cheapestproduct.length,
+          itemCount: _homeProvider.cheapestproduct.length,
           itemBuilder: (context, index){
             return Container(
               width: 180,
@@ -481,7 +483,7 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
                         width: 180,
                         height: 130,
                         color: Colors.white,
-                        child: Image.network(cheapestproduct[index].imageUrl,
+                        child: Image.network(_homeProvider.cheapestproduct[index].imageUrl,
                             fit: BoxFit.cover),
 
                       )),
@@ -495,12 +497,12 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(cheapestproduct[index].productName,
+                              Text(_homeProvider.cheapestproduct[index].productName,
                                 style: TextStyle(fontSize: 12),),
                               SizedBox(
                                 height: 10,
                               ),
-                              Text(cheapestproduct[index].price.toString()+'원',
+                              Text(_homeProvider.cheapestproduct[index].price.toString()+'원',
                                 style: TextStyle(
                                     fontSize: 14, fontWeight: FontWeight.bold),),
 

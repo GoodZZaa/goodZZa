@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:good_zza_code_in_songdo/provider/home_provider.dart';
 import 'package:good_zza_code_in_songdo/provider/receipt_camera_provider.dart';
 import 'package:good_zza_code_in_songdo/provider/search_provider.dart';
 import 'package:provider/provider.dart';
@@ -24,6 +25,8 @@ class SplashScreen extends StatelessWidget {
                           create: (context) => AccountProvider()),
                       ChangeNotifierProvider(
                           create: (context) => ReceiptCameraProvider()),
+                      ChangeNotifierProvider(
+                          create: (context) => HomeProvider()),
                     ],
                     child: BottomNavigation(),
                   )),
