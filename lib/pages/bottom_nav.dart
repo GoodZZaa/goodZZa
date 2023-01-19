@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:good_zza_code_in_songdo/pages/home_page.dart';
 import 'package:good_zza_code_in_songdo/pages/account_book2.dart';
+import 'package:good_zza_code_in_songdo/pages/home_page.dart';
 import 'package:good_zza_code_in_songdo/pages/receipt_camera.dart';
 import 'package:provider/provider.dart';
 
@@ -25,7 +26,7 @@ class BottomNavigation extends StatelessWidget {
           HomePage(),
           Container(),
           TakePictureScreen(),
-          AccountBook2(),
+          Container(),
           Container()
         ].elementAt(_bottomNavigationProvider.currentPage),
       ),
