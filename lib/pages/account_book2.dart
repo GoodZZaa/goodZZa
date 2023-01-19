@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:good_zza_code_in_songdo/models/payments.dart';
-import 'package:good_zza_code_in_songdo/pages/set_monthbudget.dart';
+// import 'package:good_zza_code_in_songdo/pages/set_monthbudget.dart';
 import 'package:good_zza_code_in_songdo/utills/day_to_weekday.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -171,11 +171,11 @@ class _AccountBookState extends State<AccountBook2>
         //           child: HistoryMonth(),
         //         )));*/
 
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (BuildContext context) => SetMonthBudget(),
-          ),
-        );
+        // Navigator.of(context).push(
+        //   MaterialPageRoute(
+        //     builder: (BuildContext context) => SetMonthBudget(),
+        //   ),
+        // );
       },
       child: Container(
         height: 150,
