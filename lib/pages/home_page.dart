@@ -183,7 +183,7 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
                     flexibleSpace: FlexibleSpaceBar(
                       background: Container(
                           padding: const EdgeInsets.symmetric(horizontal: 10),
-                          child: HeaderWidget()
+                          child: headerWidget()
                       ),
                     ),
                     elevation: 0,
@@ -191,7 +191,7 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
                   ),
                 ];
               },
-              body : LowPriceProduct()
+              body : lowPriceProduct()
             ),
           )
         ],
@@ -199,10 +199,10 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
     );
   }
 
-  Widget HeaderWidget() {
+  Widget headerWidget() {
     return Column(
       children: [
-        SizedBox(height: 144, child: SaleCard()),
+        SizedBox(height: 144, child: saleCard()),
         const SizedBox(
           height: 10,
         ),
@@ -225,7 +225,7 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
         const SizedBox(
           height: 10,
         ),
-        RecommendCard(),
+        recommendCard(),
         const SizedBox(
           height: 10,
         ),
@@ -272,7 +272,7 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
     );
   }
 
-  Widget SaleCard() {
+  Widget saleCard() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -350,7 +350,7 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
     );
   }
 
-  Widget RecommendCard() {
+  Widget recommendCard() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -413,14 +413,14 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
     );
   }
 
-  Widget LowPriceProduct() {
+  Widget lowPriceProduct() {
     return Consumer<HomeProvider>(
       builder: (context, provider, child) {
         return SmartRefresher(
             enablePullUp: true,
-            controller: this.refreshController,
-            onRefresh: this.onRefresh,
-            onLoading: this.onLoading,
+            controller: refreshController,
+            onRefresh: onRefresh,
+            onLoading: onLoading,
             child: _homeProvider.isLoading ? const Center(
               child: CircularProgressIndicator(),) :
             GridView.builder(
@@ -462,7 +462,7 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
                         Container(
                           padding: const EdgeInsets.only(left: 13, top: 13, right: 13, bottom: 13),
                           width: 180,
-                          decoration: BoxDecoration(
+                          decoration: const BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.only(bottomLeft: Radius.circular(8), bottomRight: Radius.circular(8)),
                           ),
