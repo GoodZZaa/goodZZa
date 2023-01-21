@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:good_zza_code_in_songdo/pages/home_search_page.dart';
 import 'package:good_zza_code_in_songdo/provider/history_month_provider.dart';
 import 'package:good_zza_code_in_songdo/provider/home_provider.dart';
@@ -25,26 +24,19 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
   late TabController _tabController;
 
   final ScrollController scrollController = ScrollController();
-
-
-  // List<CheapestMart> cheapestmart = [];
-  // List<CheapestProduct> cheapestproduct = [];
-  // bool isLoading = true;
-  // int pageNumber = 1;
-  // int totalCount = 100;
-  // HomepageGateway homepageGateway = HomepageGateway();
-
   final RefreshController refreshController = RefreshController(initialLoadStatus: LoadStatus.idle);
 
   void onRefresh() {
     _homeProvider.pageNumber = 1;
     _homeProvider.cheapestproduct.clear();
 
-    _homeProvider.readCheapestProduct().then((_) {
-      refreshController.refreshCompleted(resetFooterState: true);
-    }).catchError((_) {
-      refreshController.refreshFailed();
-    });
+    _homeProvider.readCheapestProduct()
+      .then((_) {
+        refreshController.refreshCompleted(resetFooterState: true);
+      })
+      .catchError((_) {
+        refreshController.refreshFailed();
+      });
   }
 
   void onLoading() {
@@ -59,32 +51,12 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
     }
   }
 
-
-  // Future readCheapestProduct() async {
-  //   cheapestproduct.addAll(await homepageGateway.getCheapestProduct(isFirst : true, pageNumber: pageNumber));
-  //   pageNumber++;
-  //   setState(() {
-  //     isLoading = false;
-  //   });
-  // }
-
-
-
-
-
-
   @override
   void initState() {
     super.initState();
 
     _homeProvider = Provider.of<HomeProvider>(context, listen: false);
     _homeProvider.init();
-
-    // readCheapestProduct().then((value) {
-    //   setState(() {
-    //     isLoading = false;
-    //   });
-    // });
 
     _accountProvider = Provider.of<AccountProvider>(context, listen: false);
     _accountProvider.init();
@@ -112,200 +84,198 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
     _accountProvider = Provider.of<AccountProvider>(context);
 
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                SizedBox(
-                  height: 20,
-                  width: 40,
-                ),
-                Column(
-                  children: [
-                    Row(
-                      children: [
+      body: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const SizedBox(
+                height: 20,
+                width: 40,
+              ),
+              Column(
+                children: [
+                  Row(
+                    children: const [
+                      Icon(
+                        Icons.location_on,
+                        size: 20,
+                      ),
+                      SizedBox(
+                        width: 5,
+                      ),
+                      Text(
+                        "서울시 종로구",
+                        style: TextStyle(fontSize: 16),
+                      )
+                    ],
+                  ),
+                  const Text(
+                    "1.5km 이내",
+                    style: TextStyle(fontSize: 14),
+                  )
+                ],
+              ),
+              SizedBox(
+                width: 60,
+                child: IconButton(
+                  icon: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: const [
                         Icon(
-                          Icons.location_on,
-                          size: 20,
+                          Icons.shopping_cart,
+                          size: 28,
+                          color: Color.fromRGBO(200, 200, 203, 1),
                         ),
-                        SizedBox(
-                          width: 5,
-                        ),
-                        Text(
-                          "서울시 종로구",
-                          style: TextStyle(fontSize: 16),
-                        )
-                      ],
-                    ),
-                    Text(
-                      "1.5km 이내",
-                      style: TextStyle(fontSize: 14),
-                    )
-                  ],
+                      ]),
+                  onPressed: () {},
                 ),
-                Container(
-                  width: 60,
-                  child: IconButton(
-                    icon: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Icon(
-                            Icons.shopping_cart,
-                            size: 28,
-                            color: Color.fromRGBO(200, 200, 203, 1),
-                          ),
-                        ]),
-                    onPressed: () {},
+              ),
+            ],
+          ),
+          SizedBox(
+            width: 390,
+            height: 40,
+            child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: OutlinedButton.icon(
+                      onPressed: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => ChangeNotifierProvider(
+                                  create: (context) => SearchProvider(),
+                                  child: const HomeSearchPage(),
+                                )));
+                      },
+                      icon: const Icon(
+                        Icons.search,
+                        color: Color.fromRGBO(147, 147, 147, 1),
+                      ),
+                      label: const Text(
+                        "물건을 검색해보세요.                                                             "
+                        "                                                      ",
+                        style: TextStyle(
+                            color: Color.fromRGBO(200, 200, 203, 1)),
+                      ),
+                    ),
+                  )
+                ]),
+          ),
+          const SizedBox(
+            width: 5,
+            height: 10,
+          ),
+          Expanded(
+            child: NestedScrollView(
+              controller: scrollController,
+              physics: const BouncingScrollPhysics(),
+              headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+                return [
+                  SliverAppBar(
+                    pinned: false,
+                    forceElevated: innerBoxIsScrolled,
+                    expandedHeight: 300.0,
+                    // appbar 크기
+                    flexibleSpace: FlexibleSpaceBar(
+                      background: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          child: HeaderWidget()
+                      ),
+                    ),
+                    elevation: 0,
+                    backgroundColor: Colors.white,
+                  ),
+                ];
+              },
+              body : LowPriceProduct()
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget HeaderWidget() {
+    return Column(
+      children: [
+        SizedBox(width: 390, height: 144, child: SaleCard()),
+        const SizedBox(
+          height: 10,
+        ),
+        Container(
+            margin: const EdgeInsets.only(left: 20),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: const [
+                Text(
+                  '최저가 마트 추천',
+                  style: TextStyle(fontSize: 14),
+                ),
+                SizedBox(
+                  width: 10,
+                ),
+                Text(
+                  '1.5km',
+                  style: TextStyle(fontSize: 14),
+                )
+              ],
+            )
+        ),
+        const SizedBox(
+          height: 10,
+        ),
+        RecommendCard(),
+        const SizedBox(
+          height: 10,
+        ),
+        SizedBox(
+          width: 390,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              const Align(
+                child: Text(
+                  '현재 최저가 상품',
+                  style: TextStyle(fontSize: 14),
+                ),
+              ),
+              // Expanded(child: SizedBox()),
+              Align(
+                alignment: Alignment.centerRight,
+                child: Container(
+                  padding: const EdgeInsets.only(left: 5, right: 5),
+                  decoration: BoxDecoration(
+                      border: Border.all(
+                          color: const Color.fromRGBO(200, 200, 203, 1)),
+                      borderRadius: const BorderRadius.all(Radius.circular(8))),
+                  child: Row(
+                    children: const [
+                      Text(
+                        'Filters',
+                        style: TextStyle(fontSize: 12),
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      Icon(
+                        Icons.filter_list_alt,
+                        size: 12,
+                      )
+                    ],
                   ),
                 ),
-              ],
-            ),
-            Container(
-              width: 390,
-              height: 40,
-              child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      child: OutlinedButton.icon(
-                        onPressed: () {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => ChangeNotifierProvider(
-                                    create: (context) => SearchProvider(),
-                                    child: const HomeSearchPage(),
-                                  )));
-                        },
-                        icon: Icon(
-                          Icons.search,
-                          color: Color.fromRGBO(147, 147, 147, 1),
-                        ),
-                        label: Text(
-                          "물건을 검색해보세요.                                                             "
-                          "                                                      ",
-                          style: TextStyle(
-                              color: Color.fromRGBO(200, 200, 203, 1)),
-                        ),
-                      ),
-                    )
-                  ]),
-            ),
-            SizedBox(
-              width: 5,
-              height: 10,
-            ),
-            Container(width: 390, height: 144, child: SaleCard()),
-            // SizedBox(
-            //   height: 10,
-            // ),
-            // Container(
-            //     margin: EdgeInsets.only(left: 20),
-            //     child: Row(
-            //       mainAxisAlignment: MainAxisAlignment.start,
-            //       children: [
-            //         Text(
-            //           '최저가 마트 추천',
-            //           style: TextStyle(fontSize: 14),
-            //         ),
-            //         SizedBox(
-            //           width: 10,
-            //         ),
-            //         Text(
-            //           '1.5km',
-            //           style: TextStyle(fontSize: 14),
-            //         )
-            //       ],
-            //     )),
-            // SizedBox(
-            //   height: 10,
-            // ),
-            // RecommendCard(),
-            // SizedBox(
-            //   height: 10,
-            // ),
-            // Container(
-            //   width: 390,
-            //   child: Row(
-            //     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            //     children: [
-            //       Align(
-            //         child: Text(
-            //           '현재 최저가 상품',
-            //           style: TextStyle(fontSize: 14),
-            //         ),
-            //       ),
-            //       // Expanded(child: SizedBox()),
-            //       Align(
-            //         alignment: Alignment.centerRight,
-            //         child: Container(
-            //           padding: EdgeInsets.only(left: 5, right: 5),
-            //           decoration: BoxDecoration(
-            //               border: Border.all(
-            //                   color: Color.fromRGBO(200, 200, 203, 1)),
-            //               borderRadius: BorderRadius.all(Radius.circular(8))),
-            //           child: Row(
-            //             children: [
-            //               Text(
-            //                 'Filters',
-            //                 style: TextStyle(fontSize: 12),
-            //               ),
-            //               SizedBox(
-            //                 width: 10,
-            //               ),
-            //               Icon(
-            //                 Icons.filter_list_alt,
-            //                 size: 12,
-            //               )
-            //             ],
-            //           ),
-            //         ),
-            //       )
-            //     ],
-            //   ),
-            // ),
-            // SizedBox(
-            //   height: 10,
-            // ),
-            // Container(
-            //     margin: EdgeInsets.only(left: 20, right: 20),
-            //     child: Row(
-            //       children: [
-            //         // LowPriceProduct(),
-            //         Expanded(child: SizedBox()),
-            //         // LowPriceProduct(),
-            //       ],
-            //     )),
-            // SizedBox(
-            //   height: 10,
-            // ),
-            // Container(
-            //     margin: EdgeInsets.only(left: 20, right: 20),
-            //     child: Row(
-            //       children: [
-            //         // LowPriceProduct(),
-            //         Expanded(child: SizedBox()),
-            //         // LowPriceProduct(),
-            //       ],
-            //     )),
-            // SizedBox(
-            //   height: 10,
-            // ),
-            // Container(
-            //     margin: EdgeInsets.only(left: 20, right: 20),
-            //     child: Row(
-            //       children: [
-            //         // LowPriceProduct(),
-            //         Expanded(child: SizedBox()),
-            //         // LowPriceProduct(),
-            //       ],
-            //     )),
-          ],
+              )
+            ],
+          ),
         ),
-      ),
+        const SizedBox(
+          height: 10,
+        ),
+      ],
     );
   }
 
@@ -324,65 +294,62 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
                         //지금 현재 년도와 월을 넘겨준다.
                       )));
             },
-            child: Expanded(
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                  image: const DecorationImage(
-                    image: AssetImage('assets/images/img_main_frame.png'),
-                    fit: BoxFit.cover,
-                  ),
+            child: Container(
+              height: 144,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                image: const DecorationImage(
+                  image: AssetImage('assets/images/img_main_frame.png'),
+                  fit: BoxFit.cover,
                 ),
-                padding:
-                    const EdgeInsets.symmetric(vertical: 18, horizontal: 16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      '${_accountProvider.selectedDate.month}월 총 예산',
+              ),
+              padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    '${_accountProvider.selectedDate.month}월 총 예산',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 13,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                  Text(
+                      '${_accountProvider.accountBudget?.totalBalance ?? '-'}원',
                       style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w700,
+                      )),
+                  Container(
+                    alignment: Alignment.centerRight,
+                    child: const Text(
+                      '남은잔액',
+                      style: TextStyle(
                         color: Colors.white,
                         fontSize: 13,
                         fontWeight: FontWeight.w400,
                       ),
+                      textAlign: TextAlign.right,
                     ),
-                    Text(
-                        '${_accountProvider.accountBudget?.totalBalance ?? '-'}원',
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
-                          fontWeight: FontWeight.w700,
-                        )),
-                    Container(
+                  ),
+                  Container(
                       alignment: Alignment.centerRight,
-                      child: const Text(
-                        '남은잔액',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 13,
-                          fontWeight: FontWeight.w400,
-                        ),
-                        textAlign: TextAlign.right,
-                      ),
-                    ),
-                    Container(
-                        alignment: Alignment.centerRight,
-                        child: Text(
-                            '${_accountProvider.accountBudget?.remainingBalance ?? '-'}원',
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 36,
-                              fontWeight: FontWeight.w700,
-                            ),
-                            textAlign: TextAlign.right))
-                  ],
-                ),
-                //child: Expanded(
-                //child: Image.asset('assets/images/img_main_frame.png')),
-
-                height: 144,
+                      child: Text(
+                          '${_accountProvider.accountBudget?.remainingBalance ?? '-'}원',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 36,
+                            fontWeight: FontWeight.w700,
+                          ),
+                          textAlign: TextAlign.right))
+                ],
               ),
+              //child: Expanded(
+              //child: Image.asset('assets/images/img_main_frame.png')),
+
             ),
           ),
         )
@@ -398,7 +365,7 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
           width: 60,
           height: 60,
           decoration: const BoxDecoration(
-              image: const DecorationImage(
+              image: DecorationImage(
                 image: AssetImage('assets/images/daon_sikjajae_mart.jpeg'),
                 fit: BoxFit.cover,
               ),
@@ -409,7 +376,7 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
           width: 60,
           height: 60,
           decoration: const BoxDecoration(
-              image: const DecorationImage(
+              image: DecorationImage(
                 image: AssetImage('assets/images/hanaro_mart.jpeg'),
                 fit: BoxFit.cover,
               ),
@@ -420,7 +387,7 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
           width: 60,
           height: 60,
           decoration: const BoxDecoration(
-              image: const DecorationImage(
+              image: DecorationImage(
                 image: AssetImage('assets/images/jangbogo_sikjajae_mart.jpeg'),
                 fit: BoxFit.cover,
               ),
@@ -431,7 +398,7 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
           width: 60,
           height: 60,
           decoration: const BoxDecoration(
-              image: const DecorationImage(
+              image: DecorationImage(
                 image: AssetImage('assets/images/lotte_mart.jpeg'),
                 fit: BoxFit.cover,
               ),
@@ -442,7 +409,7 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
           width: 60,
           height: 60,
           decoration: const BoxDecoration(
-              image: const DecorationImage(
+              image: DecorationImage(
                 image: AssetImage('assets/images/neo_mart.jpeg'),
                 fit: BoxFit.cover,
               ),
@@ -454,85 +421,85 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
   }
 
   Widget LowPriceProduct() {
-    return SmartRefresher(
-      enablePullUp: true,
-      controller: this.refreshController,
-      //onRefresh: this.onRefresh,
-      onLoading: this.onLoading,
-      child: _homeProvider.isLoading ? Center(child: CircularProgressIndicator(),) :
+    return Consumer<HomeProvider>(
+      builder: (context, provider, child) {
+        return SmartRefresher(
+            enablePullUp: true,
+            controller: this.refreshController,
+            onRefresh: this.onRefresh,
+            onLoading: this.onLoading,
+            child: _homeProvider.isLoading ? const Center(
+              child: CircularProgressIndicator(),) :
 
-      GridView.builder(gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        childAspectRatio: 2/3,
-        crossAxisSpacing: 20,
-        mainAxisSpacing: 20,
-      ),
+            GridView.builder(
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  childAspectRatio: 2 / 3,
+                  crossAxisSpacing: 20,
+                  mainAxisSpacing: 20,),
 
-          itemCount: _homeProvider.cheapestproduct.length,
-          itemBuilder: (context, index){
-            return Container(
-              width: 180,
-              height: 260,
-              decoration:
-              BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(8))),
-              child: Column(
-                children: [
-                  Expanded(
-                      flex: 1,
-                      child: Container(
-                        width: 180,
-                        height: 130,
-                        color: Colors.white,
-                        child: Image.network(_homeProvider.cheapestproduct[index].imageUrl,
-                            fit: BoxFit.cover),
+                physics: const BouncingScrollPhysics(),
+                itemCount: _homeProvider.cheapestproduct.length,
+                itemBuilder: (context, index){
+                  return Container(
+                    width: 180,
+                    height: 260,
+                    decoration: const BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(8))),
+                    child: Column(
+                      children: [
+                        Container(
+                          width: 180,
+                          height: 130,
+                          color: Colors.white,
+                          child: Image.network(_homeProvider.cheapestproduct[index].imageUrl,
+                              fit: BoxFit.cover),
 
-                      )),
-                  Expanded(
-                      flex: 1,
-                      child: Container(
-                        padding:
-                        EdgeInsets.only(left: 13, top: 13, right: 13, bottom: 13),
-                        color: Colors.white,
-                        child: SingleChildScrollView(
+                        ),
+                        Container(
+                          padding: const EdgeInsets.only(left: 13, top: 13, right: 13, bottom: 13),
+                          width: 180,
+                          color: Colors.white,
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(_homeProvider.cheapestproduct[index].productName,
-                                style: TextStyle(fontSize: 12),),
-                              SizedBox(
+                                style: const TextStyle(fontSize: 12),),
+                              const SizedBox(
                                 height: 10,
                               ),
-                              Text(_homeProvider.cheapestproduct[index].price.toString()+'원',
-                                style: TextStyle(
+                              Text('${_homeProvider.cheapestproduct[index].price}원',
+                                style: const TextStyle(
                                     fontSize: 14, fontWeight: FontWeight.bold),),
 
-                              SizedBox(
+                              const SizedBox(
                                 height: 10,
                               ),
                               Container(
                                   color: Colors.white,
                                   child: Align(
                                       alignment: Alignment.center,
-                                      child: Expanded(
-                                        child: TextButton(
-                                            onPressed: () {},
-                                            style: TextButton.styleFrom(
-                                                backgroundColor:
-                                                Color.fromRGBO(147, 147, 147, 1)),
-                                            child: Text(
-                                              "          Add to cart          ",
-                                              style: TextStyle(
-                                                  color: Colors.white, fontSize: 12),
-                                            )),
-                                      )))
+                                      child: TextButton(
+                                          onPressed: () {},
+                                          style: TextButton.styleFrom(
+                                              backgroundColor:
+                                              const Color.fromRGBO(147, 147, 147, 1)),
+                                          child: const Text(
+                                            "          Add to cart          ",
+                                            style: TextStyle(
+                                                color: Colors.white, fontSize: 12),
+                                          )
+                                      )
+                                  )
+                              )
                             ],
                           ),
-                        ),
-                      ))
-                ],
-              ),
-            );
-          }),
+                        )
+                      ],
+                    ),
+                  );
+                }),
+        );
+      }
     );
   }
 }

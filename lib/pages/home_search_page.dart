@@ -24,7 +24,7 @@ class _HomeSearchPage extends State<HomeSearchPage> {
 
   @override
   void dispose() {
-    _searchProvider.dispose();
+    // _searchProvider.dispose();
     _textEditingController.dispose();
     super.dispose();
   }

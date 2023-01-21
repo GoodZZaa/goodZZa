@@ -4,8 +4,8 @@ import 'package:good_zza_code_in_songdo/pages/set_monthbudget.dart';
 import 'package:good_zza_code_in_songdo/utills/day_to_weekday.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+
 import '../provider/account_book_provider.dart';
-import 'history_month.dart';
 
 class AccountBook2 extends StatefulWidget {
   const AccountBook2({super.key});
@@ -276,26 +276,6 @@ class _AccountBookState extends State<AccountBook2>
       ),
     );
   }
-
-  // Widget failMessageWidget() {
-  //   switch (_accountProvider.state) {
-  //     case AccountState.loading:
-  //       return const Center(
-  //         child: CircularProgressIndicator(
-  //             color: Color.fromARGB(0xFF, 0xFB, 0x95, 0x32)),
-  //       );
-  //     case AccountState.fail:
-  //       return const Center(
-  //           child:
-  //               Text("원하는 경로가 없어요!\n다시 검색해주세요", textAlign: TextAlign.center));
-
-  //     default:
-  //       return const Center(
-  //         child: CircularProgressIndicator(
-  //             color: Color.fromARGB(0xFF, 0xFB, 0x95, 0x32)),
-  //       );
-  //   }
-  // }
 }
 
 class AccountBookHeaderDelegate extends SliverPersistentHeaderDelegate {

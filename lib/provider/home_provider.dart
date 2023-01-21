@@ -14,6 +14,7 @@ class HomeProvider extends ChangeNotifier {
   HomepageGateway homepageGateway = HomepageGateway();
 
   void init() {
+    readCheapestProduct();
   }
 
   Future readCheapestProduct() async {
