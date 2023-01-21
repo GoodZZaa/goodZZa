@@ -1,3 +1,5 @@
+import 'dart:io';
+import 'package:dio/dio.dart';
 import 'package:good_zza_code_in_songdo/models/month_budget.dart';
 import 'package:good_zza_code_in_songdo/models/network_result.dart';
 import 'package:good_zza_code_in_songdo/models/payments.dart';
@@ -76,9 +78,13 @@ class AccountService {
     }
   }
 
-  Future<void> postReceiptImg(int year, int month, int day, String img) async {
+  Future<void> postReceiptImg(int year, int month, int day, File file) async {
+    FormData data = FormData.fromMap({
+      'file': await MultipartFile.fromFile(file.path,
+          filename: file.path.split('/').last)
+    });
     NetWorkResult result = await DioClient()
-        .post('$_baseUrl/api/v1/account-book/receipt-image', {'img': img});
+        .post('$_baseUrl/api/v1/account-book/receipt-image', {'img': data});
 
     if (result.result == Result.success) {
       // return result.response;

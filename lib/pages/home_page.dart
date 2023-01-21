@@ -178,11 +178,11 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
                   SliverAppBar(
                     pinned: false,
                     forceElevated: innerBoxIsScrolled,
-                    expandedHeight: 300.0,
+                    expandedHeight: 280.0,
                     // appbar 크기
                     flexibleSpace: FlexibleSpaceBar(
                       background: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
                           child: HeaderWidget()
                       ),
                     ),
@@ -202,28 +202,25 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
   Widget HeaderWidget() {
     return Column(
       children: [
-        SizedBox(width: 390, height: 144, child: SaleCard()),
+        SizedBox(height: 144, child: SaleCard()),
         const SizedBox(
           height: 10,
         ),
-        Container(
-            margin: const EdgeInsets.only(left: 20),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: const [
-                Text(
-                  '최저가 마트 추천',
-                  style: TextStyle(fontSize: 14),
-                ),
-                SizedBox(
-                  width: 10,
-                ),
-                Text(
-                  '1.5km',
-                  style: TextStyle(fontSize: 14),
-                )
-              ],
+        Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: const [
+            Text(
+              '최저가 마트 추천',
+              style: TextStyle(fontSize: 14),
+            ),
+            SizedBox(
+              width: 10,
+            ),
+            Text(
+              '1.5km',
+              style: TextStyle(fontSize: 14),
             )
+          ],
         ),
         const SizedBox(
           height: 10,
@@ -233,9 +230,8 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
           height: 10,
         ),
         SizedBox(
-          width: 390,
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               const Align(
                 child: Text(
@@ -243,11 +239,11 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
                   style: TextStyle(fontSize: 14),
                 ),
               ),
-              // Expanded(child: SizedBox()),
+              const Expanded(child: SizedBox()),
               Align(
                 alignment: Alignment.centerRight,
                 child: Container(
-                  padding: const EdgeInsets.only(left: 5, right: 5),
+                  // padding: const EdgeInsets.only(left: 5, right: 5),
                   decoration: BoxDecoration(
                       border: Border.all(
                           color: const Color.fromRGBO(200, 200, 203, 1)),
@@ -271,9 +267,6 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
               )
             ],
           ),
-        ),
-        const SizedBox(
-          height: 10,
         ),
       ],
     );
@@ -359,7 +352,7 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
 
   Widget RecommendCard() {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Container(
           width: 60,
@@ -430,35 +423,49 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
             onLoading: this.onLoading,
             child: _homeProvider.isLoading ? const Center(
               child: CircularProgressIndicator(),) :
-
             GridView.builder(
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
-                  childAspectRatio: 2 / 3,
-                  crossAxisSpacing: 20,
-                  mainAxisSpacing: 20,),
-
+                  childAspectRatio: 2 / 3,),
                 physics: const BouncingScrollPhysics(),
                 itemCount: _homeProvider.cheapestproduct.length,
                 itemBuilder: (context, index){
                   return Container(
                     width: 180,
                     height: 260,
-                    decoration: const BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(8))),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      boxShadow: const <BoxShadow>[
+                        BoxShadow(
+                          color: Colors.black54,
+                          blurRadius: 25.0,
+                          spreadRadius: -30.0,
+                          offset: Offset(0.0, 0.0),
+                        )
+                      ],
+                    ),
+                    padding: const EdgeInsets.only(top : 10),
                     child: Column(
                       children: [
                         Container(
                           width: 180,
                           height: 130,
-                          color: Colors.white,
-                          child: Image.network(_homeProvider.cheapestproduct[index].imageUrl,
-                              fit: BoxFit.cover),
-
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: const BorderRadius.only(topLeft: Radius.circular(8), topRight: Radius.circular(8)),
+                            image: DecorationImage(
+                              image: NetworkImage(_homeProvider.cheapestproduct[index].imageUrl),
+                              fit: BoxFit.cover,
+                            ),
+                          )
                         ),
                         Container(
                           padding: const EdgeInsets.only(left: 13, top: 13, right: 13, bottom: 13),
                           width: 180,
-                          color: Colors.white,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.only(bottomLeft: Radius.circular(8), bottomRight: Radius.circular(8)),
+                          ),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
