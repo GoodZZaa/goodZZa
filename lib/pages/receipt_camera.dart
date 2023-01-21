@@ -45,7 +45,7 @@ class TakePictureScreenState extends State<TakePictureScreen> {
     }
 
     _controller = CameraController(
-        _camera, ResolutionPreset.max // 가장 높은 해상도의 기능을 쓸 수 있도록 합니다.
+        _camera, ResolutionPreset.medium // 가장 높은 해상도의 기능을 쓸 수 있도록 합니다.
         );
     _controller!
         .initialize()

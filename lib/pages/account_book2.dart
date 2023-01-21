@@ -57,13 +57,13 @@ class _AccountBookState extends State<AccountBook2>
     // }
 
     if (_accountProvider.budgetState == AccountState.success &&
-        _accountProvider.budgetState == AccountState.success) {
+        _accountProvider.payoutState == AccountState.success) {
       return successWidget();
-    } else if (_accountProvider.budgetState == AccountState.loading ||
-        _accountProvider.budgetState == AccountState.loading) {
-      return loadingWidget();
-    } else {
+    } else if (_accountProvider.budgetState == AccountState.fail &&
+        _accountProvider.payoutState == AccountState.fail) {
       return failWidget();
+    } else {
+      return loadingWidget();
     }
   }
 
@@ -107,7 +107,7 @@ class _AccountBookState extends State<AccountBook2>
       );
 
   Widget failWidget() => const Center(
-        child: Text('데이터 로딩중'),
+        child: CircularProgressIndicator(),
       );
 
   Widget paymentTabView() {
