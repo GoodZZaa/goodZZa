@@ -48,69 +48,108 @@ class _SetMonthBudgetState extends State<SetMonthBudget> {
         ),
       ), //AppBar
       backgroundColor: Colors.white,
+
       body: Column(
         children: <Widget>[
           Expanded(
             child: Container(
-              child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: <Widget>[
-                    Container(child: Text("이번 달 예산은 얼마인가요")),
-                    Container(
-                      padding: EdgeInsets.all(20),
-                      alignment: Alignment.centerRight,
-                      child: Text(
+              child: Column(children: <Widget>[
+                Row(
+                  children: [
+                    Padding(padding: EdgeInsets.all(14)),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                            alignment: Alignment.centerLeft,
+                            child: Text("이번 달 예산은",
+                                style: TextStyle(
+                                    fontSize: 28,
+                                    fontWeight: FontWeight.bold))),
+                        SizedBox(height: 1),
+                        Container(
+                            alignment: Alignment.centerLeft,
+                            child: Text("얼마인가요?",
+                                style: TextStyle(
+                                    fontSize: 28,
+                                    fontWeight: FontWeight.bold))),
+                      ],
+                    ),
+                  ],
+                ),
+                Container(
+                  padding: EdgeInsets.all(100),
+                  alignment: Alignment.center,
+                  child: Row(
+                    children: [
+                      Text(
                         userInput,
-                        style: TextStyle(fontSize: 18, color: Colors.black),
+                        style: TextStyle(
+                            fontSize: 36,
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold),
                       ),
-                    ),
-                    Container(
-                      child: Text("이번달 하루 생활비 100000원"),
-                    ),
-                  ]),
+                      Text(
+                        '원',
+                        style: TextStyle(
+                            fontSize: 36,
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  ),
+                ),
+                Container(
+                  padding: EdgeInsets.all(14),
+                  alignment: Alignment.centerLeft,
+                  child: Text('이번달 하루 생활비' + userInput + '원'),
+                ),
+              ]),
             ),
           ),
-          Expanded(
-            flex: 3,
-            child: Container(
-              child: GridView.builder(
-                  itemCount: buttons.length,
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 3),
-                  itemBuilder: (BuildContext context, int index) {
-                    // Delete Button
-                    if (index == 11) {
-                      return MyButton(
-                        buttontapped: () {
-                          setState(() {
-                            userInput =
-                                userInput.substring(0, userInput.length - 1);
-                          });
-                        },
-                        buttonText: buttons[index],
-                        color: Colors.white,
-                        textColor: Colors.black,
-                      );
-                    }
-                    // other buttons
-                    else {
-                      return MyButton(
-                        buttontapped: () {
-                          setState(() {
-                            userInput += buttons[index];
-                          });
-                        },
-                        buttonText: buttons[index],
-                        color: isOperator(buttons[index])
-                            ? Colors.blueAccent
-                            : Colors.white,
-                        textColor: isOperator(buttons[index])
-                            ? Colors.white
-                            : Colors.black,
-                      );
-                    }
-                  }), // GridView.builder
-            ),
+          Container(
+            height: MediaQuery.of(context).size.height * 0.35,
+            child: GridView.builder(
+                itemCount: buttons.length,
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 3,
+                  childAspectRatio: MediaQuery.of(context).size.width /
+                      (MediaQuery.of(context).size.height / 4),
+                ),
+                itemBuilder: (BuildContext context, int index) {
+                  // Delete Button
+                  if (index == 11) {
+                    return MyButton(
+                      buttontapped: () {
+                        setState(() {
+                          userInput =
+                              userInput.substring(0, userInput.length - 1);
+                        });
+                      },
+                      buttonText: buttons[index],
+                      color: Colors.white,
+                      textColor: Colors.black,
+                    );
+                  }
+                  // other buttons
+                  else {
+                    return MyButton(
+                      buttontapped: () {
+                        setState(() {
+                          userInput += buttons[index];
+                          print(userInput);
+                        });
+                      },
+                      buttonText: buttons[index],
+                      color: isOperator(buttons[index])
+                          ? Colors.blueAccent
+                          : Colors.white,
+                      textColor: isOperator(buttons[index])
+                          ? Colors.white
+                          : Colors.black,
+                    );
+                  }
+                }), // GridView.builder
           ),
         ],
       ),
@@ -126,6 +165,14 @@ class _SetMonthBudgetState extends State<SetMonthBudget> {
 
 // function to calculate the input operation
 
+}
+
+Widget? DailyBudget(String? userInput) {
+  double reUserInput = double.parse(userInput!);
+  double dailyBudget = reUserInput / 30;
+
+  String res = "";
+  res = (dailyBudget).toString();
 }
 
 // creating Stateless Widget for buttons
