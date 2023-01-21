@@ -26,7 +26,7 @@ class BottomNavigation extends StatelessWidget {
           HomePage(),
           Container(),
           TakePictureScreen(),
-          Container(),
+          AccountBook2(),
           Container()
         ].elementAt(_bottomNavigationProvider.currentPage),
       ),
