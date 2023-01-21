@@ -1,3 +1,6 @@
+import 'dart:core';
+import 'dart:core';
+
 import 'package:flutter/material.dart';
 
 class SetMonthBudget extends StatefulWidget {
@@ -102,7 +105,12 @@ class _SetMonthBudgetState extends State<SetMonthBudget> {
                 Container(
                   padding: EdgeInsets.all(14),
                   alignment: Alignment.centerLeft,
-                  child: Text('이번달 하루 생활비' + userInput + '원'),
+                  child: (userInput == '')
+                      ? Text('이번달 하루 생활비 0원')
+                      : Text(
+                          '이번달 하루 생활비' + DailyBudget(userInput) + '원',
+                          style: TextStyle(color: Colors.red),
+                        ),
                 ),
               ]),
             ),
@@ -167,12 +175,14 @@ class _SetMonthBudgetState extends State<SetMonthBudget> {
 
 }
 
-Widget? DailyBudget(String? userInput) {
+String DailyBudget(String? userInput) {
   double reUserInput = double.parse(userInput!);
   double dailyBudget = reUserInput / 30;
 
   String res = "";
-  res = (dailyBudget).toString();
+  res = (dailyBudget.floor()).toString();
+
+  return res;
 }
 
 // creating Stateless Widget for buttons
