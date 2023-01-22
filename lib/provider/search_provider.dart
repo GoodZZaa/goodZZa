@@ -15,9 +15,10 @@ class SearchProvider extends ChangeNotifier {
   int _pageNumber = 0;
   bool isLoading = false;
   bool _hasNextPage = true;
+  int selected = -1;
 
   // bool _isLoadMoreRunning = false;
-  String _previousKeyword = "";
+  String searchedKeyword = "";
   List<MartProduct> _products = [];
 
   List<MartProduct> get products => _products;
@@ -30,7 +31,7 @@ class SearchProvider extends ChangeNotifier {
   }
 
   fetchNext() {
-    _pageLoad(_previousKeyword);
+    _pageLoad(searchedKeyword);
   }
 
   void _pageLoad(String keyword) async {
@@ -72,12 +73,17 @@ class SearchProvider extends ChangeNotifier {
   }
 
   search(String keyword) async {
-    if (_previousKeyword == keyword) {
+    if (searchedKeyword == keyword) {
       return;
     }
     _init();
 
     _pageLoad(keyword);
-    _previousKeyword = keyword;
+    searchedKeyword = keyword;
+  }
+
+  select(int index) async {
+    selected = index;
+    notifyListeners();
   }
 }
