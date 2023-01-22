@@ -2,6 +2,8 @@ import 'dart:core';
 
 import 'package:flutter/material.dart';
 
+import 'monthbudget_list.dart';
+
 class SetMonthBudget extends StatefulWidget {
   const SetMonthBudget({Key? key}) : super(key: key);
 
@@ -36,7 +38,7 @@ class _SetMonthBudgetState extends State<SetMonthBudget> {
         centerTitle: true,
         leading: IconButton(
             icon: Icon(Icons.arrow_back),
-            color: Colors.lightBlue,
+            color: Colors.deepPurpleAccent,
             onPressed: () => Navigator.pop(context)),
         backgroundColor: Colors.white,
         elevation: 0.0,
@@ -114,6 +116,13 @@ class _SetMonthBudgetState extends State<SetMonthBudget> {
                             ),
                     ),
                     InkWell(
+                        onTap: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (BuildContext context) => TodoList(),
+                            ),
+                          );
+                        },
                         child: Container(
                             padding: const EdgeInsets.all(3),
                             child: Row(children: [
