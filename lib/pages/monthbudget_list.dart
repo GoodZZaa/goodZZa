@@ -9,18 +9,33 @@ class Monthbudget_List extends StatefulWidget {
   Monthbudget_List(this.userInput, {Key? key}) : super(key: key);
 
   @override
-  State<Monthbudget_List> createState() => _TodoListState();
+  State<Monthbudget_List> createState() => _Monthbudget_List_State();
 }
 
-class _TodoListState extends State<Monthbudget_List> {
+class Data {
+  String label;
+  Color color;
+  Data(this.label, this.color);
+}
+
+class _Monthbudget_List_State extends State<Monthbudget_List> {
   List<MonthbudgetList> monthbudgetList = [];
   bool isLoading = true;
   MonthbudgetListDefault monthbudgetListDefault = MonthbudgetListDefault();
 
+  int? _selectedIndex;
+
+  final List<Data> _choiceChipsList = [
+    Data("식료품", Colors.lightBlueAccent),
+    Data("교통비", Colors.amberAccent),
+    Data("생필품", Colors.lime),
+    Data("취미", Colors.cyan),
+    Data("기타", Colors.orange)
+  ];
+
   @override
   void initState() {
     super.initState();
-
     monthbudgetList = monthbudgetListDefault.getmonthbudgetList();
     setState(() {
       isLoading = false;
@@ -30,6 +45,29 @@ class _TodoListState extends State<Monthbudget_List> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(appBar: monthbudget_list_title(), body: bodyWidget());
+  }
+
+  List<Widget> choiceChips() {
+    List<Widget> chips = [];
+    for (int i = 0; i < _choiceChipsList.length; i++) {
+      Widget item = Padding(
+        padding: const EdgeInsets.only(left: 10, right: 5),
+        child: ChoiceChip(
+          label: Text(_choiceChipsList[i].label),
+          labelStyle: const TextStyle(color: Colors.white),
+          backgroundColor: _choiceChipsList[i].color,
+          selected: _selectedIndex == i,
+          selectedColor: Color.fromRGBO(95, 89, 225, 1),
+          onSelected: (bool value) {
+            setState(() {
+              _selectedIndex = i;
+            });
+          },
+        ),
+      );
+      chips.add(item);
+    }
+    return chips;
   }
 
   AppBar monthbudget_list_title() {
@@ -69,14 +107,11 @@ class _TodoListState extends State<Monthbudget_List> {
                                   labelText: '금액'),
                             ),
                             SizedBox(height: 8),
-                            /*TextField(
-                              onChanged: (value) {
-                                description = value;
-                              },
-                              decoration: InputDecoration(
-                                  border: OutlineInputBorder(),
-                                  labelText: '설명'),
-                            )*/
+                            Wrap(
+                              spacing: 6,
+                              direction: Axis.horizontal,
+                              children: choiceChips(),
+                            ),
                           ],
                         ),
                       ),
