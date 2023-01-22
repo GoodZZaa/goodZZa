@@ -2,6 +2,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:good_zza_code_in_songdo/models/mart_product.dart';
+import 'package:good_zza_code_in_songdo/pages/recommend_result_page.dart';
+import 'package:good_zza_code_in_songdo/provider/recommend_result_provider.dart';
 import 'package:good_zza_code_in_songdo/provider/search_provider.dart';
 import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
@@ -21,7 +23,6 @@ class _HomeSearchPage extends State<HomeSearchPage> {
   @override
   void initState() {
     super.initState();
-
     searchHistory = Hive.box('searchHistory');
     if (searchHistory.isEmpty) {
       searchHistory.put(0, []);
@@ -32,7 +33,6 @@ class _HomeSearchPage extends State<HomeSearchPage> {
 
   @override
   void dispose() {
-    // _searchProvider.dispose();
     _textEditingController.dispose();
     super.dispose();
   }
@@ -260,8 +260,9 @@ class _HomeSearchPage extends State<HomeSearchPage> {
                                 'https://www.thejungleadventure.com/assets/images/noimage/noimage.png',
                             progressIndicatorBuilder:
                                 (context, url, downloadProgress) => Container(
-                              width: 100,
-                              height: 70,
+                              width: 35,
+                              height: 35,
+                              alignment: Alignment.center,
                               child: CircularProgressIndicator(
                                   value: downloadProgress.progress),
                             ),
@@ -316,50 +317,6 @@ class _HomeSearchPage extends State<HomeSearchPage> {
                         ],
                       ),
                       _buildPriceTrailing(products[index])
-                      // Container(
-                      //   height: 80,
-                      //   // width: 180,
-                      //   // alignment: Alignment.center,
-                      //   width: MediaQuery.of(context).size.width * 0.40,
-                      //   decoration: BoxDecoration(
-                      //     // color: Colors.green,
-                      //     borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                      //   ),
-                      //   child: Column(
-                      //     mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      //     crossAxisAlignment: CrossAxisAlignment.start,
-                      //     children: [
-                      //       Text(
-                      //         products[index].martName ?? '',
-                      //         overflow: TextOverflow.ellipsis,
-                      //         maxLines: 2,
-                      //         style: const TextStyle(
-                      //           color: Colors.black,
-                      //           fontSize: 14,
-                      //           fontWeight: FontWeight.w700,
-                      //         ),
-                      //       ),
-                      //       Text(
-                      //         products[index].productName ?? '',
-                      //         style: const TextStyle(
-                      //           color: Colors.black,
-                      //           fontSize: 14,
-                      //           fontWeight: FontWeight.w700,
-                      //         ),
-                      //       ),
-                      //       Text(
-                      //         (products[index].unitValue.toString() ?? '') +
-                      //             (products[index].unit ?? ''),
-                      //         style: const TextStyle(
-                      //           color: Colors.grey,
-                      //           fontSize: 12,
-                      //           fontWeight: FontWeight.normal,
-                      //         ),
-                      //       ),
-                      //     ],
-                      //   ),
-                      // ),
-                      // buildPrice(products[index]),
                     ],
                   ),
                 ),
@@ -511,7 +468,24 @@ class _HomeSearchPage extends State<HomeSearchPage> {
                 size: 28,
                 color: Color.fromRGBO(200, 200, 203, 1),
               ),
-              onPressed: () {},
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => ChangeNotifierProvider(
+                      create: (context) => RecommendResultProvider(),
+                      child: const RecommendResultPage(),
+                    ),
+                  ),
+                );
+
+                //   // todo : 옮겨야함
+                //   Navigator.push(
+                //     context,
+                //     MaterialPageRoute(
+                //       builder: (context) => const RecommendResultPage(),
+                //     ),
+                //   );
+              },
             ),
           ),
         ],
