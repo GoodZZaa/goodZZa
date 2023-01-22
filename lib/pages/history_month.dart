@@ -16,6 +16,7 @@ class HistoryMonth extends StatefulWidget {
 
 class _HistoryMonthState extends State<HistoryMonth> {
   late HistoryMonthProvider _historyMonthProvider;
+  ScrollController _controller = ScrollController();
   /*기존의 accountprovider 대신에 새로 만든 이유:
     account provider에는 가계부 홈 화면에서 '달'마다 값이 달라지는 데이터도 받아오는데
     메인 홈에서는 현재 년과 월만 필요 */
@@ -48,86 +49,122 @@ class _HistoryMonthState extends State<HistoryMonth> {
       }
     }
 
-    return Scaffold(appBar: HistoryTitle(), body: bodyWidget());
+    return Scaffold(
+        appBar: historyAppbar(),
+        backgroundColor: Colors.white,
+        body: bodyWidget());
   }
 
-  Widget successWidget() => Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              child: HistoryList(),
-            ),
-            Container(
-              margin: const EdgeInsets.only(top: 10),
+  Widget successWidget() => Container(
+      padding: EdgeInsets.symmetric(horizontal: 20),
+      child: ListView(
+        children: [
+          Container(
+            margin: EdgeInsets.only(top: 15),
+            child: historyList(),
+          ),
+          const Divider(
               height: 1,
-              width: double.maxFinite,
-              color: const Color.fromRGBO(218, 218, 218, 1),
-            ),
-            SizedBox(height: 20),
-            BudgetCard()
-            //Budgets(),
-          ],
-        ),
-      );
+              color: Color.fromARGB(128, 193, 193, 193),
+              thickness: 0.8),
+          const SizedBox(height: 20),
+          budgetCard()
+        ],
+      ));
 
   Widget failWidget() => Center(child: Text('실패'));
-  Widget loadingWidget() => CircularProgressIndicator();
+  Widget loadingWidget() => Center(child: CircularProgressIndicator());
 
-  AppBar HistoryTitle() {
+  AppBar historyAppbar() {
     return AppBar(
+        leadingWidth: 70,
         centerTitle: true,
-        leading: IconButton(
-            icon: Icon(Icons.arrow_back),
-            color: Colors.lightBlue,
-            onPressed: () => Navigator.pop(context)),
+        actions: const [
+          SizedBox(
+            width: 70,
+          )
+        ],
+        leading: InkWell(
+            child: Container(
+              margin: const EdgeInsets.only(left: 10),
+              child: Image.asset(
+                'assets/icons/back_icon.png',
+                height: 25,
+              ),
+            ),
+            onTap: () => Navigator.pop(context)),
+
+        // IconButton(
+        //   iconSize: ,
+        //     icon: Icon(Icons.arrow_back),
+        //     color: Colors.lightBlue,
+        //     onPressed: () => Navigator.pop(context)),
         backgroundColor: Colors.white,
         elevation: 0.0,
         title: Row(
+          mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text("${widget.month}월 지출 내역",
-                style: TextStyle(
-                    color: Colors.black, fontWeight: FontWeight.bold)),
+                style: const TextStyle(
+                    color: Colors.black,
+                    fontSize: 17,
+                    fontWeight: FontWeight.w600)),
           ],
         ));
   }
 
-  Widget HistoryList() {
-    return ListView.builder(
+  Widget historyList() {
+    return Container(
+        child: ListView.builder(
+      physics: const NeverScrollableScrollPhysics(),
       shrinkWrap: true,
       // 월 장보기 내역 없을 시에 '장보기'와 '예산박스' 사이에 공백이 생기는 거 없애주는 거
       itemCount: _historyMonthProvider.payoutItems.length,
       itemBuilder: (context, index) {
-        return HistoryCard(
+        return historyCard(
           _historyMonthProvider.payoutItems[index],
         );
       },
-    );
+    ));
   }
 
-  Widget HistoryCard(PayoutItem payoutItem) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        MarketImage(payoutItem),
-        CartMonth(payoutItem),
-      ],
-    );
-  }
-
-  Widget MarketImage(PayoutItem payoutItem) {
-    return Container(
-        height: 80,
-        width: 80,
-        decoration: BoxDecoration(borderRadius: BorderRadius.circular(10)),
-        child: Image.network(
-          'https://avatars.githubusercontent.com/u/121633919?s=16&v=4',
+  Widget historyCard(PayoutItem payoutItem) {
+    return InkWell(
+        onTap: () {
+          Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => ChangeNotifierProvider(
+                  create: (context) => AccountProvider(),
+                  child: const HistoryDaily())));
+        },
+        child: Container(
+          alignment: Alignment.centerLeft,
+          width: double.infinity,
+          margin: const EdgeInsets.all(10),
+          child: Row(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              marketImage(payoutItem),
+              cartMonth(payoutItem),
+            ],
+          ),
         ));
   }
 
-  Widget CartMonth(PayoutItem payoutItem) {
+  Widget marketImage(PayoutItem payoutItem) => Container(
+      margin: const EdgeInsets.only(right: 15),
+      height: 80,
+      width: 80,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+        color: Colors.grey[200],
+      ),
+      child: Image.network(
+        'https://avatars.githubusercontent.com/u/121633919?s=16&v=4',
+      ));
+
+  Widget cartMonth(PayoutItem payoutItem) {
     List<dynamic> productItem;
     if (payoutItem.products.length < 2) {
       productItem = payoutItem.products;
@@ -135,79 +172,81 @@ class _HistoryMonthState extends State<HistoryMonth> {
       productItem = payoutItem.products.sublist(0, 2);
     }
     // productItem 개수가 2개 이하면 error 떠서 추가해준 부분
-
     return Expanded(
-      child: GestureDetector(
-        onTap: () {
-          Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => ChangeNotifierProvider(
-                    create: (context) => AccountProvider(),
-                    child: const HistoryDaily(),
-                  )));
-        },
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              '${payoutItem.date.month}월 ${payoutItem.date.day}일 장보기',
-              style: const TextStyle(
-                color: Colors.black,
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            Text(
-                '${productItem.toString().replaceAll('[', '').replaceAll(']', '')} 등..외 ${payoutItem.products.length}개',
-                //replaceAll*
-                style: const TextStyle(
-                  fontSize: 10,
-                  color: Colors.grey,
-                  fontWeight: FontWeight.w700,
-                )),
-            Container(
-                alignment: Alignment.centerRight,
-                child: Text('${(payoutItem.totalPrice)}원',
-                    style: const TextStyle(
-                      fontSize: 32,
-                      fontWeight: FontWeight.w600,
-                    ),
-                    textAlign: TextAlign.right)),
-          ],
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      Text(
+        '${payoutItem.date.month}월 ${payoutItem.date.day}일 장보기',
+        style: const TextStyle(
+          color: Color.fromARGB(0xFF, 0x22, 0x29, 0x2E),
+          fontSize: 16,
+          fontWeight: FontWeight.w700,
         ),
       ),
-    );
+      const SizedBox(
+        height: 5,
+      ),
+      Text(
+          '${productItem.toString().replaceAll('[', '').replaceAll(']', '')} 등..외 ${payoutItem.products.length}개',
+          style: const TextStyle(
+            fontSize: 12,
+            color: Color.fromARGB(0xFF, 0x8A, 0x8A, 0x8E),
+            fontWeight: FontWeight.w400,
+          )),
+      Container(
+        alignment: Alignment.centerRight,
+        child: Text('${(payoutItem.totalPrice)}원',
+            style: const TextStyle(
+              color: Color.fromARGB(0xFF, 0x22, 0x29, 0x2E),
+              fontSize: 20,
+              fontWeight: FontWeight.w700,
+            ),
+            textAlign: TextAlign.right),
+      )
+    ]));
   }
 
-  Widget BudgetCard() {
+  Widget budgetCard() {
+    TextStyle plainTextStyle = const TextStyle(
+      fontSize: 16,
+      color: Color.fromARGB(0xFF, 0x8A, 0x8A, 0x8E),
+      fontWeight: FontWeight.w400,
+    );
+    TextStyle dataTextStyle = const TextStyle(
+        color: Colors.black, fontWeight: FontWeight.w700, fontSize: 16);
     return Expanded(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      child: Column(
         children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('한달 예산', style: TextStyle(color: Colors.grey)),
-              //
-              Text('현재 사용예산', style: TextStyle(color: Colors.grey)),
-              Text('남은 예산', style: TextStyle(color: Colors.grey)),
+              Text('한달 예산', style: plainTextStyle),
+              Text('${_historyMonthProvider.accountBudget!.totalBalance}원',
+                  style: dataTextStyle),
             ],
           ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
+          const SizedBox(
+            height: 5,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('${_historyMonthProvider.accountBudget!.totalBalance}원',
-                  style: TextStyle(
-                      color: Colors.black, fontWeight: FontWeight.bold)),
+              Text('현재 사용예산', style: plainTextStyle),
               Text(
                   '${_historyMonthProvider.accountBudget!.totalBalance - _historyMonthProvider.accountBudget!.remainingBalance}원',
-                  style: TextStyle(
-                      color: Colors.black, fontWeight: FontWeight.bold)),
-              Text('${_historyMonthProvider.accountBudget?.remainingBalance}원',
-                  style: TextStyle(
-                      color: Colors.black, fontWeight: FontWeight.bold)),
+                  style: dataTextStyle)
             ],
           ),
+          const SizedBox(
+            height: 5,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text('남은 예산', style: plainTextStyle),
+              Text('${_historyMonthProvider.accountBudget?.remainingBalance}원',
+                  style: dataTextStyle),
+            ],
+          )
         ],
       ),
     );
