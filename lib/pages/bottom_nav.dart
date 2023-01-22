@@ -3,6 +3,7 @@ import 'package:good_zza_code_in_songdo/pages/home_page.dart';
 import 'package:good_zza_code_in_songdo/pages/account_book2.dart';
 import 'package:good_zza_code_in_songdo/pages/home_page.dart';
 import 'package:good_zza_code_in_songdo/pages/receipt_camera.dart';
+import 'package:good_zza_code_in_songdo/pages/set_monthbudget.dart';
 import 'package:provider/provider.dart';
 
 import '../provider/bottom_nav_provider.dart';
@@ -24,7 +25,7 @@ class BottomNavigation extends StatelessWidget {
       body: SafeArea(
         child: [
           HomePage(),
-          Container(),
+          SetMonthBudget(),
           TakePictureScreen(),
           AccountBook2(),
           Container()

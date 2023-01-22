@@ -171,11 +171,11 @@ class _AccountBookState extends State<AccountBook2>
         //           child: HistoryMonth(),
         //         )));*/
 
-        Navigator.of(context).push(
+        /*Navigator.of(context).push(
           MaterialPageRoute(
             builder: (BuildContext context) => SetMonthBudget(),
           ),
-        );
+        );*/
       },
       child: Container(
         height: 150,

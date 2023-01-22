@@ -1,5 +1,4 @@
 import 'dart:core';
-import 'dart:core';
 
 import 'package:flutter/material.dart';
 
@@ -53,111 +52,142 @@ class _SetMonthBudgetState extends State<SetMonthBudget> {
       backgroundColor: Colors.white,
 
       body: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
-          Expanded(
-            child: Container(
-              child: Column(children: <Widget>[
-                Row(
+          Container(
+            child: Column(children: <Widget>[
+              Row(
+                children: [
+                  Padding(padding: EdgeInsets.all(14)),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                          alignment: Alignment.centerLeft,
+                          child: Text("이번 달 예산은",
+                              style: TextStyle(
+                                  fontSize: 28, fontWeight: FontWeight.bold))),
+                      SizedBox(height: 1),
+                      Container(
+                          alignment: Alignment.centerLeft,
+                          child: Text("얼마인가요?",
+                              style: TextStyle(
+                                  fontSize: 28, fontWeight: FontWeight.bold))),
+                    ],
+                  ),
+                ],
+              ),
+              Container(
+                padding: EdgeInsets.all(100),
+                alignment: Alignment.center,
+                child: Row(
                   children: [
-                    Padding(padding: EdgeInsets.all(14)),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                            alignment: Alignment.centerLeft,
-                            child: Text("이번 달 예산은",
-                                style: TextStyle(
-                                    fontSize: 28,
-                                    fontWeight: FontWeight.bold))),
-                        SizedBox(height: 1),
-                        Container(
-                            alignment: Alignment.centerLeft,
-                            child: Text("얼마인가요?",
-                                style: TextStyle(
-                                    fontSize: 28,
-                                    fontWeight: FontWeight.bold))),
-                      ],
+                    Text(
+                      userInput,
+                      style: TextStyle(
+                          fontSize: 36,
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold),
+                    ),
+                    Text(
+                      '원',
+                      style: TextStyle(
+                          fontSize: 36,
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold),
                     ),
                   ],
                 ),
-                Container(
-                  padding: EdgeInsets.all(100),
-                  alignment: Alignment.center,
-                  child: Row(
-                    children: [
-                      Text(
-                        userInput,
-                        style: TextStyle(
-                            fontSize: 36,
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold),
-                      ),
-                      Text(
-                        '원',
-                        style: TextStyle(
-                            fontSize: 36,
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold),
-                      ),
-                    ],
-                  ),
+              ),
+              Container(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Container(
+                      padding: EdgeInsets.all(14),
+                      alignment: Alignment.centerLeft,
+                      child: (userInput == '')
+                          ? Text('이번달 하루 생활비 0원')
+                          : Text(
+                              '이번달 하루 생활비' + DailyBudget(userInput) + '원',
+                              style: TextStyle(color: Colors.red),
+                            ),
+                    ),
+                    InkWell(
+                        child: Container(
+                            padding: const EdgeInsets.all(3),
+                            child: Row(children: [
+                              Image.asset(
+                                'assets/icons/icon_plus.png',
+                                height: 26,
+                                width: 26,
+                              ),
+                              const SizedBox(
+                                width: 5,
+                              ),
+                              const Text(
+                                '예산저장하기',
+                                style: TextStyle(
+                                    fontSize: 13, fontWeight: FontWeight.w500),
+                              ),
+                              const SizedBox(
+                                width: 14,
+                              ),
+                            ])))
+                  ],
                 ),
-                Container(
-                  padding: EdgeInsets.all(14),
-                  alignment: Alignment.centerLeft,
-                  child: (userInput == '')
-                      ? Text('이번달 하루 생활비 0원')
-                      : Text(
-                          '이번달 하루 생활비' + DailyBudget(userInput) + '원',
-                          style: TextStyle(color: Colors.red),
-                        ),
-                ),
-              ]),
-            ),
+              ),
+            ]),
           ),
-          Container(
-            height: MediaQuery.of(context).size.height * 0.35,
-            child: GridView.builder(
-                itemCount: buttons.length,
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 3,
-                  childAspectRatio: MediaQuery.of(context).size.width /
-                      (MediaQuery.of(context).size.height / 4),
-                ),
-                itemBuilder: (BuildContext context, int index) {
-                  // Delete Button
-                  if (index == 11) {
-                    return MyButton(
-                      buttontapped: () {
-                        setState(() {
-                          userInput =
-                              userInput.substring(0, userInput.length - 1);
-                        });
-                      },
-                      buttonText: buttons[index],
-                      color: Colors.white,
-                      textColor: Colors.black,
-                    );
-                  }
-                  // other buttons
-                  else {
-                    return MyButton(
-                      buttontapped: () {
-                        setState(() {
-                          userInput += buttons[index];
-                          print(userInput);
-                        });
-                      },
-                      buttonText: buttons[index],
-                      color: isOperator(buttons[index])
-                          ? Colors.blueAccent
-                          : Colors.white,
-                      textColor: isOperator(buttons[index])
-                          ? Colors.white
-                          : Colors.black,
-                    );
-                  }
-                }), // GridView.builder
+          Flexible(
+            child: Container(
+              height: MediaQuery.of(context).size.height * 0.35,
+              child: GridView.builder(
+                  itemCount: buttons.length,
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 3,
+                    childAspectRatio: MediaQuery.of(context).size.width /
+                        (MediaQuery.of(context).size.height / 4),
+                  ),
+                  itemBuilder: (BuildContext context, int index) {
+                    // Delete Button
+                    if (index == 11) {
+                      return MyButton(
+                        buttontapped: () {
+                          setState(() {
+                            userInput =
+                                userInput.substring(0, userInput.length - 1);
+                          });
+                        },
+                        buttonText: buttons[index],
+                        color: Colors.white,
+                        textColor: Colors.black,
+                      );
+                    }
+                    // other buttons
+                    else {
+                      return MyButton(
+                        buttontapped: () {
+                          List<String> userInputLength;
+                          setState(() {
+                            userInput += buttons[index];
+
+                            // userInputLength += userInput;
+                            // 리턴 bool로 만들어서 true면 값넣고
+                            // 길이가 6넘으면 아무 동작 안하게
+                          });
+                        },
+                        buttonText: buttons[index],
+                        color: isOperator(buttons[index])
+                            ? Colors.blueAccent
+                            : Colors.white,
+                        textColor: isOperator(buttons[index])
+                            ? Colors.white
+                            : Colors.black,
+                      );
+                    }
+                  }), // GridView.builder
+            ),
           ),
         ],
       ),
