@@ -1,6 +1,7 @@
 import 'dart:core';
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import 'monthbudget_list.dart';
 
@@ -34,174 +35,155 @@ class _SetMonthBudgetState extends State<SetMonthBudget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: new AppBar(
-        centerTitle: true,
-        leading: IconButton(
-            icon: Icon(Icons.arrow_back),
-            color: Colors.deepPurpleAccent,
-            onPressed: () => Navigator.pop(context)),
+        appBar: AppBar(
+            leadingWidth: 70,
+            centerTitle: true,
+            actions: const [
+              SizedBox(
+                width: 70,
+              )
+            ],
+            leading: InkWell(
+                child: Container(
+                  margin: const EdgeInsets.only(left: 10),
+                  child: Image.asset(
+                    'assets/icons/back_icon.png',
+                    height: 25,
+                  ),
+                ),
+                onTap: () => Navigator.pop(context)),
+            backgroundColor: Colors.white,
+            elevation: 0.0,
+            title: Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: const [
+                Text("예산 설정",
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 17,
+                        fontWeight: FontWeight.w600)),
+              ],
+            )),
         backgroundColor: Colors.white,
-        elevation: 0.0,
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text("예산설정",
-                style: TextStyle(
-                    color: Colors.black, fontWeight: FontWeight.bold)),
-          ],
-        ),
-      ), //AppBar
-      backgroundColor: Colors.white,
-
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          Container(
-            child: Column(children: <Widget>[
-              Row(
-                children: [
-                  Padding(padding: EdgeInsets.all(14)),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+        body: Container(
+            padding: const EdgeInsets.only(left: 30, right: 30, top: 20),
+            child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  const Text("이번달 예산은\n얼마인가요?",
+                      style: TextStyle(
+                          height: 1.3,
+                          letterSpacing: 1.2,
+                          fontSize: 25,
+                          fontWeight: FontWeight.w900)),
+                  Container(
+                    width: double.infinity,
+                    alignment: Alignment.center,
+                    child: Text(
+                      '${numberFormat(userInput)}원',
+                      style: const TextStyle(
+                          fontSize: 36,
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Container(
-                          alignment: Alignment.centerLeft,
-                          child: Text("이번달 예산은",
+                      Text(
+                        '이번달 하루 생활비: ${dailyBudget(userInput)}원',
+                        style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.red[700],
+                            fontWeight: FontWeight.w500),
+                      ),
+                      InkWell(
+                          onTap: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (BuildContext context) =>
+                                    Monthbudget_List(userInput),
+                              ),
+                            );
+                          },
+                          child: Row(children: [
+                            const Text(
+                              '예산저장하기',
                               style: TextStyle(
-                                  fontSize: 28, fontWeight: FontWeight.bold))),
-                      SizedBox(height: 1),
-                      Container(
-                          alignment: Alignment.centerLeft,
-                          child: Text("얼마인가요?",
-                              style: TextStyle(
-                                  fontSize: 28, fontWeight: FontWeight.bold))),
+                                  fontSize: 14, fontWeight: FontWeight.w500),
+                            ),
+                            const SizedBox(
+                              width: 5,
+                            ),
+                            Image.asset(
+                              'assets/icons/icon_plus.png',
+                              height: 23,
+                              width: 23,
+                            ),
+                          ]))
                     ],
                   ),
-                ],
-              ),
-              Container(
-                padding: EdgeInsets.all(100),
-                alignment: Alignment.center,
-                child: Row(
-                  children: [
-                    Text(
-                      userInput,
-                      style: TextStyle(
-                          fontSize: 36,
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold),
+                  Flexible(
+                    child: SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.35,
+                      child: GridView.builder(
+                          itemCount: buttons.length,
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 3,
+                            childAspectRatio:
+                                MediaQuery.of(context).size.width /
+                                    (MediaQuery.of(context).size.height / 4),
+                          ),
+                          itemBuilder: (BuildContext context, int index) {
+                            // Delete Button
+                            if (index == 11) {
+                              return MyButton(
+                                buttontapped: () {
+                                  setState(() {
+                                    userInput = userInput.substring(
+                                        0, userInput.length - 1);
+                                  });
+                                },
+                                buttonText: buttons[index],
+                                color: Colors.white,
+                                textColor: Colors.black,
+                              );
+                            }
+                            // other buttons
+                            else {
+                              return MyButton(
+                                buttontapped: () {
+                                  if (userInput.length < 9) {
+                                    setState(() {
+                                      userInput += buttons[index];
+                                    });
+                                  } else {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text('숫자가 너무 큽니다'),
+                                      ),
+                                    );
+                                  }
+                                  // userInputLength += userInput;
+                                  // 리턴 bool로 만들어서 true면 값넣고
+                                  // 길이가 6넘으면 아무 동작 안하게
+                                },
+                                buttonText: buttons[index],
+                                color: isOperator(buttons[index])
+                                    ? Colors.blueAccent
+                                    : Colors.white,
+                                textColor: isOperator(buttons[index])
+                                    ? Colors.white
+                                    : Colors.black,
+                              );
+                            }
+                          }), // GridView.builder
                     ),
-                    Text(
-                      '원',
-                      style: TextStyle(
-                          fontSize: 36,
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold),
-                    ),
-                  ],
-                ),
-              ),
-              Container(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Container(
-                      padding: EdgeInsets.all(14),
-                      alignment: Alignment.centerLeft,
-                      child: (userInput == '')
-                          ? Text('이번달 하루 생활비 0원')
-                          : Text(
-                              '이번달 하루 생활비' + DailyBudget(userInput) + '원',
-                              style: TextStyle(color: Colors.red),
-                            ),
-                    ),
-                    InkWell(
-                        onTap: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (BuildContext context) =>
-                                  Monthbudget_List(userInput),
-                            ),
-                          );
-                        },
-                        child: Container(
-                            padding: const EdgeInsets.all(3),
-                            child: Row(children: [
-                              Image.asset(
-                                'assets/icons/icon_plus.png',
-                                height: 26,
-                                width: 26,
-                              ),
-                              const SizedBox(
-                                width: 5,
-                              ),
-                              const Text(
-                                '예산저장하기',
-                                style: TextStyle(
-                                    fontSize: 13, fontWeight: FontWeight.w500),
-                              ),
-                              const SizedBox(
-                                width: 14,
-                              ),
-                            ])))
-                  ],
-                ),
-              ),
-            ]),
-          ),
-          Flexible(
-            child: Container(
-              height: MediaQuery.of(context).size.height * 0.35,
-              child: GridView.builder(
-                  itemCount: buttons.length,
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 3,
-                    childAspectRatio: MediaQuery.of(context).size.width /
-                        (MediaQuery.of(context).size.height / 4),
                   ),
-                  itemBuilder: (BuildContext context, int index) {
-                    // Delete Button
-                    if (index == 11) {
-                      return MyButton(
-                        buttontapped: () {
-                          setState(() {
-                            userInput =
-                                userInput.substring(0, userInput.length - 1);
-                          });
-                        },
-                        buttonText: buttons[index],
-                        color: Colors.white,
-                        textColor: Colors.black,
-                      );
-                    }
-                    // other buttons
-                    else {
-                      return MyButton(
-                        buttontapped: () {
-                          List<String> userInputLength;
-                          setState(() {
-                            userInput += buttons[index];
-
-                            // userInputLength += userInput;
-                            // 리턴 bool로 만들어서 true면 값넣고
-                            // 길이가 6넘으면 아무 동작 안하게
-                          });
-                        },
-                        buttonText: buttons[index],
-                        color: isOperator(buttons[index])
-                            ? Colors.blueAccent
-                            : Colors.white,
-                        textColor: isOperator(buttons[index])
-                            ? Colors.white
-                            : Colors.black,
-                      );
-                    }
-                  }), // GridView.builder
-            ),
-          ),
-        ],
-      ),
-    );
+                ])));
   }
 
   bool isOperator(String x) {
@@ -211,11 +193,22 @@ class _SetMonthBudgetState extends State<SetMonthBudget> {
     return false;
   }
 
+  String numberFormat(String data) {
+    if (data != '') {
+      var f = NumberFormat('###,###,###,###');
+      return f.format(int.parse(data));
+    } else {
+      return '';
+    }
+  }
 // function to calculate the input operation
 
 }
 
-String DailyBudget(String? userInput) {
+int dailyBudget(String? userInput) {
+  if (userInput == '') {
+    return 0;
+  }
   double reUserInput = double.parse(userInput!);
   double dailyBudget = 0;
   if (reUserInput == DateTime.january ||
@@ -232,11 +225,7 @@ String DailyBudget(String? userInput) {
   } else {
     dailyBudget = reUserInput / 30;
   }
-
-  String res = "";
-  res = (dailyBudget.floor()).toString();
-
-  return res;
+  return dailyBudget.floor();
 }
 
 // creating Stateless Widget for buttons
@@ -248,7 +237,7 @@ class MyButton extends StatelessWidget {
   final buttontapped;
 
 //Constructor
-  MyButton(
+  const MyButton(
       {this.color,
       this.textColor,
       required this.buttonText,
