@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:good_zza_code_in_songdo/utills/number_format.dart';
 import '../models/monthbudget_list_arguments.dart';
 import '../models/monthbudget_list_model.dart';
 import '../provider/monthbudgetList_provider.dart';
@@ -42,9 +43,26 @@ class _Monthbudget_List_State extends State<Monthbudget_List> {
     });
   }
 
+  TextStyle detailTextStyle = const TextStyle(
+      fontSize: 16,
+      fontWeight: FontWeight.w500,
+      color: Color.fromARGB(0xFF, 0x8A, 0x8A, 0x8E));
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(appBar: monthbudget_list_title(), body: bodyWidget());
+    return Scaffold(
+      appBar: monthbudgetAppbar(),
+      body: bodyWidget(),
+      floatingActionButton: FloatingActionButton(
+          backgroundColor: const Color.fromRGBO(95, 89, 225, 1),
+          child: const Icon(
+            Icons.add,
+            color: Colors.white,
+          ),
+          onPressed: () {
+            addDialog();
+          }),
+    );
   }
 
   List<Widget> choiceChips() {
@@ -57,7 +75,7 @@ class _Monthbudget_List_State extends State<Monthbudget_List> {
           labelStyle: const TextStyle(color: Colors.white),
           backgroundColor: _choiceChipsList[i].color,
           selected: _selectedIndex == i,
-          selectedColor: Color.fromRGBO(95, 89, 225, 1),
+          selectedColor: const Color.fromRGBO(95, 89, 225, 1),
           onSelected: (bool value) {
             setState(() {
               _selectedIndex = i;
@@ -70,152 +88,166 @@ class _Monthbudget_List_State extends State<Monthbudget_List> {
     return chips;
   }
 
-  AppBar monthbudget_list_title() {
+  AppBar monthbudgetAppbar() {
     return AppBar(
-      centerTitle: true,
-      leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          color: Colors.deepPurpleAccent,
-          onPressed: () => Navigator.pop(context)),
-      backgroundColor: Colors.white,
-      elevation: 0.0,
-    );
+        leadingWidth: 70,
+        centerTitle: true,
+        actions: const [
+          SizedBox(
+            width: 70,
+          )
+        ],
+        leading: InkWell(
+            child: Container(
+              margin: const EdgeInsets.only(left: 10),
+              child: Image.asset(
+                'assets/icons/back_icon.png',
+                height: 25,
+              ),
+            ),
+            onTap: () => Navigator.pop(context)),
+        backgroundColor: Colors.white,
+        elevation: 0.0,
+        title: Row(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: const [
+            Text("예산 설정",
+                style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 17,
+                    fontWeight: FontWeight.w600)),
+          ],
+        ));
   }
 
   Widget bodyWidget() {
-    return Scaffold(
-        floatingActionButton: FloatingActionButton(
-            // backgroundColor: Colors.deepPurpleAccent,
-            backgroundColor: Color.fromRGBO(95, 89, 225, 1),
-            child: Text('+', style: TextStyle(fontSize: 25)),
-            onPressed: () {
-              showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    String price = '';
-                    String category = '';
-                    return AlertDialog(
-                      content: Container(
-                        height: 200,
-                        child: Column(
+    return Container(
+      alignment: Alignment.center,
+      padding: const EdgeInsets.only(left: 10, right: 10, top: 40),
+      child: Column(
+        children: [
+          Text(
+            '${numberFormat(widget.userInput)}원',
+            style: const TextStyle(fontSize: 35, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 10),
+          Text(
+            '${DateTime.now().month}월 예산',
+            style: const TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+              color: Color.fromARGB(0xFF, 0x8A, 0x8A, 0x8E),
+            ),
+          ),
+          Container(
+              margin: const EdgeInsets.only(top: 30),
+              height: MediaQuery.of(context).size.height * 0.7,
+              child: isLoading
+                  ? const Center(
+                      child: CircularProgressIndicator(),
+                    )
+                  : ListView.builder(
+                      itemCount: monthbudgetList.length,
+                      itemBuilder: (context, index) {
+                        return Column(
                           children: [
-                            TextField(
-                              onChanged: (value) {
-                                price = value;
-                              },
-                              decoration: InputDecoration(
-                                  border: OutlineInputBorder(),
-                                  labelText: '금액'),
-                            ),
-                            SizedBox(height: 8),
-                            Wrap(
-                              spacing: 6,
-                              direction: Axis.horizontal,
-                              children: choiceChips(),
-                            ),
+                            Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 10, vertical: 10),
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisSize: MainAxisSize.max,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          monthbudgetList[index].category,
+                                          style: const TextStyle(
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        const SizedBox(
+                                          height: 8,
+                                        ),
+                                        Text('${monthbudgetList[index].price}원',
+                                            style: detailTextStyle),
+                                      ],
+                                    ),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: [
+                                        IconButton(
+                                          iconSize: 25,
+                                          icon: const Icon(Icons.edit),
+                                          onPressed: () {},
+                                        ),
+                                        IconButton(
+                                          iconSize: 25,
+                                          icon: const Icon(Icons.delete),
+                                          onPressed: () {},
+                                        )
+                                      ],
+                                    ),
+                                  ],
+                                )),
+                            const Divider(
+                              thickness: 0.8,
+                            )
                           ],
-                        ),
-                      ),
-                      actions: [
-                        TextButton(
-                            onPressed: () {
-                              setState(() {
-                                monthbudgetListDefault.addMonthbudgetList(
-                                  MonthbudgetList(
-                                      price: price, category: category),
-                                );
-                              });
-                              Navigator.of(context).pop();
-                            },
-                            child: Text('추가')),
-                        TextButton(
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                            child: Text('취소')),
-                      ],
+                        );
+                      })),
+        ],
+      ),
+    );
+  }
+
+  void addDialog() => showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        String price = '';
+        String category = '';
+        return AlertDialog(
+          content: Container(
+            height: 200,
+            child: Column(
+              children: [
+                TextField(
+                  onChanged: (value) {
+                    price = value;
+                  },
+                  decoration: const InputDecoration(
+                      border: OutlineInputBorder(), labelText: '금액'),
+                ),
+                const SizedBox(height: 8),
+                Wrap(
+                  spacing: 6,
+                  direction: Axis.horizontal,
+                  children: choiceChips(),
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+                onPressed: () {
+                  setState(() {
+                    monthbudgetListDefault.addMonthbudgetList(
+                      MonthbudgetList(price: price, category: category),
                     );
                   });
-            }),
-        body: Container(
-          child: Column(
-            children: [
-              Expanded(
-                child: Column(
-                  children: [
-                    Container(
-                        child: Text(
-                      DateTime.now().month.toString() +
-                          '월' +
-                          DateTime.now().day.toString() +
-                          '일',
-                      style:
-                          TextStyle(fontSize: 35, fontWeight: FontWeight.bold),
-                    )),
-                    SizedBox(height: 25),
-                    Container(
-                        child: Text(
-                      widget.userInput + '원',
-                      style: TextStyle(
-                          fontSize: 19,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.grey),
-                    )),
-                  ],
-                ),
-              ),
-              SizedBox(height: 8),
-              Container(
-                height: MediaQuery.of(context).size.height * 0.7,
-                child: isLoading
-                    ? Center(
-                        child: CircularProgressIndicator(),
-                      )
-                    : ListView.separated(
-                        itemBuilder: (context, index) {
-                          return ListTile(
-                            title: Text(
-                              monthbudgetList[index].category,
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                            subtitle: Text(
-                              monthbudgetList[index].price + '원',
-                              style: TextStyle(
-                                  color: Colors.grey,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                            onTap: () {},
-                            trailing: Container(
-                              width: 80,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  Container(
-                                    padding: EdgeInsets.all(5),
-                                    child: InkWell(
-                                      child: Icon(Icons.edit),
-                                      onTap: () {},
-                                    ),
-                                  ),
-                                  Container(
-                                    padding: EdgeInsets.all(5),
-                                    child: InkWell(
-                                      child: Icon(Icons.delete),
-                                      onTap: () {},
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ),
-                          );
-                        },
-                        separatorBuilder: (context, index) {
-                          return Divider();
-                        },
-                        itemCount: monthbudgetList.length),
-              ),
-            ],
-          ),
-        ));
-  }
+                  Navigator.of(context).pop();
+                },
+                child: const Text('추가')),
+            TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text('취소')),
+          ],
+        );
+      });
 }

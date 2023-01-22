@@ -3,6 +3,7 @@ import 'dart:core';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import '../utills/number_format.dart';
 import 'monthbudget_list.dart';
 
 class SetMonthBudget extends StatefulWidget {
@@ -191,15 +192,6 @@ class _SetMonthBudgetState extends State<SetMonthBudget> {
       return true;
     }
     return false;
-  }
-
-  String numberFormat(String data) {
-    if (data != '') {
-      var f = NumberFormat('###,###,###,###');
-      return f.format(int.parse(data));
-    } else {
-      return '';
-    }
   }
 // function to calculate the input operation
 

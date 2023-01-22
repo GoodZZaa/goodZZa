@@ -544,7 +544,7 @@ class _AccountTabScreenState extends State<AccountTabScreen>
 
   Widget paymentItemCard(PayoutItem item) {
     return Container(
-        margin: const EdgeInsets.symmetric(horizontal: 10),
+        margin: const EdgeInsets.only(left: 10, right: 10, bottom: 15),
         child: InkWell(
             onTap: () => paymentBottomSheet(item),
             child: Container(
