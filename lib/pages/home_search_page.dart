@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:good_zza_code_in_songdo/models/mart_product.dart';
 import 'package:good_zza_code_in_songdo/provider/search_provider.dart';
+import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
 
 class HomeSearchPage extends StatefulWidget {
@@ -14,11 +15,18 @@ class HomeSearchPage extends StatefulWidget {
 
 class _HomeSearchPage extends State<HomeSearchPage> {
   late SearchProvider _searchProvider;
+  late Box<List<String>> searchHistory;
   final _textEditingController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
+
+    searchHistory = Hive.box('searchHistory');
+    if (searchHistory.isEmpty) {
+      searchHistory.put(0, []);
+    }
+
     _searchProvider = Provider.of<SearchProvider>(context, listen: false);
   }
 
@@ -41,116 +49,327 @@ class _HomeSearchPage extends State<HomeSearchPage> {
     }
 
     if (!loading && products.length == 0) {
+      List<String>? list = searchHistory.get(0);
+
+      List<Widget> searchHistoryWidgets = list == null
+          ? []
+          : list.reversed
+              .map(
+                (word) => Container(
+                  alignment: Alignment.centerLeft,
+                  height: 50,
+                  child: ListTile(
+                    leading: Text("$word"),
+                    onTap: () async {
+                      await _searchProvider.search(word);
+                      List<String>? list = searchHistory.get(0);
+
+                      if (list!.contains(word)) {
+                        list.remove(word);
+                        searchHistory.put(0, [...list, word]);
+                      } else if (list.length < 5) {
+                        searchHistory.put(0, [...list, word]);
+                      } else {
+                        list.removeAt(0);
+                        searchHistory.put(0, [...list, word]);
+                      }
+                      _textEditingController.text = word;
+                    },
+                  ),
+                ),
+              )
+              .toList();
+
       // hive data
-      return Center(
-        child: Text('아이템이 없습니다.'),
+      return Container(
+        padding: EdgeInsets.symmetric(horizontal: 30, vertical: 20),
+        child: ListView(
+          children: [
+            Container(
+              alignment: Alignment.centerLeft,
+              height: 50,
+              child: ListTile(
+                leading: Text("최근 검색기록"),
+              ),
+            ),
+            ...searchHistoryWidgets
+          ],
+        ),
       );
     }
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20.0),
-      child: ListView.builder(
-        itemCount: products.length + 1,
-        scrollDirection: Axis.vertical,
-        shrinkWrap: true,
-        itemBuilder: (context, index) {
-          if (products.isEmpty) {
-            return Container();
-          }
-          if (index == products.length) {
-            Future.microtask(() => _searchProvider.fetchNext());
-            return const Center(child: CircularProgressIndicator());
-          }
-          return Column(
-            children: [
-              const Divider(color: Colors.white),
-              ListTile(
+    return ListView.builder(
+      itemCount: products.length + 2,
+      scrollDirection: Axis.vertical,
+      shrinkWrap: true,
+      itemBuilder: (context, index) {
+        if (products.isEmpty) {
+          return Container();
+        }
+        if (index == 0) {
+          return Container(
+            height: 50,
+            padding: EdgeInsets.symmetric(horizontal: 20),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text('역삼동 기준 최저가 "${_searchProvider.searchedKeyword}"'),
+                // DropdownButton
+                OutlinedButton(
+                  onPressed: () {},
+                  style: OutlinedButton.styleFrom(
+                      // surfaceTintColor: Colors.grey
+                      // shape: RoundedRectangleBorder(
+                      //   borderRadius: BorderRadius.all()
+                      // )
+                      ),
+                  child: Container(
+                    child: Row(
+                      children: [
+                        Text(
+                          "Filters  ",
+                          style: TextStyle(color: Colors.black),
+                        ),
+                        Icon(
+                          Icons.filter_alt_outlined,
+                          size: 20,
+                          color: Colors.black,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        }
+        if (index == products.length) {
+          Future.microtask(() => _searchProvider.fetchNext());
+          return const Center(child: CircularProgressIndicator());
+        }
+        return Column(
+          children: [
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 10),
+              child: ListTile(
                 shape: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(10)),
                 ),
-                // tileColor: Colors.cyanAccent,
-                // focusColor: ,
+                tileColor: Colors.white,
+                // focusColor: Colors.redAccent,
                 minVerticalPadding: 0.0,
-
                 contentPadding: EdgeInsets.all(0.0),
-                title: Row(
-                  // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    CachedNetworkImage(
-                      imageBuilder: (context, imageProvider) => Container(
-                        margin: const EdgeInsets.all(10),
-                        width: 100,
-                        height: 70,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.all(Radius.circular(10)),
-                          // shape: BoxShape.circle,
-                          image: DecorationImage(
-                              image: imageProvider, fit: BoxFit.cover),
-                        ),
-                      ),
-                      imageUrl: products[index].imageUrl ??
-                          'https://www.thejungleadventure.com/assets/images/noimage/noimage.png',
-                      progressIndicatorBuilder:
-                          (context, url, downloadProgress) => Container(
-                        width: 100,
-                        height: 70,
-                        child: CircularProgressIndicator(
-                            value: downloadProgress.progress),
-                      ),
-                      errorWidget: (context, url, error) => Icon(Icons.error),
-                    ),
-                    Container(
-                      height: 80,
-                      // width: 180,
-                      // alignment: Alignment.center,
-                      width: MediaQuery.of(context).size.width * 0.40,
-                      decoration: BoxDecoration(
-                        // color: Colors.green,
-                        borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                      ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                onTap: () => _searchProvider.select(index),
+                // onTap: () => print("choosed $index"),
+                title: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: Colors.white,
+                    boxShadow: index == _searchProvider.selected
+                        ? const [
+                            BoxShadow(
+                              blurRadius: 30.0,
+                              // offset: Offset(-28, -28),
+                              color: Colors.white,
+                              // inset: true,
+                            ),
+                            BoxShadow(
+                              blurRadius: 30.0,
+                              // offset: Offset(28, 28),
+                              color: Color(0xFFA7A9AF),
+                            )
+                          ]
+                        : [],
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
                         children: [
-                          Text(
-                            products[index].martName ?? '',
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 2,
-                            style: const TextStyle(
-                              color: Colors.black,
-                              fontSize: 15,
-                              fontWeight: FontWeight.w700,
+                          CachedNetworkImage(
+                            imageBuilder: (context, imageProvider) => index ==
+                                    _searchProvider.selected
+                                ? Container(
+                                    margin: const EdgeInsets.all(10),
+                                    child: Stack(
+                                      alignment: Alignment.bottomRight,
+                                      children: [
+                                        Container(
+                                          width: 100,
+                                          height: 70,
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(10)),
+                                            // shape: BoxShape.circle,
+                                            image: DecorationImage(
+                                                image: imageProvider,
+                                                fit: BoxFit.cover),
+                                          ),
+                                        ),
+                                        Container(
+                                          width: 25,
+                                          height: 25,
+                                          color: Colors.white,
+                                          // decoration: BoxDecoration(
+                                          //   borderRadius:
+                                          //       BorderRadius.horizontal(),
+                                          //   // shape: BoxShape.circle,
+                                          // ),
+                                          margin: const EdgeInsets.all(8),
+                                          child: IconButton(
+                                            // style: ButtonStyle(
+                                            //   shape: MaterialStateProperty.all<
+                                            //       RoundedRectangleBorder>(
+                                            //     RoundedRectangleBorder(
+                                            //       borderRadius:
+                                            //           BorderRadius.circular(
+                                            //               10.0),
+                                            //       side: BorderSide(
+                                            //           color: Colors.red),
+                                            //     ),
+                                            //   ),
+                                            // ),
+                                            padding: EdgeInsets.zero,
+                                            icon: Icon(
+                                              Icons.add,
+                                              size: 14,
+                                            ),
+                                            onPressed: () {
+                                              print("$index");
+                                            },
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  )
+                                : Container(
+                                    margin: const EdgeInsets.all(10),
+                                    width: 100,
+                                    height: 70,
+                                    decoration: BoxDecoration(
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(10)),
+                                      // shape: BoxShape.circle,
+                                      image: DecorationImage(
+                                          image: imageProvider,
+                                          fit: BoxFit.cover),
+                                    ),
+                                  ),
+                            imageUrl: products[index].imageUrl ??
+                                'https://www.thejungleadventure.com/assets/images/noimage/noimage.png',
+                            progressIndicatorBuilder:
+                                (context, url, downloadProgress) => Container(
+                              width: 100,
+                              height: 70,
+                              child: CircularProgressIndicator(
+                                  value: downloadProgress.progress),
                             ),
+                            errorWidget: (context, url, error) =>
+                                Icon(Icons.error),
                           ),
-                          Text(
-                            products[index].productName ?? '',
-                            style: const TextStyle(
-                              color: Colors.black,
-                              fontSize: 15,
-                              fontWeight: FontWeight.w700,
+                          Container(
+                            height: 80,
+                            // width: 180,
+                            // alignment: Alignment.center,
+                            width: MediaQuery.of(context).size.width * 0.40,
+                            decoration: BoxDecoration(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10.0)),
                             ),
-                          ),
-                          Text(
-                            (products[index].unitValue.toString() ?? '') +
-                                (products[index].unit ?? ''),
-                            style: const TextStyle(
-                              color: Colors.grey,
-                              fontSize: 12,
-                              fontWeight: FontWeight.normal,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  products[index].martName ?? '',
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 1,
+                                  style: const TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                                Text(
+                                  products[index].productName ?? '',
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: const TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                                Text(
+                                  (products[index].unitValue.toString() ?? '') +
+                                      (products[index].unit ?? ''),
+                                  style: const TextStyle(
+                                    color: Colors.grey,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.normal,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         ],
                       ),
-                    ),
-                    // buildPrice(products[index]),
-                  ],
+                      _buildPriceTrailing(products[index])
+                      // Container(
+                      //   height: 80,
+                      //   // width: 180,
+                      //   // alignment: Alignment.center,
+                      //   width: MediaQuery.of(context).size.width * 0.40,
+                      //   decoration: BoxDecoration(
+                      //     // color: Colors.green,
+                      //     borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                      //   ),
+                      //   child: Column(
+                      //     mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      //     crossAxisAlignment: CrossAxisAlignment.start,
+                      //     children: [
+                      //       Text(
+                      //         products[index].martName ?? '',
+                      //         overflow: TextOverflow.ellipsis,
+                      //         maxLines: 2,
+                      //         style: const TextStyle(
+                      //           color: Colors.black,
+                      //           fontSize: 14,
+                      //           fontWeight: FontWeight.w700,
+                      //         ),
+                      //       ),
+                      //       Text(
+                      //         products[index].productName ?? '',
+                      //         style: const TextStyle(
+                      //           color: Colors.black,
+                      //           fontSize: 14,
+                      //           fontWeight: FontWeight.w700,
+                      //         ),
+                      //       ),
+                      //       Text(
+                      //         (products[index].unitValue.toString() ?? '') +
+                      //             (products[index].unit ?? ''),
+                      //         style: const TextStyle(
+                      //           color: Colors.grey,
+                      //           fontSize: 12,
+                      //           fontWeight: FontWeight.normal,
+                      //         ),
+                      //       ),
+                      //     ],
+                      //   ),
+                      // ),
+                      // buildPrice(products[index]),
+                    ],
+                  ),
                 ),
-                trailing: _buildPriceTrailing(products[index]),
+                // trailing: _buildPriceTrailing(products[index]),
               ),
-            ],
-          );
-        },
-      ),
+            ),
+            const Divider(color: Colors.transparent),
+          ],
+        );
+      },
     );
   }
 
@@ -175,23 +394,23 @@ class _HomeSearchPage extends State<HomeSearchPage> {
           ),
         ),
       ));
-
+      prices.add(const Divider(height: 5));
       prices.add(Text(
         "${product.originalPrice}원",
         overflow: TextOverflow.ellipsis,
         maxLines: 1,
         softWrap: true,
         style: const TextStyle(
-          color: Colors.black,
-          fontSize: 12,
-          fontWeight: FontWeight.normal,
-        ),
+            color: Colors.grey,
+            fontSize: 12,
+            fontWeight: FontWeight.normal,
+            decoration: TextDecoration.lineThrough),
       ));
+      prices.add(const Divider(height: 5));
     }
 
     prices.add(Text(
-      "${product.price.toString()}원",
-      // "10000원",
+      "${product.price}원",
       overflow: TextOverflow.ellipsis,
       maxLines: 1,
       softWrap: true,
@@ -205,8 +424,10 @@ class _HomeSearchPage extends State<HomeSearchPage> {
     return Container(
       margin: const EdgeInsets.fromLTRB(0, 0, 10, 0),
       // width: MediaQuery.of(context).size.width * 0.18,
+      height: 100,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.end,
         children: prices,
       ),
     );
@@ -217,6 +438,7 @@ class _HomeSearchPage extends State<HomeSearchPage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
+        elevation: 0.0,
         systemOverlayStyle: const SystemUiOverlayStyle(
           statusBarColor: Colors.black,
           statusBarIconBrightness: Brightness.dark,
@@ -260,13 +482,26 @@ class _HomeSearchPage extends State<HomeSearchPage> {
                 // print("search input: $text");
               },
               onSubmitted: (value) async {
-                // _textEditingController.text = value;
+                if (_textEditingController.text == "") {
+                  return;
+                }
+
                 await _searchProvider.search(_textEditingController.text);
+                List<String>? list = searchHistory.get(0);
+
+                if (list!.contains(_textEditingController.text)) {
+                  list.remove(_textEditingController.text);
+                  searchHistory.put(0, [...list, _textEditingController.text]);
+                } else if (list.length < 5) {
+                  searchHistory.put(0, [...list, _textEditingController.text]);
+                } else {
+                  list.removeAt(0);
+                  searchHistory.put(0, [...list, _textEditingController.text]);
+                }
               },
             ),
           ),
         ),
-        elevation: 0.0,
         actions: [
           Container(
             width: 50,

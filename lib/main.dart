@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 import 'pages/splash_page.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 void main() async {
   await dotenv.load(fileName: "assets/config/.env");
+  await Hive.initFlutter();
+  Box<List<String>> searchHistory = await Hive.openBox('searchHistory');
   runApp(const MyApp());
 }
 
