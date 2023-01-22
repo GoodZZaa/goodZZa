@@ -1,9 +1,9 @@
 class MonthbudgetList {
   late int? id;
-  late String title;
-  late String description;
+  late String price;
+  late String category;
 
-  MonthbudgetList({this.id, required this.title, required this.description});
+  MonthbudgetList({this.id, required this.price, required this.category});
 
   /*late String title;
   late String content;

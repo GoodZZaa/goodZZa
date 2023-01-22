@@ -85,14 +85,15 @@ class _Monthbudget_List_State extends State<Monthbudget_List> {
   Widget bodyWidget() {
     return Scaffold(
         floatingActionButton: FloatingActionButton(
-            backgroundColor: Colors.deepPurpleAccent,
+            // backgroundColor: Colors.deepPurpleAccent,
+            backgroundColor: Color.fromRGBO(95, 89, 225, 1),
             child: Text('+', style: TextStyle(fontSize: 25)),
             onPressed: () {
               showDialog(
                   context: context,
                   builder: (BuildContext context) {
-                    String title = '';
-                    String description = '';
+                    String price = '';
+                    String category = '';
                     return AlertDialog(
                       content: Container(
                         height: 200,
@@ -100,7 +101,7 @@ class _Monthbudget_List_State extends State<Monthbudget_List> {
                           children: [
                             TextField(
                               onChanged: (value) {
-                                title = value;
+                                price = value;
                               },
                               decoration: InputDecoration(
                                   border: OutlineInputBorder(),
@@ -121,7 +122,7 @@ class _Monthbudget_List_State extends State<Monthbudget_List> {
                               setState(() {
                                 monthbudgetListDefault.addMonthbudgetList(
                                   MonthbudgetList(
-                                      title: title, description: description),
+                                      price: price, category: category),
                                 );
                               });
                               Navigator.of(context).pop();
@@ -173,7 +174,16 @@ class _Monthbudget_List_State extends State<Monthbudget_List> {
                     : ListView.separated(
                         itemBuilder: (context, index) {
                           return ListTile(
-                            title: Text(monthbudgetList[index].title),
+                            title: Text(
+                              monthbudgetList[index].category,
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            subtitle: Text(
+                              monthbudgetList[index].price + '원',
+                              style: TextStyle(
+                                  color: Colors.grey,
+                                  fontWeight: FontWeight.bold),
+                            ),
                             onTap: () {},
                             trailing: Container(
                               width: 80,

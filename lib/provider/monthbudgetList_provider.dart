@@ -2,10 +2,10 @@ import '../models/monthbudget_list_model.dart';
 
 class MonthbudgetListDefault {
   List<MonthbudgetList> dummyMonthBudgetList = [
-    MonthbudgetList(id: 1, title: '교통비', description: '버스'),
-    MonthbudgetList(id: 2, title: '기타', description: '롯데월드'),
-    MonthbudgetList(id: 3, title: '식료품', description: '사과'),
-    MonthbudgetList(id: 4, title: '생필품', description: '휴지'),
+    MonthbudgetList(id: 1, price: '1000', category: '교통비'),
+    MonthbudgetList(id: 2, price: '2000', category: '기타'),
+    MonthbudgetList(id: 3, price: '3000', category: '식료품'),
+    MonthbudgetList(id: 4, price: '4000', category: '생필품'),
   ];
 
   List<MonthbudgetList> getmonthbudgetList() {
@@ -19,8 +19,8 @@ class MonthbudgetListDefault {
   MonthbudgetList addMonthbudgetList(MonthbudgetList monthbudgetList) {
     MonthbudgetList newMonthbudgetList = MonthbudgetList(
         id: dummyMonthBudgetList.length + 1,
-        title: monthbudgetList.title,
-        description: monthbudgetList.description);
+        price: monthbudgetList.price,
+        category: monthbudgetList.category);
 
     dummyMonthBudgetList.add(newMonthbudgetList);
     return newMonthbudgetList;
