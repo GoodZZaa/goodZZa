@@ -66,7 +66,7 @@ class _SetMonthBudgetState extends State<SetMonthBudget> {
                     children: [
                       Container(
                           alignment: Alignment.centerLeft,
-                          child: Text("이번 달 예산은",
+                          child: Text("이번달 예산은",
                               style: TextStyle(
                                   fontSize: 28, fontWeight: FontWeight.bold))),
                       SizedBox(height: 1),
@@ -119,7 +119,8 @@ class _SetMonthBudgetState extends State<SetMonthBudget> {
                         onTap: () {
                           Navigator.of(context).push(
                             MaterialPageRoute(
-                              builder: (BuildContext context) => TodoList(),
+                              builder: (BuildContext context) =>
+                                  Monthbudget_List(userInput),
                             ),
                           );
                         },
@@ -216,7 +217,21 @@ class _SetMonthBudgetState extends State<SetMonthBudget> {
 
 String DailyBudget(String? userInput) {
   double reUserInput = double.parse(userInput!);
-  double dailyBudget = reUserInput / 30;
+  double dailyBudget = 0;
+  if (reUserInput == DateTime.january ||
+      reUserInput == DateTime.march ||
+      reUserInput == DateTime.may ||
+      reUserInput == DateTime.july ||
+      reUserInput == DateTime.august ||
+      reUserInput == DateTime.september ||
+      reUserInput == DateTime.october ||
+      reUserInput == DateTime.december) {
+    dailyBudget = reUserInput / 31;
+  } else if (reUserInput == DateTime.february) {
+    dailyBudget = reUserInput / 28;
+  } else {
+    dailyBudget = reUserInput / 30;
+  }
 
   String res = "";
   res = (dailyBudget.floor()).toString();
