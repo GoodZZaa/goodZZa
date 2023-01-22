@@ -94,7 +94,7 @@ class _SetMonthBudgetState extends State<SetMonthBudget> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        '이번달 하루 생활비: ${dailyBudget(userInput)}원',
+                        '이번달 하루 생활비: ${numberFormat(dailyBudget(userInput))}원',
                         style: TextStyle(
                             fontSize: 14,
                             color: Colors.red[700],
@@ -130,6 +130,7 @@ class _SetMonthBudgetState extends State<SetMonthBudget> {
                     child: SizedBox(
                       height: MediaQuery.of(context).size.height * 0.35,
                       child: GridView.builder(
+                          physics: const NeverScrollableScrollPhysics(),
                           itemCount: buttons.length,
                           gridDelegate:
                               SliverGridDelegateWithFixedCrossAxisCount(
@@ -144,8 +145,10 @@ class _SetMonthBudgetState extends State<SetMonthBudget> {
                               return MyButton(
                                 buttontapped: () {
                                   setState(() {
-                                    userInput = userInput.substring(
-                                        0, userInput.length - 1);
+                                    if (userInput != '') {
+                                      userInput = userInput.substring(
+                                          0, userInput.length - 1);
+                                    }
                                   });
                                 },
                                 buttonText: buttons[index],
@@ -197,11 +200,11 @@ class _SetMonthBudgetState extends State<SetMonthBudget> {
 
 }
 
-int dailyBudget(String? userInput) {
+String dailyBudget(String userInput) {
   if (userInput == '') {
-    return 0;
+    return '0';
   }
-  double reUserInput = double.parse(userInput!);
+  double reUserInput = double.parse(userInput);
   double dailyBudget = 0;
   if (reUserInput == DateTime.january ||
       reUserInput == DateTime.march ||
@@ -217,7 +220,7 @@ int dailyBudget(String? userInput) {
   } else {
     dailyBudget = reUserInput / 30;
   }
-  return dailyBudget.floor();
+  return dailyBudget.floor().toString();
 }
 
 // creating Stateless Widget for buttons
