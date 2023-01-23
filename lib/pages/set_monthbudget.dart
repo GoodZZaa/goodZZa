@@ -44,15 +44,6 @@ class _SetMonthBudgetState extends State<SetMonthBudget> {
                 width: 70,
               )
             ],
-            leading: InkWell(
-                child: Container(
-                  margin: const EdgeInsets.only(left: 10),
-                  child: Image.asset(
-                    'assets/icons/back_icon.png',
-                    height: 25,
-                  ),
-                ),
-                onTap: () => Navigator.pop(context)),
             backgroundColor: Colors.white,
             elevation: 0.0,
             title: Row(
