@@ -128,7 +128,7 @@ class _SetMonthBudgetState extends State<SetMonthBudget> {
                   ),
                   Flexible(
                     child: SizedBox(
-                      height: MediaQuery.of(context).size.height * 0.35,
+                      height: MediaQuery.of(context).size.height * 0.3,
                       child: GridView.builder(
                           physics: const NeverScrollableScrollPhysics(),
                           itemCount: buttons.length,
@@ -159,30 +159,29 @@ class _SetMonthBudgetState extends State<SetMonthBudget> {
                             // other buttons
                             else {
                               return MyButton(
-                                buttontapped: () {
-                                  if (userInput.length < 9) {
-                                    setState(() {
-                                      userInput += buttons[index];
-                                    });
-                                  } else {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                        content: Text('숫자가 너무 큽니다'),
-                                      ),
-                                    );
-                                  }
-                                  // userInputLength += userInput;
-                                  // 리턴 bool로 만들어서 true면 값넣고
-                                  // 길이가 6넘으면 아무 동작 안하게
-                                },
-                                buttonText: buttons[index],
-                                color: isOperator(buttons[index])
+                                  buttontapped: () {
+                                    if (userInput.length < 9) {
+                                      setState(() {
+                                        userInput += buttons[index];
+                                      });
+                                    } else {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        const SnackBar(
+                                          content: Text('숫자가 너무 큽니다'),
+                                        ),
+                                      );
+                                    }
+                                  },
+                                  buttonText: buttons[index],
+                                  color: Colors.white
+                                  /* color: isOperator(buttons[index])
                                     ? Colors.blueAccent
                                     : Colors.white,
                                 textColor: isOperator(buttons[index])
                                     ? Colors.white
-                                    : Colors.black,
-                              );
+                                    : Colors.black,*/
+                                  );
                             }
                           }), // GridView.builder
                     ),
@@ -190,12 +189,12 @@ class _SetMonthBudgetState extends State<SetMonthBudget> {
                 ])));
   }
 
-  bool isOperator(String x) {
+/*  bool isOperator(String x) {
     if (x == '/' || x == 'x' || x == '-' || x == '+' || x == '=') {
       return true;
     }
     return false;
-  }
+  }*/
 // function to calculate the input operation
 
 }

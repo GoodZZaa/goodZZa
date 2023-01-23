@@ -1,3 +1,5 @@
+import 'package:good_zza_code_in_songdo/pages/monthbudget_list.dart';
+
 class MonthbudgetList {
   late int? id;
   late String price;

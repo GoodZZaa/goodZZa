@@ -34,6 +34,8 @@ class _Monthbudget_List_State extends State<Monthbudget_List> {
     Data("기타", Colors.orange)
   ];
 
+  late String _selectedCatagory;
+
   @override
   void initState() {
     super.initState();
@@ -63,29 +65,6 @@ class _Monthbudget_List_State extends State<Monthbudget_List> {
             addDialog();
           }),
     );
-  }
-
-  List<Widget> choiceChips() {
-    List<Widget> chips = [];
-    for (int i = 0; i < _choiceChipsList.length; i++) {
-      Widget item = Padding(
-        padding: const EdgeInsets.only(left: 10, right: 5),
-        child: ChoiceChip(
-          label: Text(_choiceChipsList[i].label),
-          labelStyle: const TextStyle(color: Colors.white),
-          backgroundColor: _choiceChipsList[i].color,
-          selected: _selectedIndex == i,
-          selectedColor: const Color.fromRGBO(95, 89, 225, 1),
-          onSelected: (bool value) {
-            setState(() {
-              _selectedIndex = i;
-            });
-          },
-        ),
-      );
-      chips.add(item);
-    }
-    return chips;
   }
 
   AppBar monthbudgetAppbar() {
@@ -142,7 +121,7 @@ class _Monthbudget_List_State extends State<Monthbudget_List> {
           ),
           Container(
               margin: const EdgeInsets.only(top: 30),
-              height: MediaQuery.of(context).size.height * 0.7,
+              height: MediaQuery.of(context).size.height * 0.6,
               child: isLoading
                   ? const Center(
                       child: CircularProgressIndicator(),
@@ -205,6 +184,31 @@ class _Monthbudget_List_State extends State<Monthbudget_List> {
     );
   }
 
+  List<Widget> choiceChips() {
+    List<Widget> chips = [];
+    for (int i = 0; i < _choiceChipsList.length; i++) {
+      Widget item = Padding(
+        padding: const EdgeInsets.only(left: 10, right: 5),
+        child: ChoiceChip(
+          label: Text(_choiceChipsList[i].label),
+          labelStyle: const TextStyle(color: Colors.white),
+          backgroundColor: _choiceChipsList[i].color,
+          selected: _selectedIndex == i,
+          selectedColor: const Color.fromRGBO(95, 89, 225, 1),
+          onSelected: (bool value) {
+            setState(() {
+              _selectedIndex = i;
+
+              _selectedCatagory = _choiceChipsList[i].label;
+            });
+          },
+        ),
+      );
+      chips.add(item);
+    }
+    return chips;
+  }
+
   void addDialog() => showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -236,7 +240,8 @@ class _Monthbudget_List_State extends State<Monthbudget_List> {
                 onPressed: () {
                   setState(() {
                     monthbudgetListDefault.addMonthbudgetList(
-                      MonthbudgetList(price: price, category: category),
+                      MonthbudgetList(
+                          price: price, category: _selectedCatagory),
                     );
                   });
                   Navigator.of(context).pop();
