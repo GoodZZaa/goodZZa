@@ -178,7 +178,14 @@ class _ShoppingCartState extends State<ShoppingCart> {
                                     ),
                                     padding: EdgeInsets.zero,
                                     constraints: BoxConstraints(),
-                                    onPressed: (){},
+                                    onPressed: (){
+                                      setState(() {
+                                        if (this.shoppingcart[index].amount == 1){
+
+                                        } else{
+                                          this.shoppingcart[index].amount--;}
+                                      });
+                                    },
                                     icon: Icon(
                                         Icons.horizontal_rule
                                     )),
@@ -200,7 +207,11 @@ class _ShoppingCartState extends State<ShoppingCart> {
                                     ),
                                     padding: EdgeInsets.zero,
                                     constraints: BoxConstraints(),
-                                    onPressed: (){},
+                                    onPressed: (){
+                                      setState(() {
+                                        this.shoppingcart[index].amount++;
+                                      });
+                                    },
                                     icon: Icon(
                                         Icons.add
                                     )),
