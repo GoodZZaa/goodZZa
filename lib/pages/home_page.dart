@@ -534,7 +534,7 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
                                           onPressed: () { checkcount++;},
                                           style: TextButton.styleFrom(
                                               backgroundColor:
-                                              const Color.fromRGBO(147, 147, 147, 1)),
+                                              const Color.fromRGBO(95, 89,225, 100)),
                                           child: const Text(
                                             "          Add to cart          ",
                                             style: TextStyle(
