@@ -95,12 +95,20 @@ class _SetMonthBudgetState extends State<SetMonthBudget> {
                       ),
                       InkWell(
                           onTap: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => ChangeNotifierProvider(
-                                    create: (context) => BudgetListProvider(),
-                                    child: MonthBudgetList(userInput)
-                                    //지금 현재 년도와 월을 넘겨준다.
-                                    )));
+                            if (userInput != '') {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => ChangeNotifierProvider(
+                                      create: (context) => BudgetListProvider(),
+                                      child: MonthBudgetList(userInput)
+                                      //지금 현재 년도와 월을 넘겨준다.
+                                      )));
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('예산을 입력해주세요'),
+                                ),
+                              );
+                            }
                           },
                           child: Row(children: [
                             const Text(
