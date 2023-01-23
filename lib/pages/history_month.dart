@@ -17,10 +17,6 @@ class HistoryMonth extends StatefulWidget {
 class _HistoryMonthState extends State<HistoryMonth> {
   late HistoryMonthProvider _historyMonthProvider;
   ScrollController _controller = ScrollController();
-  /*기존의 accountprovider 대신에 새로 만든 이유:
-    account provider에는 가계부 홈 화면에서 '달'마다 값이 달라지는 데이터도 받아오는데
-    메인 홈에서는 현재 년과 월만 필요 */
-  // late 쓰면 초기화는 나중으로 미룬다.
 
   @override
   void initState() {
@@ -68,7 +64,7 @@ class _HistoryMonthState extends State<HistoryMonth> {
               color: Color.fromARGB(128, 193, 193, 193),
               thickness: 0.8),
           const SizedBox(height: 20),
-          budgetCard()
+          checkProductNum(),
         ],
       ));
 
@@ -203,6 +199,15 @@ class _HistoryMonthState extends State<HistoryMonth> {
             textAlign: TextAlign.right),
       )
     ]));
+  }
+
+  Widget checkProductNum() {
+    if (_historyMonthProvider.payoutItems.length == 0) {
+      return Container(
+          alignment: Alignment.center, child: Text('지출내역이 존재하지 않습니다'));
+    } else {
+      return budgetCard();
+    }
   }
 
   Widget budgetCard() {
