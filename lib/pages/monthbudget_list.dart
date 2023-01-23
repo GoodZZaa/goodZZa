@@ -405,13 +405,14 @@ class _MonthBudgetListState extends State<MonthBudgetList> {
                 borderRadius: BorderRadius.circular(10.0)),
             title: const Text(
               '금액 수정',
-              style: TextStyle(
-                  color: Color.fromRGBO(102, 102, 102, 1),
-                  fontWeight: FontWeight.w700,
-                  fontSize: 16),
               textAlign: TextAlign.center,
             ),
+            titleTextStyle: TextStyle(
+                color: Color.fromRGBO(102, 102, 102, 1),
+                fontWeight: FontWeight.w700,
+                fontSize: 16),
             content: TextField(
+              autofocus: true,
               cursorColor: const Color.fromRGBO(88, 212, 175, 1),
               inputFormatters: [
                 FilteringTextInputFormatter.allow(RegExp('[0-9]'))
@@ -504,20 +505,75 @@ class _MonthBudgetListState extends State<MonthBudgetList> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('금액 삭제'),
-          content: const Text('삭제하시겠습니까?'),
-          actions: [
-            TextButton(
-                child: const Text('삭제'),
-                onPressed: () {
-                  _budgetListProvider.deleteItem(index);
-                  Navigator.of(context).pop();
-                }),
-            TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: const Text('취소'))
+          buttonPadding: const EdgeInsets.all(20),
+          alignment: Alignment.center,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+          content: Container(
+              margin: const EdgeInsets.only(top: 20),
+              child: const Text(
+                '삭제하시겠습니까?',
+                style: TextStyle(
+                    color: Color.fromARGB(255, 24, 24, 1),
+                    fontWeight: FontWeight.w600,
+                    fontSize: 17),
+                textAlign: TextAlign.center,
+              )),
+          actions: <Widget>[
+            SizedBox(
+                width: MediaQuery.of(context).size.width,
+                height: 55,
+                child: Row(
+                  children: [
+                    Flexible(
+                        child: InkWell(
+                      child: Container(
+                        margin: const EdgeInsets.fromLTRB(0, 0, 6, 0),
+                        alignment: Alignment.center,
+                        height: 55,
+                        decoration: BoxDecoration(
+                          color: const Color.fromRGBO(234, 234, 234, 1),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: const Text(
+                          '취소',
+                          style: TextStyle(
+                              color: Color.fromRGBO(102, 102, 102, 1),
+                              fontWeight: FontWeight.w700,
+                              fontSize: 16),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                      onTap: () {
+                        Navigator.pop(context);
+                      },
+                    )),
+                    Flexible(
+                        child: InkWell(
+                      child: Container(
+                        margin: const EdgeInsets.fromLTRB(6, 0, 0, 0),
+                        alignment: Alignment.center,
+                        height: 55,
+                        decoration: BoxDecoration(
+                          color: const Color.fromRGBO(88, 212, 175, 1),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: const Text(
+                          '삭제',
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w700,
+                              fontSize: 16),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                      onTap: () {
+                        Navigator.pop(context);
+                        _budgetListProvider.deleteItem(index);
+                      },
+                    ))
+                  ],
+                ))
           ],
         );
       });
