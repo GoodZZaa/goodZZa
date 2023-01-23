@@ -7,6 +7,12 @@ import 'package:good_zza_code_in_songdo/provider/budget_list_provider.dart';
 import 'package:good_zza_code_in_songdo/utills/number_format.dart';
 import 'package:provider/provider.dart';
 
+import '../provider/account_book_provider.dart';
+import '../provider/bottom_nav_provider.dart';
+import '../provider/home_provider.dart';
+import '../provider/receipt_camera_provider.dart';
+import 'bottom_nav.dart';
+
 class MonthBudgetList extends StatefulWidget {
   final String userInput;
   MonthBudgetList(this.userInput, {Key? key}) : super(key: key);
@@ -95,7 +101,7 @@ class _MonthBudgetListState extends State<MonthBudgetList> {
   Widget bodyWidget() {
     return Container(
       alignment: Alignment.center,
-      padding: const EdgeInsets.only(left: 10, right: 10, top: 40),
+      padding: const EdgeInsets.only(left: 20, right: 20, top: 40),
       child: Column(
         children: [
           Text(
@@ -111,68 +117,136 @@ class _MonthBudgetListState extends State<MonthBudgetList> {
               color: Color.fromARGB(0xFF, 0x8A, 0x8A, 0x8E),
             ),
           ),
-          Container(
-              margin: const EdgeInsets.only(top: 30),
-              height: MediaQuery.of(context).size.height * 0.6,
-              child: ListView.builder(
-                  itemCount: _budgetListProvider.selectedBudgetList.length,
-                  itemBuilder: (context, index) {
-                    return Column(
-                      children: [
-                        Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 10, vertical: 10),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisSize: MainAxisSize.max,
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      _budgetListProvider
-                                          .selectedBudgetList[index].category,
-                                      style: const TextStyle(
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    const SizedBox(
-                                      height: 8,
-                                    ),
-                                    Text(
-                                        '${numberFormat(_budgetListProvider.selectedBudgetList[index].price)}원',
-                                        style: detailTextStyle),
+          const SizedBox(height: 30),
+          ListView.builder(
+              shrinkWrap: true,
+              itemCount: _budgetListProvider.selectedBudgetList.length,
+              itemBuilder: (context, index) => budgetItem(index)),
+          Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                InkWell(
+                  onTap: () => Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => MultiProvider(
+                                providers: [
+                                  ChangeNotifierProvider(
+                                      create: (context) =>
+                                          BottomNavigationProvider()),
+                                  ChangeNotifierProvider(
+                                      create: (context) => AccountProvider()),
+                                  ChangeNotifierProvider(
+                                      create: (context) =>
+                                          ReceiptCameraProvider()),
+                                  ChangeNotifierProvider(
+                                      create: (context) => HomeProvider()),
+                                ],
+                                child: BottomNavigation(),
+                              )),
+                      (route) => false),
+                  child: Row(
+                    children: const [
+                      Text('건너뛰기',
+                          style: TextStyle(fontWeight: FontWeight.w600)),
+                      Icon(
+                        Icons.arrow_forward_sharp,
+                        size: 15,
+                      )
+                    ],
+                  ),
+                ),
+                InkWell(
+                  onTap: () {
+                    //저장
+                    Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => MultiProvider(
+                                  providers: [
+                                    ChangeNotifierProvider(
+                                        create: (context) =>
+                                            BottomNavigationProvider()),
+                                    ChangeNotifierProvider(
+                                        create: (context) => AccountProvider()),
+                                    ChangeNotifierProvider(
+                                        create: (context) =>
+                                            ReceiptCameraProvider()),
+                                    ChangeNotifierProvider(
+                                        create: (context) => HomeProvider()),
                                   ],
-                                ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    IconButton(
-                                      iconSize: 25,
-                                      icon: const Icon(Icons.edit),
-                                      onPressed: () {
-                                        editDialog(index);
-                                      },
-                                    ),
-                                    IconButton(
-                                      iconSize: 25,
-                                      icon: const Icon(Icons.delete),
-                                      onPressed: () {
-                                        deleteDialog(index);
-                                      },
-                                    )
-                                  ],
-                                ),
-                              ],
-                            )),
-                        const Divider(
-                          thickness: 0.8,
-                        )
-                      ],
-                    );
-                  })),
+                                  child: BottomNavigation(),
+                                )),
+                        (route) => false);
+                  },
+                  child: Container(
+                      child: Row(
+                    children: const [
+                      Text('저장', style: TextStyle(fontWeight: FontWeight.w600)),
+                      Icon(
+                        Icons.check,
+                        size: 15,
+                      )
+                    ],
+                  )),
+                ),
+              ])
         ],
       ),
+    );
+  }
+
+  Widget budgetItem(int index) {
+    return Column(
+      children: [
+        Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      _budgetListProvider.selectedBudgetList[index].category,
+                      style: const TextStyle(fontWeight: FontWeight.w600),
+                    ),
+                    const SizedBox(
+                      height: 8,
+                    ),
+                    Text(
+                        '${numberFormat(_budgetListProvider.selectedBudgetList[index].price)}원',
+                        style: detailTextStyle),
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    IconButton(
+                      iconSize: 25,
+                      icon: const Icon(Icons.edit),
+                      onPressed: () {
+                        editDialog(index);
+                      },
+                    ),
+                    IconButton(
+                      iconSize: 25,
+                      icon: const Icon(Icons.delete),
+                      onPressed: () {
+                        deleteDialog(index);
+                      },
+                    )
+                  ],
+                ),
+              ],
+            )),
+        const Divider(
+          thickness: 0.8,
+        )
+      ],
     );
   }
 
@@ -212,14 +286,14 @@ class _MonthBudgetListState extends State<MonthBudgetList> {
                                 selected: false),
                             border: OutlineInputBorder(
                                 borderRadius:
-                                    BorderRadius.all(Radius.circular(20)),
+                                    const BorderRadius.all(Radius.circular(20)),
                                 borderSide: BorderSide(
                                   color: selected.color,
                                   width: 3,
                                 )),
                             focusedBorder: OutlineInputBorder(
                                 borderRadius:
-                                    BorderRadius.all(Radius.circular(20)),
+                                    const BorderRadius.all(Radius.circular(20)),
                                 borderSide: BorderSide(
                                   color: selected.color,
                                   width: 3,
@@ -285,7 +359,7 @@ class _MonthBudgetListState extends State<MonthBudgetList> {
                               Flexible(
                                   child: InkWell(
                                 child: Container(
-                                  margin: EdgeInsets.fromLTRB(6, 0, 0, 0),
+                                  margin: const EdgeInsets.fromLTRB(6, 0, 0, 0),
                                   alignment: Alignment.center,
                                   height: 55,
                                   decoration: BoxDecoration(
@@ -329,7 +403,7 @@ class _MonthBudgetListState extends State<MonthBudgetList> {
             alignment: Alignment.center,
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10.0)),
-            title: Text(
+            title: const Text(
               '금액 수정',
               style: TextStyle(
                   color: Color.fromRGBO(102, 102, 102, 1),
@@ -348,9 +422,9 @@ class _MonthBudgetListState extends State<MonthBudgetList> {
                 price = value;
               },
               decoration: InputDecoration(
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(
-                        color: const Color.fromRGBO(88, 212, 175, 1)),
+                  focusedBorder: const UnderlineInputBorder(
+                    borderSide:
+                        BorderSide(color: Color.fromRGBO(88, 212, 175, 1)),
                   ),
                   suffixText: '원',
                   hintText:
@@ -388,7 +462,7 @@ class _MonthBudgetListState extends State<MonthBudgetList> {
                       Flexible(
                           child: InkWell(
                         child: Container(
-                          margin: EdgeInsets.fromLTRB(6, 0, 0, 0),
+                          margin: const EdgeInsets.fromLTRB(6, 0, 0, 0),
                           alignment: Alignment.center,
                           height: 55,
                           decoration: BoxDecoration(
