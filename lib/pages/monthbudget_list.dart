@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:good_zza_code_in_songdo/utills/number_format.dart';
 import '../models/monthbudget_list_arguments.dart';
 import '../models/monthbudget_list_model.dart';
-import '../provider/monthbudgetList_provider.dart';
 import 'monthbudget_addingCategories.dart';
 
 class Monthbudget_List extends StatefulWidget {
@@ -22,7 +21,10 @@ class Data {
 class _Monthbudget_List_State extends State<Monthbudget_List> {
   List<MonthbudgetList> monthbudgetList = [];
   bool isLoading = true;
-  MonthbudgetListDefault monthbudgetListDefault = MonthbudgetListDefault();
+
+  SaveMonthbudgetList saveMonthbudgetList = SaveMonthbudgetList();
+
+  // MonthbudgetListDefault monthbudgetListDefault = MonthbudgetListDefault();
 
   int? _selectedIndex;
 
@@ -34,12 +36,13 @@ class _Monthbudget_List_State extends State<Monthbudget_List> {
     Data("기타", Colors.orange)
   ];
 
-  late String _selectedCatagory;
+  late String _selectedCategory;
 
   @override
   void initState() {
     super.initState();
-    monthbudgetList = monthbudgetListDefault.getmonthbudgetList();
+    // monthbudgetList = monthbudgetListDefault.getmonthbudgetList();
+    monthbudgetList = saveMonthbudgetList.getmonthbudgetList();
     setState(() {
       isLoading = false;
     });
@@ -199,7 +202,7 @@ class _Monthbudget_List_State extends State<Monthbudget_List> {
             setState(() {
               _selectedIndex = i;
 
-              _selectedCatagory = _choiceChipsList[i].label;
+              _selectedCategory = _choiceChipsList[i].label;
             });
           },
         ),
@@ -239,9 +242,9 @@ class _Monthbudget_List_State extends State<Monthbudget_List> {
             TextButton(
                 onPressed: () {
                   setState(() {
-                    monthbudgetListDefault.addMonthbudgetList(
+                    saveMonthbudgetList.addMonthbudgetList(
                       MonthbudgetList(
-                          price: price, category: _selectedCatagory),
+                          price: price, category: _selectedCategory),
                     );
                   });
                   Navigator.of(context).pop();
