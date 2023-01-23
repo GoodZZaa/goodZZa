@@ -1,7 +1,9 @@
 import 'dart:core';
 
 import 'package:flutter/material.dart';
+import 'package:good_zza_code_in_songdo/provider/budget_list_provider.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 import '../utills/number_format.dart';
 import 'monthbudget_list.dart';
@@ -44,15 +46,6 @@ class _SetMonthBudgetState extends State<SetMonthBudget> {
                 width: 70,
               )
             ],
-            leading: InkWell(
-                child: Container(
-                  margin: const EdgeInsets.only(left: 10),
-                  child: Image.asset(
-                    'assets/icons/back_icon.png',
-                    height: 25,
-                  ),
-                ),
-                onTap: () => Navigator.pop(context)),
             backgroundColor: Colors.white,
             elevation: 0.0,
             title: Row(
@@ -102,12 +95,20 @@ class _SetMonthBudgetState extends State<SetMonthBudget> {
                       ),
                       InkWell(
                           onTap: () {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (BuildContext context) =>
-                                    Monthbudget_List(userInput),
-                              ),
-                            );
+                            if (userInput != '') {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => ChangeNotifierProvider(
+                                      create: (context) => BudgetListProvider(),
+                                      child: MonthBudgetList(userInput)
+                                      //지금 현재 년도와 월을 넘겨준다.
+                                      )));
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('예산을 입력해주세요'),
+                                ),
+                              );
+                            }
                           },
                           child: Row(children: [
                             const Text(
