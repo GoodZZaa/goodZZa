@@ -1,17 +1,27 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:good_zza_code_in_songdo/models/month_budget_item.dart';
+import 'package:good_zza_code_in_songdo/provider/budget_list_provider.dart';
 import 'package:good_zza_code_in_songdo/utills/number_format.dart';
+import 'package:provider/provider.dart';
 
-import '../models/monthbudget_list_model.dart';
-
-class Monthbudget_List extends StatefulWidget {
+class MonthBudgetList extends StatefulWidget {
   final String userInput;
-  Monthbudget_List(this.userInput, {Key? key}) : super(key: key);
+  MonthBudgetList(this.userInput, {Key? key}) : super(key: key);
 
   @override
-  State<Monthbudget_List> createState() => _Monthbudget_List_State();
+  State<MonthBudgetList> createState() => _MonthBudgetListState();
 }
+
+final List<Data> _choiceChipsList = [
+  Data("식료품", Colors.lightBlueAccent),
+  Data("교통비", Colors.amberAccent),
+  Data("생필품", Colors.lime),
+  Data("취미", Colors.cyan),
+  Data("기타", Colors.orange)
+];
 
 class Data {
   String label;
@@ -19,33 +29,11 @@ class Data {
   Data(this.label, this.color);
 }
 
-class _Monthbudget_List_State extends State<Monthbudget_List> {
-  List<MonthbudgetList> monthbudgetList = [];
-  bool isLoading = true;
-
-  SaveMonthbudgetList saveMonthbudgetList = SaveMonthbudgetList();
-
-  int? _selectedIndex;
-
-  final List<Data> _choiceChipsList = [
-    Data("식료품", Colors.lightBlueAccent),
-    Data("교통비", Colors.amberAccent),
-    Data("생필품", Colors.lime),
-    Data("취미", Colors.cyan),
-    Data("기타", Colors.orange)
-  ];
-
-  late String _selectedCategory;
-
+class _MonthBudgetListState extends State<MonthBudgetList> {
+  late BudgetListProvider _budgetListProvider;
   @override
   void initState() {
     super.initState();
-
-    monthbudgetList = saveMonthbudgetList.getmonthbudgetList();
-
-    setState(() {
-      isLoading = false;
-    });
   }
 
   TextStyle detailTextStyle = const TextStyle(
@@ -55,6 +43,7 @@ class _Monthbudget_List_State extends State<Monthbudget_List> {
 
   @override
   Widget build(BuildContext context) {
+    _budgetListProvider = Provider.of<BudgetListProvider>(context);
     return Scaffold(
       appBar: monthbudgetAppbar(),
       body: bodyWidget(),
@@ -125,232 +114,336 @@ class _Monthbudget_List_State extends State<Monthbudget_List> {
           Container(
               margin: const EdgeInsets.only(top: 30),
               height: MediaQuery.of(context).size.height * 0.6,
-              child: isLoading
-                  ? const Center(
-                      child: CircularProgressIndicator(),
-                    )
-                  : ListView.builder(
-                      itemCount: monthbudgetList.length,
-                      itemBuilder: (context, index) {
-                        return Column(
-                          children: [
-                            Container(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 10, vertical: 10),
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  mainAxisSize: MainAxisSize.max,
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
+              child: ListView.builder(
+                  itemCount: _budgetListProvider.selectedBudgetList.length,
+                  itemBuilder: (context, index) {
+                    return Column(
+                      children: [
+                        Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 10, vertical: 10),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisSize: MainAxisSize.max,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          monthbudgetList[index].category,
-                                          style: const TextStyle(
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                        const SizedBox(
-                                          height: 8,
-                                        ),
-                                        Text('${monthbudgetList[index].price}원',
-                                            style: detailTextStyle),
-                                      ],
+                                    Text(
+                                      _budgetListProvider
+                                          .selectedBudgetList[index].category,
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.bold),
                                     ),
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      children: [
-                                        IconButton(
-                                          iconSize: 25,
-                                          icon: const Icon(Icons.edit),
-                                          onPressed: () {
-                                            showDialog(
-                                                context: context,
-                                                builder:
-                                                    (BuildContext context) {
-                                                  String price =
-                                                      monthbudgetList[index]
-                                                          .price;
-                                                  String category =
-                                                      monthbudgetList[index]
-                                                          .category;
-                                                  return AlertDialog(
-                                                    title: Text('금액 수정'),
-                                                    content: Container(
-                                                      height: 200,
-                                                      child: TextField(
-                                                        onChanged: (value) {
-                                                          price = value;
-                                                        },
-                                                        decoration:
-                                                            InputDecoration(
-                                                          hintText:
-                                                              monthbudgetList[
-                                                                      index]
-                                                                  .price,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    actions: [
-                                                      TextButton(
-                                                          onPressed: () {
-                                                            MonthbudgetList
-                                                                newMonthbudgetList =
-                                                                MonthbudgetList(
-                                                                    id: monthbudgetList[
-                                                                            index]
-                                                                        .id,
-                                                                    price:
-                                                                        price,
-                                                                    category:
-                                                                        category);
-                                                            setState(() {
-                                                              saveMonthbudgetList
-                                                                  .updateMonthbudgetList(
-                                                                      newMonthbudgetList);
-                                                            });
-                                                            Navigator.of(
-                                                                    context)
-                                                                .pop();
-                                                          },
-                                                          child: Text('수정')),
-                                                      TextButton(
-                                                          onPressed: () {
-                                                            Navigator.of(
-                                                                    context)
-                                                                .pop();
-                                                          },
-                                                          child: Text('취소'))
-                                                    ],
-                                                  );
-                                                });
-                                          },
-                                        ),
-                                        IconButton(
-                                          iconSize: 25,
-                                          icon: const Icon(Icons.delete),
-                                          onPressed: () {
-                                            showDialog(
-                                                context: context,
-                                                builder:
-                                                    (BuildContext context) {
-                                                  return AlertDialog(
-                                                    title: Text('금액 삭제'),
-                                                    content: Container(
-                                                      child: Text('삭제하시겠습니까?'),
-                                                    ),
-                                                    actions: [
-                                                      TextButton(
-                                                          child: Text('삭제'),
-                                                          onPressed: () {
-                                                            setState(() {
-                                                              saveMonthbudgetList
-                                                                  .deleteMonthbudgetList(
-                                                                      monthbudgetList[index]
-                                                                              .id ??
-                                                                          0);
-                                                            });
-                                                            Navigator.of(
-                                                                    context)
-                                                                .pop();
-                                                          }),
-                                                      TextButton(
-                                                          onPressed: () {
-                                                            Navigator.of(
-                                                                    context)
-                                                                .pop();
-                                                          },
-                                                          child: Text('취소'))
-                                                    ],
-                                                  );
-                                                });
-                                          },
-                                        )
-                                      ],
+                                    const SizedBox(
+                                      height: 8,
                                     ),
+                                    Text(
+                                        '${numberFormat(_budgetListProvider.selectedBudgetList[index].price)}원',
+                                        style: detailTextStyle),
                                   ],
-                                )),
-                            const Divider(
-                              thickness: 0.8,
-                            )
-                          ],
-                        );
-                      })),
+                                ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    IconButton(
+                                      iconSize: 25,
+                                      icon: const Icon(Icons.edit),
+                                      onPressed: () {
+                                        editDialog(index);
+                                      },
+                                    ),
+                                    IconButton(
+                                      iconSize: 25,
+                                      icon: const Icon(Icons.delete),
+                                      onPressed: () {
+                                        deleteDialog(index);
+                                      },
+                                    )
+                                  ],
+                                ),
+                              ],
+                            )),
+                        const Divider(
+                          thickness: 0.8,
+                        )
+                      ],
+                    );
+                  })),
         ],
       ),
     );
   }
 
-  List<Widget> choiceChips() {
-    List<Widget> chips = [];
-    for (int i = 0; i < _choiceChipsList.length; i++) {
-      Widget item = Padding(
-        padding: const EdgeInsets.only(left: 10, right: 5),
-        child: ChoiceChip(
-          label: Text(_choiceChipsList[i].label),
-          labelStyle: const TextStyle(color: Colors.white),
-          backgroundColor: _choiceChipsList[i].color,
-          selected: _selectedIndex == i,
-          selectedColor: const Color.fromRGBO(95, 89, 225, 1),
-          onSelected: (bool value) {
-            setState(() {
-              _selectedIndex = i;
+  void addDialog() {
+    String price = '';
+    Data selected = _choiceChipsList[0];
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return StatefulBuilder(
+              builder: (context, stfSetState) => AlertDialog(
+                    buttonPadding: const EdgeInsets.all(15),
+                    alignment: Alignment.center,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.0)),
+                    content: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        TextField(
+                          inputFormatters: [
+                            FilteringTextInputFormatter.allow(RegExp('[0-9]'))
+                          ],
+                          cursorColor: selected.color,
+                          autofocus: true,
+                          onChanged: (value) {
+                            price = value;
+                          },
+                          textAlign: TextAlign.end,
+                          decoration: InputDecoration(
+                            suffixText: '원',
+                            label: ChoiceChip(
+                                selectedColor: selected.color,
+                                disabledColor: selected.color,
+                                label: Text(selected.label),
+                                labelStyle:
+                                    const TextStyle(color: Colors.white),
+                                selected: false),
+                            border: OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(20)),
+                                borderSide: BorderSide(
+                                  color: selected.color,
+                                  width: 3,
+                                )),
+                            focusedBorder: OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(20)),
+                                borderSide: BorderSide(
+                                  color: selected.color,
+                                  width: 3,
+                                )),
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Wrap(
+                          direction: Axis.horizontal,
+                          children: _choiceChipsList
+                              .map((e) => Padding(
+                                    padding: const EdgeInsets.only(
+                                        left: 10, right: 5),
+                                    child: ChoiceChip(
+                                      label: Text(e.label),
+                                      labelStyle:
+                                          const TextStyle(color: Colors.white),
+                                      backgroundColor: e.color,
+                                      selected: false,
+                                      onSelected: (bool value) {
+                                        stfSetState(() {
+                                          selected = e;
+                                        });
+                                        _budgetListProvider.setIndex(
+                                            _choiceChipsList.indexOf(e));
+                                      },
+                                    ),
+                                  ))
+                              .toList(),
+                        ),
+                      ],
+                    ),
+                    actions: [
+                      SizedBox(
+                          width: MediaQuery.of(context).size.width,
+                          height: 55,
+                          child: Row(
+                            children: [
+                              Flexible(
+                                  child: InkWell(
+                                child: Container(
+                                  margin: const EdgeInsets.fromLTRB(0, 0, 6, 0),
+                                  alignment: Alignment.center,
+                                  height: 55,
+                                  decoration: BoxDecoration(
+                                    color:
+                                        const Color.fromRGBO(234, 234, 234, 1),
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  child: const Text(
+                                    '취소',
+                                    style: TextStyle(
+                                        color: Color.fromRGBO(102, 102, 102, 1),
+                                        fontWeight: FontWeight.w700,
+                                        fontSize: 16),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                                onTap: () {
+                                  Navigator.pop(context, false);
+                                },
+                              )),
+                              Flexible(
+                                  child: InkWell(
+                                child: Container(
+                                  margin: EdgeInsets.fromLTRB(6, 0, 0, 0),
+                                  alignment: Alignment.center,
+                                  height: 55,
+                                  decoration: BoxDecoration(
+                                    color:
+                                        const Color.fromRGBO(88, 212, 175, 1),
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  child: const Text(
+                                    '추가',
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w700,
+                                        fontSize: 16),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                                onTap: () {
+                                  if (price != '') {
+                                    _budgetListProvider.addItem(MonthBudgetItem(
+                                        price: price,
+                                        category: selected.label));
+                                  }
 
-              _selectedCategory = _choiceChipsList[i].label;
-            });
-          },
-        ),
-      );
-      chips.add(item);
-    }
-    return chips;
+                                  Navigator.of(context).pop();
+                                },
+                              ))
+                            ],
+                          ))
+                    ],
+                  ));
+        });
   }
 
-  void addDialog() => showDialog(
+  void editDialog(int index) {
+    String price = _budgetListProvider.selectedBudgetList[index].price;
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            buttonPadding: const EdgeInsets.all(20),
+            alignment: Alignment.center,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10.0)),
+            title: Text(
+              '금액 수정',
+              style: TextStyle(
+                  color: Color.fromRGBO(102, 102, 102, 1),
+                  fontWeight: FontWeight.w700,
+                  fontSize: 16),
+              textAlign: TextAlign.center,
+            ),
+            content: TextField(
+              cursorColor: const Color.fromRGBO(88, 212, 175, 1),
+              inputFormatters: [
+                FilteringTextInputFormatter.allow(RegExp('[0-9]'))
+              ],
+              keyboardType: TextInputType.number,
+              textAlign: TextAlign.end,
+              onChanged: (value) {
+                price = value;
+              },
+              decoration: InputDecoration(
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(
+                        color: const Color.fromRGBO(88, 212, 175, 1)),
+                  ),
+                  suffixText: '원',
+                  hintText:
+                      _budgetListProvider.selectedBudgetList[index].price),
+            ),
+            actions: [
+              SizedBox(
+                  width: MediaQuery.of(context).size.width,
+                  height: 55,
+                  child: Row(
+                    children: [
+                      Flexible(
+                          child: InkWell(
+                        child: Container(
+                          margin: const EdgeInsets.fromLTRB(0, 0, 6, 0),
+                          alignment: Alignment.center,
+                          height: 55,
+                          decoration: BoxDecoration(
+                            color: const Color.fromRGBO(234, 234, 234, 1),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: const Text(
+                            '취소',
+                            style: TextStyle(
+                                color: Color.fromRGBO(102, 102, 102, 1),
+                                fontWeight: FontWeight.w700,
+                                fontSize: 16),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                        onTap: () {
+                          Navigator.pop(context, false);
+                        },
+                      )),
+                      Flexible(
+                          child: InkWell(
+                        child: Container(
+                          margin: EdgeInsets.fromLTRB(6, 0, 0, 0),
+                          alignment: Alignment.center,
+                          height: 55,
+                          decoration: BoxDecoration(
+                            color: const Color.fromRGBO(88, 212, 175, 1),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: const Text(
+                            '수정',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w700,
+                                fontSize: 16),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                        onTap: () {
+                          if (price != '') {
+                            _budgetListProvider.editItem(
+                                index,
+                                MonthBudgetItem(
+                                    id: _budgetListProvider
+                                        .selectedBudgetList[index].id,
+                                    price: price,
+                                    category: _budgetListProvider
+                                        .selectedBudgetList[index].category));
+                          }
+
+                          Navigator.of(context).pop();
+                        },
+                      ))
+                    ],
+                  ))
+            ],
+          );
+        });
+  }
+
+  void deleteDialog(int index) => showDialog(
       context: context,
       builder: (BuildContext context) {
-        String price = '';
-        String category = '';
         return AlertDialog(
-          content: Container(
-            height: 200,
-            child: Column(
-              children: [
-                TextField(
-                  onChanged: (value) {
-                    price = value;
-                  },
-                  decoration: const InputDecoration(
-                      border: OutlineInputBorder(), labelText: '금액'),
-                ),
-                const SizedBox(height: 8),
-                Wrap(
-                  spacing: 6,
-                  direction: Axis.horizontal,
-                  children: choiceChips(),
-                ),
-              ],
-            ),
-          ),
+          title: const Text('금액 삭제'),
+          content: const Text('삭제하시겠습니까?'),
           actions: [
             TextButton(
+                child: const Text('삭제'),
                 onPressed: () {
-                  setState(() {
-                    saveMonthbudgetList.addMonthbudgetList(
-                      MonthbudgetList(
-                          price: price, category: _selectedCategory),
-                    );
-                  });
+                  _budgetListProvider.deleteItem(index);
                   Navigator.of(context).pop();
-                },
-                child: const Text('추가')),
+                }),
             TextButton(
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
-                child: const Text('취소')),
+                child: const Text('취소'))
           ],
         );
       });
