@@ -8,6 +8,10 @@ import 'package:good_zza_code_in_songdo/provider/search_provider.dart';
 import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
 
+import 'package:good_zza_code_in_songdo/pages/shoppingcart.dart';
+import 'package:good_zza_code_in_songdo/pages/shoppingcart.dart';
+
+
 class HomeSearchPage extends StatefulWidget {
   const HomeSearchPage({Key? key}) : super(key: key);
 
@@ -473,7 +477,8 @@ class _HomeSearchPage extends State<HomeSearchPage> {
                   MaterialPageRoute(
                     builder: (context) => ChangeNotifierProvider(
                       create: (context) => RecommendResultProvider(),
-                      child: const RecommendResultPage(),
+                      child: ShoppingCart(),
+
                     ),
                   ),
                 );

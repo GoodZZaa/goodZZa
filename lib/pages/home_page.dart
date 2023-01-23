@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:good_zza_code_in_songdo/pages/home_search_page.dart';
+import 'package:good_zza_code_in_songdo/pages/shoppingcart.dart';
 import 'package:good_zza_code_in_songdo/provider/history_month_provider.dart';
 import 'package:good_zza_code_in_songdo/provider/home_provider.dart';
 import 'package:good_zza_code_in_songdo/provider/search_provider.dart';
@@ -8,11 +9,15 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import '../provider/account_book_provider.dart';
 import 'history_month.dart';
+import 'package:good_zza_code_in_songdo/pages/shoppingcart.dart';
 
 
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
+
+
+
 
   @override
   State<HomePage> createState() => _HomePage();
@@ -25,6 +30,8 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
 
   final ScrollController scrollController = ScrollController();
   final RefreshController refreshController = RefreshController(initialLoadStatus: LoadStatus.idle);
+
+  int checkcount = 0;
 
   void onRefresh() {
     _homeProvider.pageNumber = 1;
@@ -130,7 +137,12 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
                           color: Color.fromRGBO(200, 200, 203, 1),
                         ),
                       ]),
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.of(context)
+                        .push(MaterialPageRoute(
+                        builder: (context)=>ShoppingCart(),
+                    ));
+                  },
                 ),
               ),
             ],
@@ -519,7 +531,7 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
                                   child: Align(
                                       alignment: Alignment.center,
                                       child: TextButton(
-                                          onPressed: () {},
+                                          onPressed: () { checkcount++;},
                                           style: TextButton.styleFrom(
                                               backgroundColor:
                                               const Color.fromRGBO(147, 147, 147, 1)),
