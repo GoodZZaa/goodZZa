@@ -17,15 +17,41 @@ class MonthbudgetList {
 class SaveMonthbudgetList {
   List<MonthbudgetList> saveMonthbudgetList = [];
 
+  MonthbudgetList getMonthbudget(int id) {
+    return saveMonthbudgetList[id];
+  }
+
   List<MonthbudgetList> getmonthbudgetList() {
     return saveMonthbudgetList;
   }
 
   MonthbudgetList addMonthbudgetList(MonthbudgetList monthbudgetList) {
     MonthbudgetList newMonthbudgetList = MonthbudgetList(
-        price: monthbudgetList.price, category: monthbudgetList.category);
+        id: saveMonthbudgetList.length + 1,
+        price: monthbudgetList.price,
+        category: monthbudgetList.category);
 
     saveMonthbudgetList.add(newMonthbudgetList);
     return newMonthbudgetList;
   }
+
+  void updateMonthbudgetList(MonthbudgetList monthbudgetList) {
+    for (int i = 0; i < saveMonthbudgetList.length; i++) {
+      if (saveMonthbudgetList[i].id == monthbudgetList.id) {
+        saveMonthbudgetList[i] = monthbudgetList;
+      }
+    }
+  }
+
+  void deleteMonthbudgetList(int id) {
+    for(int i =0; i<saveMonthbudgetList.length; i++){
+      if(saveMonthbudgetList[i].id == id){
+        saveMonthbudgetList.removeAt(i);
+      }
+    }
+  }
+
+
+
+
 }

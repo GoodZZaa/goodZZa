@@ -1,8 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:good_zza_code_in_songdo/utills/number_format.dart';
-import '../models/monthbudget_list_arguments.dart';
+
 import '../models/monthbudget_list_model.dart';
-import 'monthbudget_addingCategories.dart';
 
 class Monthbudget_List extends StatefulWidget {
   final String userInput;
@@ -24,8 +25,6 @@ class _Monthbudget_List_State extends State<Monthbudget_List> {
 
   SaveMonthbudgetList saveMonthbudgetList = SaveMonthbudgetList();
 
-  // MonthbudgetListDefault monthbudgetListDefault = MonthbudgetListDefault();
-
   int? _selectedIndex;
 
   final List<Data> _choiceChipsList = [
@@ -41,8 +40,9 @@ class _Monthbudget_List_State extends State<Monthbudget_List> {
   @override
   void initState() {
     super.initState();
-    // monthbudgetList = monthbudgetListDefault.getmonthbudgetList();
+
     monthbudgetList = saveMonthbudgetList.getmonthbudgetList();
+
     setState(() {
       isLoading = false;
     });
@@ -165,12 +165,108 @@ class _Monthbudget_List_State extends State<Monthbudget_List> {
                                         IconButton(
                                           iconSize: 25,
                                           icon: const Icon(Icons.edit),
-                                          onPressed: () {},
+                                          onPressed: () {
+                                            showDialog(
+                                                context: context,
+                                                builder:
+                                                    (BuildContext context) {
+                                                  String price =
+                                                      monthbudgetList[index]
+                                                          .price;
+                                                  String category =
+                                                      monthbudgetList[index]
+                                                          .category;
+                                                  return AlertDialog(
+                                                    title: Text('금액 수정'),
+                                                    content: Container(
+                                                      height: 200,
+                                                      child: TextField(
+                                                        onChanged: (value) {
+                                                          price = value;
+                                                        },
+                                                        decoration:
+                                                            InputDecoration(
+                                                          hintText:
+                                                              monthbudgetList[
+                                                                      index]
+                                                                  .price,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    actions: [
+                                                      TextButton(
+                                                          onPressed: () {
+                                                            MonthbudgetList
+                                                                newMonthbudgetList =
+                                                                MonthbudgetList(
+                                                                    id: monthbudgetList[
+                                                                            index]
+                                                                        .id,
+                                                                    price:
+                                                                        price,
+                                                                    category:
+                                                                        category);
+                                                            setState(() {
+                                                              saveMonthbudgetList
+                                                                  .updateMonthbudgetList(
+                                                                      newMonthbudgetList);
+                                                            });
+                                                            Navigator.of(
+                                                                    context)
+                                                                .pop();
+                                                          },
+                                                          child: Text('수정')),
+                                                      TextButton(
+                                                          onPressed: () {
+                                                            Navigator.of(
+                                                                    context)
+                                                                .pop();
+                                                          },
+                                                          child: Text('취소'))
+                                                    ],
+                                                  );
+                                                });
+                                          },
                                         ),
                                         IconButton(
                                           iconSize: 25,
                                           icon: const Icon(Icons.delete),
-                                          onPressed: () {},
+                                          onPressed: () {
+                                            showDialog(
+                                                context: context,
+                                                builder:
+                                                    (BuildContext context) {
+                                                  return AlertDialog(
+                                                    title: Text('금액 삭제'),
+                                                    content: Container(
+                                                      child: Text('삭제하시겠습니까?'),
+                                                    ),
+                                                    actions: [
+                                                      TextButton(
+                                                          child: Text('삭제'),
+                                                          onPressed: () {
+                                                            setState(() {
+                                                              saveMonthbudgetList
+                                                                  .deleteMonthbudgetList(
+                                                                      monthbudgetList[index]
+                                                                              .id ??
+                                                                          0);
+                                                            });
+                                                            Navigator.of(
+                                                                    context)
+                                                                .pop();
+                                                          }),
+                                                      TextButton(
+                                                          onPressed: () {
+                                                            Navigator.of(
+                                                                    context)
+                                                                .pop();
+                                                          },
+                                                          child: Text('취소'))
+                                                    ],
+                                                  );
+                                                });
+                                          },
                                         )
                                       ],
                                     ),
