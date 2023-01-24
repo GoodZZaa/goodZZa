@@ -128,10 +128,10 @@ class _HistoryMonthState extends State<HistoryMonth> {
   Widget historyCard(PayoutItem payoutItem) {
     return InkWell(
         onTap: () {
-          Navigator.of(context).push(MaterialPageRoute(
+          /* Navigator.of(context).push(MaterialPageRoute(
               builder: (context) => ChangeNotifierProvider(
                   create: (context) => AccountProvider(),
-                  child: const HistoryDaily())));
+                  child: const HistoryDaily())));*/
         },
         child: Container(
           alignment: Alignment.centerLeft,
@@ -156,9 +156,7 @@ class _HistoryMonthState extends State<HistoryMonth> {
         borderRadius: BorderRadius.circular(10),
         color: Colors.grey[200],
       ),
-      child: Image.network(
-        'https://avatars.githubusercontent.com/u/121633919?s=16&v=4',
-      ));
+      child: Image.network(payoutItem.imageUrl.toString(), fit: BoxFit.cover));
 
   Widget cartMonth(PayoutItem payoutItem) {
     List<dynamic> productItem;

@@ -18,12 +18,14 @@ class PayoutItem {
   List<dynamic> products;
   int totalPrice;
   String market;
+  String imageUrl;
 
   PayoutItem(
       {required this.date,
       required this.products,
       required this.totalPrice,
-      required this.market});
+      required this.market,
+      required this.imageUrl});
 
   factory PayoutItem.fromJson(Map<String, dynamic> json) {
     List<String> products = (json['products'] as List<dynamic>)
@@ -33,10 +35,12 @@ class PayoutItem {
         .toList();
 
     return PayoutItem(
-        date: DateFormat('yyyy-MM-dd').parse(json['date']),
-        products: products,
-        totalPrice: json['totalPrice'],
-        market: json['martName']);
+      date: DateFormat('yyyy-MM-dd').parse(json['date']),
+      products: products,
+      totalPrice: json['totalPrice'],
+      market: json['martName'],
+      imageUrl: json['martImageUrl'],
+    );
   }
   // factory PayoutItem.fromJson(Map<String, dynamic> jsonMap) {
   //   List<String> b = json.decode(jsonMap['products']);
