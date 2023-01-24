@@ -7,7 +7,8 @@ import '../utills/number_format.dart';
 import 'monthbudget_list.dart';
 
 class WriteAccountbookDetail extends StatefulWidget {
-  const WriteAccountbookDetail({Key? key}) : super(key: key);
+  final String userInput;
+  WriteAccountbookDetail(this.userInput, {Key? key}) : super(key: key);
 
   @override
   State<WriteAccountbookDetail> createState() => _WriteAccountbookDetailState();
@@ -75,10 +76,10 @@ class _WriteAccountbookDetailState extends State<WriteAccountbookDetail> {
                     children: [
                       TextField(
                         decoration: InputDecoration(
-                            border: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.teal)),
-                            labelText: '금액',
-                            hintText: 'Enter Your Name'),
+                          border: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.teal)),
+                          labelText: '${numberFormat(widget.userInput)} 원',
+                        ),
                       ),
                       TextField(
                           controller:
@@ -95,8 +96,8 @@ class _WriteAccountbookDetailState extends State<WriteAccountbookDetail> {
                             DateTime? pickedDate = await showDatePicker(
                                 context: context,
                                 initialDate: DateTime.now(), //get today's date
-                                firstDate: DateTime
-                                    .now(), //DateTime.now() - not to allow to choose before today.
+                                firstDate: DateTime(
+                                    2023), //DateTime.now() - not to allow to choose before today.
                                 lastDate: DateTime(2101));
 
                             if (pickedDate != null) {
@@ -111,10 +112,7 @@ class _WriteAccountbookDetailState extends State<WriteAccountbookDetail> {
                                 dateController.text =
                                     formattedDate; //set foratted date to TextField value.
                               });
-                            } else {
-                              print("Date is not selected");
                             }
-                            //when click we have to show the datepicker
                           }),
                       TextField(
                         decoration: InputDecoration(

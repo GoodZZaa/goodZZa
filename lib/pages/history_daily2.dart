@@ -4,18 +4,17 @@ import 'package:provider/provider.dart';
 import '../models/payments.dart';
 import '../provider/account_book_provider.dart';
 import 'history_daily.dart';
-import 'history_daily2.dart';
 
-class HistoryMonth extends StatefulWidget {
+class HistoryDaily extends StatefulWidget {
   final int year;
   final int month; // 홈 page에서 넘어온 현재의 year 과 month 값 담기
-  const HistoryMonth({required this.year, required this.month});
+  const HistoryDaily({required this.year, required this.month});
 
   @override
-  State<HistoryMonth> createState() => _HistoryMonthState();
+  State<HistoryDaily> createState() => _HistoryMonthState();
 }
 
-class _HistoryMonthState extends State<HistoryMonth> {
+class _HistoryMonthState extends State<HistoryDaily> {
   late HistoryMonthProvider _historyMonthProvider;
   ScrollController _controller = ScrollController();
 
@@ -128,13 +127,7 @@ class _HistoryMonthState extends State<HistoryMonth> {
 
   Widget historyCard(PayoutItem payoutItem) {
     return InkWell(
-        onTap: () {
-          final now = DateTime.now();
-          Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => ChangeNotifierProvider(
-                  create: (context) => HistoryMonthProvider(),
-                  child: HistoryDaily(year: now.year, month: now.month))));
-        },
+        onTap: () {},
         child: Container(
           alignment: Alignment.centerLeft,
           width: double.infinity,

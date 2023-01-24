@@ -11,13 +11,8 @@ import '../provider/account_book_provider.dart';
 import 'history_month.dart';
 import 'package:good_zza_code_in_songdo/pages/shoppingcart.dart';
 
-
-
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
-
-
-
 
   @override
   State<HomePage> createState() => _HomePage();
@@ -29,7 +24,8 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
   late TabController _tabController;
 
   final ScrollController scrollController = ScrollController();
-  final RefreshController refreshController = RefreshController(initialLoadStatus: LoadStatus.idle);
+  final RefreshController refreshController =
+      RefreshController(initialLoadStatus: LoadStatus.idle);
 
   int checkcount = 0;
 
@@ -37,11 +33,9 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
     _homeProvider.pageNumber = 1;
     _homeProvider.cheapestproduct.clear();
 
-    _homeProvider.readCheapestProduct()
-        .then((_) {
+    _homeProvider.readCheapestProduct().then((_) {
       refreshController.refreshCompleted(resetFooterState: true);
-    })
-        .catchError((_) {
+    }).catchError((_) {
       refreshController.refreshFailed();
     });
   }
@@ -138,9 +132,8 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
                         ),
                       ]),
                   onPressed: () {
-                    Navigator.of(context)
-                        .push(MaterialPageRoute(
-                        builder: (context)=>ShoppingCart(),
+                    Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => ShoppingCart(),
                     ));
                   },
                 ),
@@ -159,9 +152,9 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
                       onPressed: () {
                         Navigator.of(context).push(MaterialPageRoute(
                             builder: (context) => ChangeNotifierProvider(
-                              create: (context) => SearchProvider(),
-                              child: const HomeSearchPage(),
-                            )));
+                                  create: (context) => SearchProvider(),
+                                  child: const HomeSearchPage(),
+                                )));
                       },
                       icon: const Icon(
                         Icons.search,
@@ -169,9 +162,9 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
                       ),
                       label: const Text(
                         "물건을 검색해보세요.                                                             "
-                            "                                                      ",
-                        style: TextStyle(
-                            color: Color.fromRGBO(200, 200, 203, 1)),
+                        "                                                      ",
+                        style:
+                            TextStyle(color: Color.fromRGBO(200, 200, 203, 1)),
                       ),
                     ),
                   )
@@ -185,7 +178,8 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
             child: NestedScrollView(
                 controller: scrollController,
                 physics: const BouncingScrollPhysics(),
-                headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+                headerSliverBuilder:
+                    (BuildContext context, bool innerBoxIsScrolled) {
                   return [
                     SliverAppBar(
                       pinned: false,
@@ -195,16 +189,14 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
                       flexibleSpace: FlexibleSpaceBar(
                         background: Container(
                             padding: const EdgeInsets.symmetric(horizontal: 10),
-                            child: headerWidget()
-                        ),
+                            child: headerWidget()),
                       ),
                       elevation: 0,
                       backgroundColor: Colors.white,
                     ),
                   ];
                 },
-                body : lowPriceProduct()
-            ),
+                body: lowPriceProduct()),
           )
         ],
       ),
@@ -294,10 +286,9 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
               final now = DateTime.now();
               Navigator.of(context).push(MaterialPageRoute(
                   builder: (context) => ChangeNotifierProvider(
-                    create: (context) => HistoryMonthProvider(),
-                    child: HistoryMonth(year: now.year, month: now.month),
-                    //지금 현재 년도와 월을 넘겨준다.
-                  )));
+                        create: (context) => HistoryMonthProvider(),
+                        child: HistoryMonth(year: now.year, month: now.month),
+                      )));
             },
             child: Container(
               width: 380,
@@ -355,7 +346,6 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
               ),
               //child: Expanded(
               //child: Image.asset('assets/images/img_main_frame.png')),
-
             ),
           ),
         )
@@ -363,36 +353,39 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
     );
   }
 
-
   Widget Recommandcard() {
     return ListView.builder(
         scrollDirection: Axis.horizontal,
         itemCount: _homeProvider.cheapestmart.length,
-        itemBuilder: (BuildContext context, int index){
-          return
-            _homeProvider.isLoading2 ? Center(child: CircularProgressIndicator(),) :
-            Container(
-              width: 90,
-              height: 90,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Container(
-                    width: 60,
-                    height: 60,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8)),
-                    child: Image.network(_homeProvider.cheapestmart[index].imageUrl.toString(),
-                        fit: BoxFit.cover),
+        itemBuilder: (BuildContext context, int index) {
+          return _homeProvider.isLoading2
+              ? Center(
+                  child: CircularProgressIndicator(),
+                )
+              : Container(
+                  width: 90,
+                  height: 90,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Container(
+                        width: 60,
+                        height: 60,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8)),
+                        child: Image.network(
+                            _homeProvider.cheapestmart[index].imageUrl
+                                .toString(),
+                            fit: BoxFit.cover),
+                      ),
+                      Text(
+                        _homeProvider.cheapestmart[index].martName.toString(),
+                        style: TextStyle(fontSize: 11),
+                      )
+                    ],
                   ),
-                  Text(_homeProvider.cheapestmart[index].martName.toString(),
-                    style: TextStyle(fontSize: 11),)
-                ],
-              ),
-            );
-
-        }
-    );
+                );
+        });
   }
 
   /*Widget recommendCard() {
@@ -459,22 +452,24 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
   } */
 
   Widget lowPriceProduct() {
-    return Consumer<HomeProvider>(
-        builder: (context, provider, child) {
-          return SmartRefresher(
-            enablePullUp: true,
-            controller: refreshController,
-            onRefresh: onRefresh,
-            onLoading: onLoading,
-            child: _homeProvider.isLoading ? const Center(
-              child: CircularProgressIndicator(),) :
-            GridView.builder(
+    return Consumer<HomeProvider>(builder: (context, provider, child) {
+      return SmartRefresher(
+        enablePullUp: true,
+        controller: refreshController,
+        onRefresh: onRefresh,
+        onLoading: onLoading,
+        child: _homeProvider.isLoading
+            ? const Center(
+                child: CircularProgressIndicator(),
+              )
+            : GridView.builder(
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
-                  childAspectRatio: 2 / 3,),
+                  childAspectRatio: 2 / 3,
+                ),
                 physics: const BouncingScrollPhysics(),
                 itemCount: _homeProvider.cheapestproduct.length,
-                itemBuilder: (context, index){
+                itemBuilder: (context, index) {
                   return Container(
                     width: 180,
                     height: 260,
@@ -489,7 +484,7 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
                         )
                       ],
                     ),
-                    padding: const EdgeInsets.only(top : 10),
+                    padding: const EdgeInsets.only(top: 10),
                     child: Column(
                       children: [
                         Container(
@@ -497,32 +492,41 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
                             height: 130,
                             decoration: BoxDecoration(
                               color: Colors.white,
-                              borderRadius: const BorderRadius.only(topLeft: Radius.circular(8), topRight: Radius.circular(8)),
+                              borderRadius: const BorderRadius.only(
+                                  topLeft: Radius.circular(8),
+                                  topRight: Radius.circular(8)),
                               image: DecorationImage(
-                                image: NetworkImage(_homeProvider.cheapestproduct[index].imageUrl),
+                                image: NetworkImage(_homeProvider
+                                    .cheapestproduct[index].imageUrl),
                                 fit: BoxFit.cover,
                               ),
-                            )
-                        ),
+                            )),
                         Container(
-                          padding: const EdgeInsets.only(left: 13, top: 13, right: 13, bottom: 13),
+                          padding: const EdgeInsets.only(
+                              left: 13, top: 13, right: 13, bottom: 13),
                           width: 180,
                           decoration: const BoxDecoration(
                             color: Colors.white,
-                            borderRadius: BorderRadius.only(bottomLeft: Radius.circular(8), bottomRight: Radius.circular(8)),
+                            borderRadius: BorderRadius.only(
+                                bottomLeft: Radius.circular(8),
+                                bottomRight: Radius.circular(8)),
                           ),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(_homeProvider.cheapestproduct[index].productName,
-                                style: const TextStyle(fontSize: 12),),
+                              Text(
+                                _homeProvider
+                                    .cheapestproduct[index].productName,
+                                style: const TextStyle(fontSize: 12),
+                              ),
                               const SizedBox(
                                 height: 10,
                               ),
-                              Text('${_homeProvider.cheapestproduct[index].price}원',
+                              Text(
+                                '${_homeProvider.cheapestproduct[index].price}원',
                                 style: const TextStyle(
-                                    fontSize: 14, fontWeight: FontWeight.bold),),
-
+                                    fontSize: 14, fontWeight: FontWeight.bold),
+                              ),
                               const SizedBox(
                                 height: 10,
                               ),
@@ -531,18 +535,19 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
                                   child: Align(
                                       alignment: Alignment.center,
                                       child: TextButton(
-                                          onPressed: () { checkcount++;},
+                                          onPressed: () {
+                                            checkcount++;
+                                          },
                                           style: TextButton.styleFrom(
                                               backgroundColor:
-                                              const Color.fromRGBO(95, 89,225, 100)),
+                                                  const Color.fromRGBO(
+                                                      95, 89, 225, 100)),
                                           child: const Text(
                                             "          Add to cart          ",
                                             style: TextStyle(
-                                                color: Colors.white, fontSize: 12),
-                                          )
-                                      )
-                                  )
-                              )
+                                                color: Colors.white,
+                                                fontSize: 12),
+                                          ))))
                             ],
                           ),
                         )
@@ -550,8 +555,7 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
                     ),
                   );
                 }),
-          );
-        }
-    );
+      );
+    });
   }
 }

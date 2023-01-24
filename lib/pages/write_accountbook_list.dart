@@ -2,15 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:good_zza_code_in_songdo/models/month_budget_item.dart';
 import 'package:good_zza_code_in_songdo/pages/write_accountbook.dart';
-import 'package:good_zza_code_in_songdo/provider/budget_list_provider.dart';
-import 'package:good_zza_code_in_songdo/utills/number_format.dart';
-import 'package:provider/provider.dart';
-
-import '../provider/account_book_provider.dart';
-import '../provider/bottom_nav_provider.dart';
-import '../provider/home_provider.dart';
-import '../provider/receipt_camera_provider.dart';
-import 'bottom_nav.dart';
 
 class WriteAccountbookList extends StatefulWidget {
   /*final String userInput;
@@ -81,7 +72,7 @@ class _WriteAccountbookListState extends State<WriteAccountbookList> {
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.center,
           children: const [
-            Text("",
+            Text("오늘의 기록",
                 style: TextStyle(
                     color: Colors.black,
                     fontSize: 17,
@@ -102,7 +93,7 @@ class _WriteAccountbookListState extends State<WriteAccountbookList> {
           ),*/
           const SizedBox(height: 10),
           Text(
-            '${DateTime.now().month}월 예산',
+            '${DateTime.now().month}월 ${DateTime.now().day}일',
             style: const TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w500,

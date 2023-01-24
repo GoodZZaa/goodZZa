@@ -24,6 +24,10 @@ class _Write_accountbookState extends State<Write_accountbook> {
 
   bool isselected = false;
 
+  int _index = 0;
+  Color enableColor = Color.fromRGBO(88, 212, 175, 1); //your color
+  Color disableColor = Colors.white; //your color
+
   final List<String> buttons = [
     '7',
     '8',
@@ -108,10 +112,17 @@ class _Write_accountbookState extends State<Write_accountbook> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             ElevatedButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                setState(() {
+                                  _index = 0;
+                                });
+                              },
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: Color.fromRGBO(
-                                    88, 212, 175, 1), // Background color
+                                primary: _index == 0
+                                    ? Color.fromRGBO(88, 212, 175, 1)
+                                    : Colors.white,
+                                onPrimary:
+                                    _index == 0 ? Colors.white : Colors.black,
                               ),
                               child: const Text(
                                 '지출',
@@ -119,15 +130,21 @@ class _Write_accountbookState extends State<Write_accountbook> {
                               ),
                             ),
                             ElevatedButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                setState(() {
+                                  _index = 1;
+                                });
+                              },
                               style: ElevatedButton.styleFrom(
-                                backgroundColor:
-                                    Color.fromRGBO(88, 212, 175, 1),
+                                primary: _index == 1
+                                    ? Color.fromRGBO(88, 212, 175, 1)
+                                    : Colors.white,
+                                onPrimary:
+                                    _index == 1 ? Colors.white : Colors.black,
                               ),
                               child: const Text(
                                 '수입',
-                                style: TextStyle(
-                                    fontSize: 20, color: Colors.white),
+                                style: TextStyle(fontSize: 20),
                               ),
                             )
                           ],
@@ -201,7 +218,7 @@ class _Write_accountbookState extends State<Write_accountbook> {
                             Navigator.of(context).push(
                               MaterialPageRoute(
                                 builder: (BuildContext context) =>
-                                    WriteAccountbookDetail(),
+                                    WriteAccountbookDetail(userInput),
                               ),
                             );
                           },

@@ -98,9 +98,7 @@ class _SetMonthBudgetState extends State<SetMonthBudget> {
                               Navigator.of(context).push(MaterialPageRoute(
                                   builder: (context) => ChangeNotifierProvider(
                                       create: (context) => BudgetListProvider(),
-                                      child: MonthBudgetList(userInput)
-                                      //지금 현재 년도와 월을 넘겨준다.
-                                      )));
+                                      child: MonthBudgetList(userInput))));
                             } else {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(

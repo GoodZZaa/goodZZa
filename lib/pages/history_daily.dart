@@ -73,6 +73,8 @@ class _HistoryDailyState extends State<HistoryDaily> {
     // 리스트빌더로 HistoryCard 를 만든다.
     // var historyList = _accountProvider.payoutItems;
     var historyList = [
+      */
+/*
       PayoutItem(
           date: DateTime(2022, 1, 3),
           products: ["가지", "복숭아"],
@@ -87,7 +89,8 @@ class _HistoryDailyState extends State<HistoryDaily> {
           date: DateTime(2022, 1, 3),
           products: ["가지", "복숭아"],
           totalPrice: 1000,
-          market: "우리마켓3"),
+          market: "우리마켓3"),*/ /*
+
     ];
 
     return Expanded(
