@@ -78,11 +78,15 @@ class _WriteAccountbookDetailState extends State<WriteAccountbookDetail> {
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       TextField(
+                        style: TextStyle(
+                            color: Colors.black, fontWeight: FontWeight.bold),
+                        enabled: false,
                         decoration: InputDecoration(
-                          border: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.teal)),
-                          labelText: '${numberFormat(widget.userInput)} 원',
-                        ),
+                            border: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.teal)),
+                            labelText: '${numberFormat(widget.userInput)} 원',
+                            filled: true,
+                            fillColor: Colors.grey[200]),
                       ),
                       TextField(
                           controller:
