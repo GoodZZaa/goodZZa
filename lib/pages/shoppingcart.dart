@@ -63,6 +63,12 @@ class _ShoppingCartState extends State<ShoppingCart> {
       body: Column(
         children: [
           ShoppingCartCard(),
+          Container(
+            height: 1,
+            width: double.maxFinite,
+            color: const Color.fromRGBO(218, 218, 218, 1),
+            margin: const EdgeInsets.only(bottom: 13,left: 20,right: 20),
+          ),
           TotalPrice(),
           Expanded(child: SizedBox()),
           ButtomButton()
@@ -344,7 +350,7 @@ class _ShoppingCartState extends State<ShoppingCart> {
 
   Widget TotalPrice() {
     return Container(
-      padding: EdgeInsets.all(16),
+      padding: EdgeInsets.all(20),
       child:
       Row(
         children: [

@@ -359,11 +359,14 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
         scrollDirection: Axis.horizontal,
         itemCount: _homeProvider.cheapestmart.length,
         itemBuilder: (BuildContext context, int index) {
-          return _homeProvider.isLoading2
-              ? Center(
+           return _homeProvider.isLoading2
+              ? const Center(
                   child: CircularProgressIndicator(),
                 )
               : Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8)
+                  ),
                   width: 90,
                   height: 90,
                   child: Column(
@@ -379,10 +382,7 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
                                 .toString(),
                             fit: BoxFit.cover),
                       ),
-                      Text(
-                        _homeProvider.cheapestmart[index].martName.toString(),
-                        style: TextStyle(fontSize: 11),
-                      )
+
                     ],
                   ),
                 );

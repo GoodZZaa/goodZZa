@@ -34,6 +34,9 @@ class HomeProvider extends ChangeNotifier {
     cheapestmart.addAll(await homepageGateway2.getCheapestMart2(isFirst: true,pageNumber: 1));
 
     isLoading2 = false;
+
+    notifyListeners();
+
   }
 
 
