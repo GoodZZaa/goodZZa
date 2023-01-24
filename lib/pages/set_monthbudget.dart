@@ -2,7 +2,6 @@ import 'dart:core';
 
 import 'package:flutter/material.dart';
 import 'package:good_zza_code_in_songdo/provider/budget_list_provider.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../utills/number_format.dart';
@@ -175,14 +174,7 @@ class _SetMonthBudgetState extends State<SetMonthBudget> {
                                     }
                                   },
                                   buttonText: buttons[index],
-                                  color: Colors.white
-                                  /* color: isOperator(buttons[index])
-                                    ? Colors.blueAccent
-                                    : Colors.white,
-                                textColor: isOperator(buttons[index])
-                                    ? Colors.white
-                                    : Colors.black,*/
-                                  );
+                                  color: Colors.white);
                             }
                           }), // GridView.builder
                     ),
@@ -190,12 +182,6 @@ class _SetMonthBudgetState extends State<SetMonthBudget> {
                 ])));
   }
 
-/*  bool isOperator(String x) {
-    if (x == '/' || x == 'x' || x == '-' || x == '+' || x == '=') {
-      return true;
-    }
-    return false;
-  }*/
 // function to calculate the input operation
 
 }
