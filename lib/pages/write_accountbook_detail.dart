@@ -72,7 +72,7 @@ class _WriteAccountbookDetailState extends State<WriteAccountbookDetail> {
               children: [
                 //SizedBox(height: 5),
                 Container(
-                  height: MediaQuery.of(context).size.width * 0.8,
+                  height: MediaQuery.of(context).size.width * 0.7,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -132,7 +132,7 @@ class _WriteAccountbookDetailState extends State<WriteAccountbookDetail> {
                   ),
                 ),
                 Container(
-                  height: MediaQuery.of(context).size.height * 0.2,
+                  height: MediaQuery.of(context).size.height * 0.15,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [

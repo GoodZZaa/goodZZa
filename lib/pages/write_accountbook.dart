@@ -99,138 +99,140 @@ class _Write_accountbookState extends State<Write_accountbook> {
             )),
         backgroundColor: Colors.white,
         body: Container(
-            padding: const EdgeInsets.only(left: 30, right: 30, top: 20),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Container(
-                  child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            ElevatedButton(
-                              onPressed: () {
-                                setState(() {
-                                  _index = 0;
-                                });
-                              },
-                              style: ElevatedButton.styleFrom(
-                                primary: _index == 0
-                                    ? Color.fromRGBO(88, 212, 175, 1)
-                                    : Colors.white,
-                                onPrimary:
-                                    _index == 0 ? Colors.white : Colors.black,
+            padding: const EdgeInsets.only(left: 30, right: 30, top: 10),
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Container(
+                    child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              ElevatedButton(
+                                onPressed: () {
+                                  setState(() {
+                                    _index = 0;
+                                  });
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  primary: _index == 0
+                                      ? Color.fromRGBO(88, 212, 175, 1)
+                                      : Colors.white,
+                                  onPrimary:
+                                      _index == 0 ? Colors.white : Colors.black,
+                                ),
+                                child: const Text(
+                                  '지출',
+                                  style: TextStyle(fontSize: 20),
+                                ),
                               ),
-                              child: const Text(
-                                '지출',
-                                style: TextStyle(fontSize: 20),
-                              ),
-                            ),
-                            ElevatedButton(
-                              onPressed: () {
-                                setState(() {
-                                  _index = 1;
-                                });
-                              },
-                              style: ElevatedButton.styleFrom(
-                                primary: _index == 1
-                                    ? Color.fromRGBO(88, 212, 175, 1)
-                                    : Colors.white,
-                                onPrimary:
-                                    _index == 1 ? Colors.white : Colors.black,
-                              ),
-                              child: const Text(
-                                '수입',
-                                style: TextStyle(fontSize: 20),
-                              ),
-                            )
-                          ],
-                        ),
-                        Container(
-                          height: MediaQuery.of(context).size.height * 0.4,
-                          width: double.infinity,
-                          alignment: Alignment.center,
-                          child: Text(
-                            '${numberFormat(userInput)}원',
-                            style: const TextStyle(
-                                fontSize: 36,
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold),
+                              ElevatedButton(
+                                onPressed: () {
+                                  setState(() {
+                                    _index = 1;
+                                  });
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  primary: _index == 1
+                                      ? Color.fromRGBO(88, 212, 175, 1)
+                                      : Colors.white,
+                                  onPrimary:
+                                      _index == 1 ? Colors.white : Colors.black,
+                                ),
+                                child: const Text(
+                                  '수입',
+                                  style: TextStyle(fontSize: 20),
+                                ),
+                              )
+                            ],
                           ),
-                        ),
-                        SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.3,
-                          child: GridView.builder(
-                              physics: const NeverScrollableScrollPhysics(),
-                              itemCount: buttons.length,
-                              gridDelegate:
-                                  SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 3,
-                                childAspectRatio: MediaQuery.of(context)
-                                        .size
-                                        .width /
-                                    (MediaQuery.of(context).size.height / 4),
-                              ),
-                              itemBuilder: (BuildContext context, int index) {
-                                // Delete Button
-                                if (index == 11) {
-                                  return MyButton(
-                                    buttontapped: () {
-                                      setState(() {
-                                        if (userInput != '') {
-                                          userInput = userInput.substring(
-                                              0, userInput.length - 1);
-                                        }
-                                      });
-                                    },
-                                    buttonText: buttons[index],
-                                    color: Colors.white,
-                                    textColor: Colors.black,
-                                  );
-                                }
-                                // other buttons
-                                else {
-                                  return MyButton(
+                          Container(
+                            height: MediaQuery.of(context).size.height * 0.4,
+                            width: double.infinity,
+                            alignment: Alignment.center,
+                            child: Text(
+                              '${numberFormat(userInput)}원',
+                              style: const TextStyle(
+                                  fontSize: 36,
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.3,
+                            child: GridView.builder(
+                                physics: const NeverScrollableScrollPhysics(),
+                                itemCount: buttons.length,
+                                gridDelegate:
+                                    SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 3,
+                                  childAspectRatio: MediaQuery.of(context)
+                                          .size
+                                          .width /
+                                      (MediaQuery.of(context).size.height / 4),
+                                ),
+                                itemBuilder: (BuildContext context, int index) {
+                                  // Delete Button
+                                  if (index == 11) {
+                                    return MyButton(
                                       buttontapped: () {
-                                        if (userInput.length < 9) {
-                                          setState(() {
-                                            userInput += buttons[index];
-                                          });
-                                        } else {
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(
-                                            const SnackBar(
-                                              content: Text('숫자가 너무 큽니다'),
-                                            ),
-                                          );
-                                        }
+                                        setState(() {
+                                          if (userInput != '') {
+                                            userInput = userInput.substring(
+                                                0, userInput.length - 1);
+                                          }
+                                        });
                                       },
                                       buttonText: buttons[index],
-                                      color: Colors.white);
-                                }
-                              }), // GridView.builder
-                        ),
-                        ElevatedButton(
-                          onPressed: () {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (BuildContext context) =>
-                                    WriteAccountbookDetail(userInput),
-                              ),
-                            );
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Color.fromRGBO(95, 89, 225, 1),
-                            minimumSize: const Size.fromHeight(50),
+                                      color: Colors.white,
+                                      textColor: Colors.black,
+                                    );
+                                  }
+                                  // other buttons
+                                  else {
+                                    return MyButton(
+                                        buttontapped: () {
+                                          if (userInput.length < 9) {
+                                            setState(() {
+                                              userInput += buttons[index];
+                                            });
+                                          } else {
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(
+                                              const SnackBar(
+                                                content: Text('숫자가 너무 큽니다'),
+                                              ),
+                                            );
+                                          }
+                                        },
+                                        buttonText: buttons[index],
+                                        color: Colors.white);
+                                  }
+                                }), // GridView.builder
                           ),
-                          child: Text("다음"),
-                        ),
-                      ]),
-                ),
-              ],
+                          ElevatedButton(
+                            onPressed: () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (BuildContext context) =>
+                                      WriteAccountbookDetail(userInput),
+                                ),
+                              );
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Color.fromRGBO(95, 89, 225, 1),
+                              minimumSize: const Size.fromHeight(50),
+                            ),
+                            child: Text("다음"),
+                          ),
+                        ]),
+                  ),
+                ],
+              ),
             )));
   }
 }
