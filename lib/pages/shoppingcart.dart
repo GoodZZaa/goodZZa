@@ -27,7 +27,10 @@ class _ShoppingCartState extends State<ShoppingCart> {
   bool isLoading = true;
   Checkout checkout = Checkout();
   int shoppingcheck = 3;
+  List total = [];
+  num sum = 0;
 
+  var shoppingcheccknumber = [];
 
 
   Future readShoppingCart() async {
@@ -40,6 +43,15 @@ class _ShoppingCartState extends State<ShoppingCart> {
     readShoppingCart().then((value) {
       setState(() {
         isLoading = false;
+        for (var i = 0; i < 3; i++) {
+          shoppingcheccknumber.add(i);
+
+        };
+        for (var i = 0; i < shoppingcheck; i++) {
+          total.add(this.shoppingcart[i].amount*this.shoppingcart[i].price);
+
+        };
+        sum = total.fold(0, (e, p) => e+p);
       });
     });
   }
@@ -51,6 +63,8 @@ class _ShoppingCartState extends State<ShoppingCart> {
       body: Column(
         children: [
           ShoppingCartCard(),
+          TotalPrice(),
+          Expanded(child: SizedBox()),
           ButtomButton()
         ],
       )
@@ -159,7 +173,9 @@ class _ShoppingCartState extends State<ShoppingCart> {
                                 IconButton(
                                   padding: EdgeInsets.zero,
                                   constraints: BoxConstraints(),
-                                  onPressed: (){}, icon: Icon(Icons.dangerous,size: 18,),)
+                                  onPressed: (){
+
+                                  }, icon: Icon(Icons.dangerous,size: 18,),)
                               ],
                             ),
                             Row(
@@ -183,7 +199,8 @@ class _ShoppingCartState extends State<ShoppingCart> {
                                         if (this.shoppingcart[index].amount == 1){
 
                                         } else{
-                                          this.shoppingcart[index].amount--;}
+                                          this.shoppingcart[index].amount--;
+                                          sum-this.shoppingcart[index].price;}
                                       });
                                     },
                                     icon: Icon(
@@ -210,6 +227,7 @@ class _ShoppingCartState extends State<ShoppingCart> {
                                     onPressed: (){
                                       setState(() {
                                         this.shoppingcart[index].amount++;
+                                        sum+this.shoppingcart[index].price;
                                       });
                                     },
                                     icon: Icon(
@@ -323,6 +341,25 @@ class _ShoppingCartState extends State<ShoppingCart> {
     );
 
   }
+
+  Widget TotalPrice() {
+    return Container(
+      padding: EdgeInsets.all(16),
+      child:
+      Row(
+        children: [
+          Text("예상가격",style: TextStyle(fontSize: 16),),
+          Expanded(child: SizedBox()),
+          Text('$sum원',
+            style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold
+            ),)
+        ],
+      ),
+    );
+  }
+
 
 }
 
