@@ -8,8 +8,10 @@ import 'history_daily2.dart';
 
 class HistoryMonth extends StatefulWidget {
   final int year;
-  final int month; // 홈 page에서 넘어온 현재의 year 과 month 값 담기
-  const HistoryMonth({required this.year, required this.month});
+  final int month;
+  final int day; // 홈 page에서 넘어온 현재의 year 과 month 값 담기
+  const HistoryMonth(
+      {required this.year, required this.month, required this.day});
 
   @override
   State<HistoryMonth> createState() => _HistoryMonthState();
@@ -133,7 +135,8 @@ class _HistoryMonthState extends State<HistoryMonth> {
           Navigator.of(context).push(MaterialPageRoute(
               builder: (context) => ChangeNotifierProvider(
                   create: (context) => HistoryMonthProvider(),
-                  child: HistoryDaily(year: now.year, month: now.month))));
+                  child: HistoryDaily(
+                      year: now.year, month: now.month, day: now.day))));
         },
         child: Container(
           alignment: Alignment.centerLeft,

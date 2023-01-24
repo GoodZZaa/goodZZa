@@ -430,6 +430,7 @@ class AccountBookHeaderDelegate extends SliverPersistentHeaderDelegate {
                                   child: HistoryMonth(
                                     year: _accountProvider.selectedDate.year,
                                     month: _accountProvider.selectedDate.month,
+                                    day: _accountProvider.selectedDate.day,
                                   ),
                                   //지금 현재 년도와 월을 넘겨준다.
                                 )));

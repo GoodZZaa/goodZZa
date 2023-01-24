@@ -3,7 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:good_zza_code_in_songdo/pages/write_accountbook_detail.dart';
 import 'package:good_zza_code_in_songdo/pages/write_accountbook_list.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+import '../provider/history_month_provider.dart';
 import '../utills/number_format.dart';
+import 'history_daily2.dart';
 import 'monthbudget_list.dart';
 
 class WriteAccountbookDetail extends StatefulWidget {
@@ -142,12 +145,14 @@ class _WriteAccountbookDetailState extends State<WriteAccountbookDetail> {
                       Expanded(
                         child: ElevatedButton(
                           onPressed: () {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (BuildContext context) =>
-                                    WriteAccountbookList(),
-                              ),
-                            );
+                            final now = DateTime.now();
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => ChangeNotifierProvider(
+                                    create: (context) => HistoryMonthProvider(),
+                                    child: HistoryDaily(
+                                        year: now.year,
+                                        month: now.month,
+                                        day: now.day))));
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Color.fromRGBO(95, 89, 225, 1),

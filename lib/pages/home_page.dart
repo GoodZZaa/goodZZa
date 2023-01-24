@@ -287,7 +287,8 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
               Navigator.of(context).push(MaterialPageRoute(
                   builder: (context) => ChangeNotifierProvider(
                         create: (context) => HistoryMonthProvider(),
-                        child: HistoryMonth(year: now.year, month: now.month),
+                        child: HistoryMonth(
+                            year: now.year, month: now.month, day: now.day),
                       )));
             },
             child: Container(
