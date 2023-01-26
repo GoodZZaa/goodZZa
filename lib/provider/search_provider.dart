@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:good_zza_code_in_songdo/models/mart_product.dart';
 import 'package:http/http.dart' as http;
 
@@ -85,5 +86,37 @@ class SearchProvider extends ChangeNotifier {
   select(int index) async {
     selected = index;
     notifyListeners();
+  }
+
+  addMartProductId(int martProductId) async {
+    try {
+      Map<String, int> body = {
+        "martProductId": martProductId,
+      };
+      final response = await http.post(
+          Uri.parse("https://csms.moberan.com/api/v1/checkout"),
+          headers: {"Content-Type": "application/json"},
+          body: jsonEncode(body));
+      if (response.statusCode != 200) {
+        throw Exception(
+            "failed to call checkout API, martProductId: $martProductId");
+      }
+
+      Fluttertoast.showToast(
+          msg: "장바구니에 상품이 추가되었습니다.",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.lightBlueAccent,
+          textColor: Colors.white,
+          fontSize: 16.0);
+    } catch (e) {
+      if (kDebugMode) {
+        print(e);
+      }
+      rethrow;
+    } finally {
+      notifyListeners();
+    }
   }
 }

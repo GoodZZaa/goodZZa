@@ -237,6 +237,8 @@ class _HomeSearchPage extends State<HomeSearchPage> {
                                             ),
                                             onPressed: () {
                                               print("$index");
+                                              _searchProvider
+                                                  .addMartProductId(index);
                                             },
                                           ),
                                         ),
