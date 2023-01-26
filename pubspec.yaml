@@ -65,6 +65,7 @@ dev_dependencies:
   cached_network_image: ^3.2.3
   hive: ^2.2.3
   hive_flutter: ^1.1.0
+  fluttertoast: ^8.1.2
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
