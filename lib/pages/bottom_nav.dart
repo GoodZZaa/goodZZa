@@ -111,6 +111,7 @@ class BottomNavigation extends StatelessWidget {
                   )),
               label: '가계부',
             ),
+            /*
             BottomNavigationBarItem(
               icon: Container(
                   padding: itemPadding,
@@ -129,7 +130,7 @@ class BottomNavigation extends StatelessWidget {
                     color: selected,
                   )),
               label: '마이페이지',
-            ),
+            ),*/
           ],
           currentIndex: _bottomNavigationProvider.currentPage,
           selectedItemColor: selected,

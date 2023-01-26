@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:good_zza_code_in_songdo/pages/home_search_page.dart';
+import 'package:good_zza_code_in_songdo/pages/shoppingcart.dart';
 import 'package:good_zza_code_in_songdo/provider/history_month_provider.dart';
 import 'package:good_zza_code_in_songdo/provider/home_provider.dart';
 import 'package:good_zza_code_in_songdo/provider/search_provider.dart';
@@ -8,6 +9,7 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import '../provider/account_book_provider.dart';
 import 'history_month.dart';
+import 'package:good_zza_code_in_songdo/pages/shoppingcart.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -24,6 +26,8 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
   final ScrollController scrollController = ScrollController();
   final RefreshController refreshController =
       RefreshController(initialLoadStatus: LoadStatus.idle);
+
+  int checkcount = 0;
 
   void onRefresh() {
     _homeProvider.pageNumber = 1;
@@ -127,7 +131,11 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
                           color: Color.fromRGBO(200, 200, 203, 1),
                         ),
                       ]),
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => ShoppingCart(),
+                    ));
+                  },
                 ),
               ),
             ],
@@ -142,14 +150,11 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
                   Expanded(
                     child: OutlinedButton.icon(
                       onPressed: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
+                        Navigator.of(context).push(MaterialPageRoute(
                             builder: (context) => ChangeNotifierProvider(
-                              create: (context) => SearchProvider(),
-                              child: const HomeSearchPage(),
-                            ),
-                          ),
-                        );
+                                  create: (context) => SearchProvider(),
+                                  child: const HomeSearchPage(),
+                                )));
                       },
                       icon: const Icon(
                         Icons.search,
@@ -224,8 +229,8 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
         const SizedBox(
           height: 10,
         ),
-        recommendCard(),
-        const SizedBox(
+        Expanded(child: Recommandcard()),
+        SizedBox(
           height: 10,
         ),
         SizedBox(
@@ -282,11 +287,12 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
               Navigator.of(context).push(MaterialPageRoute(
                   builder: (context) => ChangeNotifierProvider(
                         create: (context) => HistoryMonthProvider(),
-                        child: HistoryMonth(year: now.year, month: now.month),
-                        //지금 현재 년도와 월을 넘겨준다.
+                        child: HistoryMonth(
+                            year: now.year, month: now.month, day: now.day),
                       )));
             },
             child: Container(
+              width: 380,
               height: 144,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(12),
@@ -348,7 +354,42 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
     );
   }
 
-  Widget recommendCard() {
+  Widget Recommandcard() {
+    return ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: _homeProvider.cheapestmart.length,
+        itemBuilder: (BuildContext context, int index) {
+           return _homeProvider.isLoading2
+              ? const Center(
+                  child: CircularProgressIndicator(),
+                )
+              : Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8)
+                  ),
+                  width: 90,
+                  height: 90,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Container(
+                        width: 60,
+                        height: 60,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8)),
+                        child: Image.network(
+                            _homeProvider.cheapestmart[index].imageUrl
+                                .toString(),
+                            fit: BoxFit.cover),
+                      ),
+
+                    ],
+                  ),
+                );
+        });
+  }
+
+  /*Widget recommendCard() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -409,7 +450,7 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
         ),
       ],
     );
-  }
+  } */
 
   Widget lowPriceProduct() {
     return Consumer<HomeProvider>(builder: (context, provider, child) {
@@ -495,11 +536,13 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
                                   child: Align(
                                       alignment: Alignment.center,
                                       child: TextButton(
-                                          onPressed: () {},
+                                          onPressed: () {
+                                            checkcount++;
+                                          },
                                           style: TextButton.styleFrom(
                                               backgroundColor:
                                                   const Color.fromRGBO(
-                                                      147, 147, 147, 1)),
+                                                      95, 89, 225, 100)),
                                           child: const Text(
                                             "          Add to cart          ",
                                             style: TextStyle(

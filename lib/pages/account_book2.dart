@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:good_zza_code_in_songdo/models/payments.dart';
 import 'package:good_zza_code_in_songdo/pages/set_monthbudget.dart';
+import 'package:good_zza_code_in_songdo/pages/write_accountbook.dart';
 import 'package:good_zza_code_in_songdo/utills/day_to_weekday.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../provider/account_book_provider.dart';
+import '../provider/history_month_provider.dart';
+import 'history_month.dart';
 
 class AccountBook2 extends StatefulWidget {
   const AccountBook2({super.key});
@@ -103,11 +106,11 @@ class _AccountBookState extends State<AccountBook2>
           body: paymentTabView()));
 
   Widget loadingWidget() => const Center(
-        child: Text('데이터를 불러오는데에 실패하였습니다'),
+        child: CircularProgressIndicator(),
       );
 
   Widget failWidget() => const Center(
-        child: CircularProgressIndicator(),
+        child: Text('데이터를 불러오는데에 실패하였습니다'),
       );
 
   Widget paymentTabView() {
@@ -171,11 +174,11 @@ class _AccountBookState extends State<AccountBook2>
         //           child: HistoryMonth(),
         //         )));*/
 
-        /*Navigator.of(context).push(
+        Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (BuildContext context) => SetMonthBudget(),
+            builder: (BuildContext context) => Write_accountbook(),
           ),
-        );*/
+        );
       },
       child: Container(
         height: 150,
@@ -288,20 +291,20 @@ class AccountBookHeaderDelegate extends SliverPersistentHeaderDelegate {
   @override
   Widget build(
       BuildContext context, double shrinkOffset, bool overlapsContent) {
-    var accountProvider = Provider.of<AccountProvider>(context);
+    var _accountProvider = Provider.of<AccountProvider>(context);
 
     return Consumer<AccountProvider>(
         builder: (context, accountProvider, child) {
       return Container(
         color: const Color.fromRGBO(255, 255, 255, 1),
-        padding: const EdgeInsets.only(top: 20, left: 20, right: 20),
+        padding: const EdgeInsets.only(top: 35, left: 20, right: 20),
         child: Column(
           children: [
             Container(
               height: 1,
               width: double.maxFinite,
               color: const Color.fromRGBO(218, 218, 218, 1),
-              margin: const EdgeInsets.only(bottom: 10),
+              margin: const EdgeInsets.only(bottom: 13),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -322,7 +325,7 @@ class AccountBookHeaderDelegate extends SliverPersistentHeaderDelegate {
               ],
             ),
             Container(
-              margin: const EdgeInsets.only(top: 10, bottom: 10),
+              margin: const EdgeInsets.only(top: 13, bottom: 10),
               height: 1,
               width: double.maxFinite,
               color: const Color.fromRGBO(218, 218, 218, 1),
@@ -413,51 +416,69 @@ class AccountBookHeaderDelegate extends SliverPersistentHeaderDelegate {
               color: const Color.fromRGBO(218, 218, 218, 1),
             ),
             Container(
+              alignment: Alignment.centerRight,
               padding: const EdgeInsets.symmetric(horizontal: 7),
               child: Row(
                 mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   InkWell(
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => ChangeNotifierProvider(
+                                  create: (context) => HistoryMonthProvider(),
+                                  child: HistoryMonth(
+                                    year: _accountProvider.selectedDate.year,
+                                    month: _accountProvider.selectedDate.month,
+                                    day: _accountProvider.selectedDate.day,
+                                  ),
+                                  //지금 현재 년도와 월을 넘겨준다.
+                                )));
+                      },
                       child: Container(
                         padding: const EdgeInsets.all(3),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: const [
-                            SizedBox(
-                              width: 15,
-                            ),
-                            Text('전체',
+                            Text('전체보기',
                                 style: TextStyle(
+                                    color: Color.fromRGBO(57, 63, 66, 1),
                                     fontSize: 12.5,
-                                    fontWeight: FontWeight.w600)),
-                            Icon(Icons.keyboard_arrow_down_sharp, size: 20)
+                                    fontWeight: FontWeight.w500)),
+                            SizedBox(
+                              width: 5,
+                            ),
+                            Icon(
+                              Icons.menu,
+                              size: 20,
+                              color: Color.fromRGBO(57, 63, 66, 1),
+                            )
                           ],
                         ),
                       )),
-                  InkWell(
-                      child: Container(
-                          padding: const EdgeInsets.all(3),
-                          child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                const Text(
-                                  '추가하기',
-                                  style: TextStyle(
-                                      fontSize: 13,
-                                      fontWeight: FontWeight.w500),
-                                ),
-                                const SizedBox(
-                                  width: 8,
-                                ),
-                                Image.asset(
-                                  'assets/icons/icon_plus.png',
-                                  height: 26,
-                                  width: 26,
-                                )
-                              ])))
+                  // InkWell(
+                  //     child: Container(
+                  //         padding: const EdgeInsets.all(3),
+                  //         child: Row(
+                  //             mainAxisAlignment: MainAxisAlignment.center,
+                  //             crossAxisAlignment: CrossAxisAlignment.center,
+                  //             children: [
+                  //               const Text(
+                  //                 '추가하기',
+                  //                 style: TextStyle(
+                  //                     fontSize: 13,
+                  //                     fontWeight: FontWeight.w500),
+                  //               ),
+                  //               const SizedBox(
+                  //                 width: 8,
+                  //               ),
+                  //               Image.asset(
+                  //                 'assets/icons/icon_plus.png',
+                  //                 height: 26,
+                  //                 width: 26,
+                  //               )
+                  //             ])))
                 ],
               ),
             ),
@@ -525,7 +546,7 @@ class _AccountTabScreenState extends State<AccountTabScreen>
 
   Widget paymentItemCard(PayoutItem item) {
     return Container(
-        margin: const EdgeInsets.all(8),
+        margin: const EdgeInsets.only(left: 10, right: 10, bottom: 15),
         child: InkWell(
             onTap: () => paymentBottomSheet(item),
             child: Container(

@@ -4,20 +4,19 @@ import 'package:provider/provider.dart';
 import '../models/payments.dart';
 import '../provider/account_book_provider.dart';
 import 'history_daily.dart';
-import 'history_daily2.dart';
 
-class HistoryMonth extends StatefulWidget {
+class HistoryDaily extends StatefulWidget {
   final int year;
   final int month;
   final int day; // 홈 page에서 넘어온 현재의 year 과 month 값 담기
-  const HistoryMonth(
+  const HistoryDaily(
       {required this.year, required this.month, required this.day});
 
   @override
-  State<HistoryMonth> createState() => _HistoryMonthState();
+  State<HistoryDaily> createState() => _HistoryMonthState();
 }
 
-class _HistoryMonthState extends State<HistoryMonth> {
+class _HistoryMonthState extends State<HistoryDaily> {
   late HistoryMonthProvider _historyMonthProvider;
   ScrollController _controller = ScrollController();
 
@@ -104,7 +103,7 @@ class _HistoryMonthState extends State<HistoryMonth> {
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text("${widget.month}월 지출 내역",
+            Text("오늘의 기록",
                 style: const TextStyle(
                     color: Colors.black,
                     fontSize: 17,
@@ -115,29 +114,29 @@ class _HistoryMonthState extends State<HistoryMonth> {
 
   Widget historyList() {
     return Container(
-        child: ListView.builder(
-      physics: const NeverScrollableScrollPhysics(),
-      shrinkWrap: true,
-      // 월 장보기 내역 없을 시에 '장보기'와 '예산박스' 사이에 공백이 생기는 거 없애주는 거
-      itemCount: _historyMonthProvider.payoutItems.length,
-      itemBuilder: (context, index) {
-        return historyCard(
-          _historyMonthProvider.payoutItems[index],
-        );
-      },
+        child: Column(
+      children: [
+        Text("${widget.month}월 ${widget.day}일",
+            style: const TextStyle(
+                color: Colors.grey, fontSize: 17, fontWeight: FontWeight.w600)),
+        SizedBox(height: 24),
+        ListView.builder(
+          physics: const NeverScrollableScrollPhysics(),
+          shrinkWrap: true,
+          itemCount: _historyMonthProvider.payoutItems.length,
+          itemBuilder: (context, index) {
+            return historyCard(
+              _historyMonthProvider.payoutItems[index],
+            );
+          },
+        ),
+      ],
     ));
   }
 
   Widget historyCard(PayoutItem payoutItem) {
     return InkWell(
-        onTap: () {
-          final now = DateTime.now();
-          Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => ChangeNotifierProvider(
-                  create: (context) => HistoryMonthProvider(),
-                  child: HistoryDaily(
-                      year: now.year, month: now.month, day: now.day))));
-        },
+        onTap: () {},
         child: Container(
           alignment: Alignment.centerLeft,
           width: double.infinity,
@@ -146,7 +145,7 @@ class _HistoryMonthState extends State<HistoryMonth> {
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              marketImage(payoutItem),
+              // marketImage(payoutItem),
               cartMonth(payoutItem),
             ],
           ),
@@ -168,13 +167,12 @@ class _HistoryMonthState extends State<HistoryMonth> {
     if (payoutItem.products.length < 2) {
       productItem = payoutItem.products;
     } else {
-      productItem = payoutItem.products.sublist(0, 2);
+      productItem = payoutItem.products.sublist(0, 1);
     }
-    // productItem 개수가 2개 이하면 error 떠서 추가해준 부분
     return Expanded(
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       Text(
-        '${payoutItem.date.month}월 ${payoutItem.date.day}일 장보기',
+        '${productItem.toString().replaceAll('[', '').replaceAll(']', '')}',
         style: const TextStyle(
           color: Color.fromARGB(0xFF, 0x22, 0x29, 0x2E),
           fontSize: 16,
@@ -184,13 +182,6 @@ class _HistoryMonthState extends State<HistoryMonth> {
       const SizedBox(
         height: 5,
       ),
-      Text(
-          '${productItem.toString().replaceAll('[', '').replaceAll(']', '')} 등..외 ${payoutItem.products.length}개',
-          style: const TextStyle(
-            fontSize: 12,
-            color: Color.fromARGB(0xFF, 0x8A, 0x8A, 0x8E),
-            fontWeight: FontWeight.w400,
-          )),
       Container(
         alignment: Alignment.centerRight,
         child: Text('${(payoutItem.totalPrice)}원',
