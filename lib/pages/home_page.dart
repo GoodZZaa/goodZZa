@@ -458,15 +458,13 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
               )
             : GridView.builder(
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  childAspectRatio: 2 / 3,
-                ),
+                    crossAxisCount: 2,
+                    childAspectRatio: 2 / 3,
+                    crossAxisSpacing: 15),
                 physics: const BouncingScrollPhysics(),
                 itemCount: _homeProvider.cheapestproduct.length,
                 itemBuilder: (context, index) {
                   return Container(
-                    width: 180,
-                    height: 260,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(8),
                       boxShadow: const <BoxShadow>[
@@ -480,10 +478,10 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
                     ),
                     padding: const EdgeInsets.only(top: 10),
                     child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Container(
-                            width: 180,
-                            height: 130,
+                            height: 123,
                             decoration: BoxDecoration(
                               color: Colors.white,
                               borderRadius: const BorderRadius.only(
@@ -513,16 +511,10 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
                                     .cheapestproduct[index].productName,
                                 style: const TextStyle(fontSize: 12),
                               ),
-                              const SizedBox(
-                                height: 10,
-                              ),
                               Text(
                                 '${_homeProvider.cheapestproduct[index].price}원',
                                 style: const TextStyle(
                                     fontSize: 14, fontWeight: FontWeight.bold),
-                              ),
-                              const SizedBox(
-                                height: 10,
                               ),
                               Container(
                                   color: Colors.white,

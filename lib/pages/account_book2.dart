@@ -420,7 +420,7 @@ class AccountBookHeaderDelegate extends SliverPersistentHeaderDelegate {
               padding: const EdgeInsets.symmetric(horizontal: 7),
               child: Row(
                 mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.end,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   InkWell(
                       onTap: () {
@@ -451,6 +451,37 @@ class AccountBookHeaderDelegate extends SliverPersistentHeaderDelegate {
                             ),
                             Icon(
                               Icons.menu,
+                              size: 20,
+                              color: Color.fromRGBO(57, 63, 66, 1),
+                            )
+                          ],
+                        ),
+                      )),
+                  InkWell(
+                      onTap: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (BuildContext context) =>
+                                Write_accountbook(),
+                          ),
+                        );
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.all(3),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: const [
+                            Text('추가하기',
+                                style: TextStyle(
+                                    color: Color.fromRGBO(57, 63, 66, 1),
+                                    fontSize: 12.5,
+                                    fontWeight: FontWeight.w500)),
+                            SizedBox(
+                              width: 5,
+                            ),
+                            Icon(
+                              Icons.add,
                               size: 20,
                               color: Color.fromRGBO(57, 63, 66, 1),
                             )
