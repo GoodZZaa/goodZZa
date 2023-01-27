@@ -85,15 +85,17 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
     _accountProvider = Provider.of<AccountProvider>(context);
 
     return Scaffold(
-      body: Column(
+        body: Container(
+      padding: const EdgeInsets.only(right: 20, left: 20, top: 10),
+      child: Column(
         children: [
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const SizedBox(
                 height: 20,
-                width: 40,
+                width: 60,
               ),
               Column(
                 children: [
@@ -141,7 +143,7 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
             ],
           ),
           SizedBox(
-            width: 390,
+            width: double.infinity,
             height: 40,
             child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -187,9 +189,7 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
                       expandedHeight: 280.0,
                       // appbar 크기
                       flexibleSpace: FlexibleSpaceBar(
-                        background: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 10),
-                            child: headerWidget()),
+                        background: Container(child: headerWidget()),
                       ),
                       elevation: 0,
                       backgroundColor: Colors.white,
@@ -200,7 +200,7 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
           )
         ],
       ),
-    );
+    ));
   }
 
   Widget headerWidget() {
@@ -360,14 +360,13 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
         physics: const BouncingScrollPhysics(),
         itemCount: _homeProvider.cheapestmart.length,
         itemBuilder: (BuildContext context, int index) {
-           return _homeProvider.isLoading2
+          return _homeProvider.isLoading2
               ? const Center(
                   child: CircularProgressIndicator(),
                 )
               : Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8)
-                  ),
+                  decoration:
+                      BoxDecoration(borderRadius: BorderRadius.circular(8)),
                   width: 90,
                   height: 90,
                   child: Column(
@@ -383,7 +382,6 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
                                 .toString(),
                             fit: BoxFit.cover),
                       ),
-
                     ],
                   ),
                 );
