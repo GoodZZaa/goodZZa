@@ -206,7 +206,7 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
   Widget headerWidget() {
     return Column(
       children: [
-        SizedBox(height: 144, child: saleCard()),
+        saleCard(),
         const SizedBox(
           height: 10,
         ),
@@ -293,7 +293,7 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
             },
             child: Container(
               width: 380,
-              height: 144,
+              height: 150,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(12),
                 image: const DecorationImage(
@@ -357,6 +357,7 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
   Widget Recommandcard() {
     return ListView.builder(
         scrollDirection: Axis.horizontal,
+        physics: const BouncingScrollPhysics(),
         itemCount: _homeProvider.cheapestmart.length,
         itemBuilder: (BuildContext context, int index) {
            return _homeProvider.isLoading2
