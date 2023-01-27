@@ -5,6 +5,12 @@ import 'package:good_zza_code_in_songdo/models/recommend_mart.dart';
 import 'package:good_zza_code_in_songdo/provider/recommend_result_provider.dart';
 import 'package:provider/provider.dart';
 
+import '../provider/account_book_provider.dart';
+import '../provider/bottom_nav_provider.dart';
+import '../provider/home_provider.dart';
+import '../provider/receipt_camera_provider.dart';
+import 'bottom_nav.dart';
+
 class RecommendResultPage extends StatefulWidget {
   const RecommendResultPage({Key? key}) : super(key: key);
 
@@ -202,6 +208,34 @@ class _RecommendResultPage extends State<RecommendResultPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        actions: [
+          InkWell(
+              child: Container(
+                  width: 60,
+                  child: Icon(
+                    Icons.home,
+                    size: 25,
+                    color: Color.fromARGB(189, 64, 64, 64),
+                  )),
+              onTap: () => Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => MultiProvider(
+                            providers: [
+                              ChangeNotifierProvider(
+                                  create: (context) =>
+                                      BottomNavigationProvider()),
+                              ChangeNotifierProvider(
+                                  create: (context) => AccountProvider()),
+                              ChangeNotifierProvider(
+                                  create: (context) => ReceiptCameraProvider()),
+                              ChangeNotifierProvider(
+                                  create: (context) => HomeProvider()),
+                            ],
+                            child: BottomNavigation(),
+                          )),
+                  (route) => false)),
+        ],
         backgroundColor: Colors.white,
         elevation: 0.0,
         systemOverlayStyle: const SystemUiOverlayStyle(
