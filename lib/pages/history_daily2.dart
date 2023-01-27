@@ -3,6 +3,10 @@ import 'package:good_zza_code_in_songdo/provider/history_month_provider.dart';
 import 'package:provider/provider.dart';
 import '../models/payments.dart';
 import '../provider/account_book_provider.dart';
+import '../provider/bottom_nav_provider.dart';
+import '../provider/home_provider.dart';
+import '../provider/receipt_camera_provider.dart';
+import 'bottom_nav.dart';
 import 'history_daily.dart';
 
 class HistoryDaily extends StatefulWidget {
@@ -77,10 +81,33 @@ class _HistoryMonthState extends State<HistoryDaily> {
     return AppBar(
         leadingWidth: 70,
         centerTitle: true,
-        actions: const [
-          SizedBox(
-            width: 70,
-          )
+        actions: [
+          InkWell(
+              child: Container(
+                  width: 60,
+                  child: Icon(
+                    Icons.home,
+                    size: 25,
+                    color: Color.fromARGB(189, 64, 64, 64),
+                  )),
+              onTap: () => Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => MultiProvider(
+                            providers: [
+                              ChangeNotifierProvider(
+                                  create: (context) =>
+                                      BottomNavigationProvider()),
+                              ChangeNotifierProvider(
+                                  create: (context) => AccountProvider()),
+                              ChangeNotifierProvider(
+                                  create: (context) => ReceiptCameraProvider()),
+                              ChangeNotifierProvider(
+                                  create: (context) => HomeProvider()),
+                            ],
+                            child: BottomNavigation(),
+                          )),
+                  (route) => false)),
         ],
         leading: InkWell(
             child: Container(

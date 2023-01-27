@@ -100,6 +100,7 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
               Column(
                 children: [
                   Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: const [
                       Icon(
                         Icons.location_on,
@@ -109,15 +110,11 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
                         width: 5,
                       ),
                       Text(
-                        "서울시 종로구",
+                        "서울시 종로구\n1.5km 이내",
                         style: TextStyle(fontSize: 16),
                       )
                     ],
                   ),
-                  const Text(
-                    "1.5km 이내",
-                    style: TextStyle(fontSize: 14),
-                  )
                 ],
               ),
               SizedBox(
@@ -142,7 +139,8 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
               ),
             ],
           ),
-          SizedBox(
+          Container(
+            margin: EdgeInsets.only(bottom: 20, top: 5),
             width: double.infinity,
             height: 40,
             child: Row(
@@ -172,10 +170,6 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
                   )
                 ]),
           ),
-          const SizedBox(
-            width: 5,
-            height: 10,
-          ),
           Expanded(
             child: NestedScrollView(
                 controller: scrollController,
@@ -186,7 +180,7 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
                     SliverAppBar(
                       pinned: false,
                       forceElevated: innerBoxIsScrolled,
-                      expandedHeight: 280.0,
+                      expandedHeight: 290.0,
                       // appbar 크기
                       flexibleSpace: FlexibleSpaceBar(
                         background: Container(child: headerWidget()),
@@ -247,7 +241,7 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
               Align(
                 alignment: Alignment.centerRight,
                 child: Container(
-                  // padding: const EdgeInsets.only(left: 5, right: 5),
+                  padding: const EdgeInsets.all(7),
                   decoration: BoxDecoration(
                       border: Border.all(
                           color: const Color.fromRGBO(200, 200, 203, 1)),
@@ -477,7 +471,7 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
                       borderRadius: BorderRadius.circular(8),
                       boxShadow: const <BoxShadow>[
                         BoxShadow(
-                          color: Colors.black54,
+                          color: Color.fromARGB(136, 101, 101, 101),
                           blurRadius: 25.0,
                           spreadRadius: -30.0,
                           offset: Offset(0.0, 0.0),
